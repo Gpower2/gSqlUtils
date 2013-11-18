@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gSqlUtils", "gSqlUtils\gSqlUtils.csproj", "{DB62175E-49C0-483B-AA23-61A5E2B1C70E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gSqlUtilsTestGUI", "gSqlUtilsTestGUI\gSqlUtilsTestGUI.csproj", "{AB7CB147-58BA-4CB0-AB4B-C9B735697D8B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DB62175E-49C0-483B-AA23-61A5E2B1C70E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB62175E-49C0-483B-AA23-61A5E2B1C70E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB62175E-49C0-483B-AA23-61A5E2B1C70E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB62175E-49C0-483B-AA23-61A5E2B1C70E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB7CB147-58BA-4CB0-AB4B-C9B735697D8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB7CB147-58BA-4CB0-AB4B-C9B735697D8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB7CB147-58BA-4CB0-AB4B-C9B735697D8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB7CB147-58BA-4CB0-AB4B-C9B735697D8B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

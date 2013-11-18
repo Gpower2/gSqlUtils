@@ -138,10 +138,10 @@ namespace gSqlUtils
 						}
 					}
 					sqlCmd.CommandTimeout = argTimeout;
-					myStopWatch.Start();
 					Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + " Starting to execute SQL code:");
 					Debug.WriteLine(DebugWriteSQL(sqlCmd));
-					rowsAffected = sqlCmd.ExecuteNonQuery();
+                    myStopWatch.Start();
+                    rowsAffected = sqlCmd.ExecuteNonQuery();
 					myStopWatch.Stop();
 					_LastOperationEllapsedTime = new TimeSpan(myStopWatch.ElapsedTicks);
 					Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + " Finished executing SQL code (duration: " + myStopWatch.Elapsed.ToString() + ")");
@@ -252,10 +252,10 @@ namespace gSqlUtils
 							myAdapter.SelectCommand.Parameters.Add(sqlParam);
 						}
 					}
-					myStopWatch.Start();
 					Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + " Starting to execute SQL code:");
 					Debug.WriteLine(DebugWriteSQL(myAdapter.SelectCommand));
-					myAdapter.Fill(myDatatable);
+                    myStopWatch.Start();
+                    myAdapter.Fill(myDatatable);
 					myStopWatch.Stop();
 					_LastOperationEllapsedTime = new TimeSpan(myStopWatch.ElapsedTicks);
 					Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + " Finished executing SQL code (duration: " + myStopWatch.Elapsed.ToString() + ")");
@@ -366,10 +366,10 @@ namespace gSqlUtils
 							myAdapter.SelectCommand.Parameters.Add(sqlParam);
 						}
 					}
-					myStopWatch.Start();
 					Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + " Starting to execute SQL code:");
 					Debug.WriteLine(DebugWriteSQL(myAdapter.SelectCommand));
-					myAdapter.Fill(myDataset);
+                    myStopWatch.Start();
+                    myAdapter.Fill(myDataset);
 					myStopWatch.Stop();
 					_LastOperationEllapsedTime = new TimeSpan(myStopWatch.ElapsedTicks);
 					Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + " Finished executing SQL code (duration: " + myStopWatch.Elapsed.ToString() + ")");
@@ -482,10 +482,10 @@ namespace gSqlUtils
 							myCommand.Parameters.Add(sqlParam);
 						}
 					}
-					myStopWatch.Start();
 					Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + " Starting to execute SQL code:");
 					Debug.WriteLine(DebugWriteSQL(myCommand));
-					Object resultObject = myCommand.ExecuteScalar();
+                    myStopWatch.Start();
+                    Object resultObject = myCommand.ExecuteScalar();
 					myStopWatch.Stop();
 					_LastOperationEllapsedTime = new TimeSpan(myStopWatch.ElapsedTicks);
 					Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + " Finished executing SQL code (duration: " + myStopWatch.Elapsed.ToString() + ")");

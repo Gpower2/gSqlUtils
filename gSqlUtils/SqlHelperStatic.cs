@@ -140,7 +140,7 @@ namespace gSqlUtils
 					sqlCmd.CommandTimeout = argTimeout;
 					myStopWatch.Start();
 					Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + " Starting to execute SQL code:");
-					DebugWriteSQL(sqlCmd);
+					Debug.WriteLine(DebugWriteSQL(sqlCmd));
 					rowsAffected = sqlCmd.ExecuteNonQuery();
 					myStopWatch.Stop();
 					_LastOperationEllapsedTime = new TimeSpan(myStopWatch.ElapsedTicks);
@@ -254,7 +254,7 @@ namespace gSqlUtils
 					}
 					myStopWatch.Start();
 					Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + " Starting to execute SQL code:");
-					DebugWriteSQL(myAdapter.SelectCommand);
+					Debug.WriteLine(DebugWriteSQL(myAdapter.SelectCommand));
 					myAdapter.Fill(myDatatable);
 					myStopWatch.Stop();
 					_LastOperationEllapsedTime = new TimeSpan(myStopWatch.ElapsedTicks);
@@ -368,7 +368,7 @@ namespace gSqlUtils
 					}
 					myStopWatch.Start();
 					Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + " Starting to execute SQL code:");
-					DebugWriteSQL(myAdapter.SelectCommand);
+					Debug.WriteLine(DebugWriteSQL(myAdapter.SelectCommand));
 					myAdapter.Fill(myDataset);
 					myStopWatch.Stop();
 					_LastOperationEllapsedTime = new TimeSpan(myStopWatch.ElapsedTicks);
@@ -484,7 +484,7 @@ namespace gSqlUtils
 					}
 					myStopWatch.Start();
 					Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + " Starting to execute SQL code:");
-					DebugWriteSQL(myCommand);
+					Debug.WriteLine(DebugWriteSQL(myCommand));
 					Object resultObject = myCommand.ExecuteScalar();
 					myStopWatch.Stop();
 					_LastOperationEllapsedTime = new TimeSpan(myStopWatch.ElapsedTicks);
@@ -755,7 +755,7 @@ namespace gSqlUtils
 
 		#region "Debug Functions"
 
-		private static void DebugWriteSQL(SqlCommand argSqlCmd)
+		private static String DebugWriteSQL(SqlCommand argSqlCmd)
 		{
 			try
 			{
@@ -905,14 +905,16 @@ namespace gSqlUtils
 						catch (Exception ex)
 						{
 							Debug.WriteLine(ex);
+                            return cmdSqlCode;
 						}
 					}
 				}
-				Debug.WriteLine(cmdSqlCode);
+                return cmdSqlCode;
 			}
 			catch (Exception ex)
 			{
 				Debug.WriteLine(ex);
+                throw;
 			}
 		}
 

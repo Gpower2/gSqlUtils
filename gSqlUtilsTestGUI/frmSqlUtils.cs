@@ -31,7 +31,7 @@ namespace gSqlUtilsTestGUI
                 String sqlCode = "SELECT 1";
 
                 // Call the execute sql function
-                Int32 affectedRows = SqlHelperStatic.ExecuteSql(sqlCode, ref sqlCon);
+                Int32 affectedRows = SqlHelperStatic.ExecuteSql(sqlCode, sqlCon);
 
                 Debug.WriteLine("affected rows: " + affectedRows);
             }

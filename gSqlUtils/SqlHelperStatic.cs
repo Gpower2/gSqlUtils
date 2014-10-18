@@ -139,7 +139,7 @@ namespace gSqlUtils
 					}
 					sqlCmd.CommandTimeout = argTimeout;
 					Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + " Starting to execute SQL code:");
-					Debug.WriteLine(DebugWriteSQL(sqlCmd));
+					Debug.WriteLine(GetSQLCommandString(sqlCmd));
 					myStopWatch.Start();
 					rowsAffected = sqlCmd.ExecuteNonQuery();
 					myStopWatch.Stop();
@@ -253,7 +253,7 @@ namespace gSqlUtils
 						}
 					}
 					Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + " Starting to execute SQL code:");
-					Debug.WriteLine(DebugWriteSQL(myAdapter.SelectCommand));
+					Debug.WriteLine(GetSQLCommandString(myAdapter.SelectCommand));
 					myStopWatch.Start();
 					myAdapter.Fill(myDatatable);
 					myStopWatch.Stop();
@@ -367,7 +367,7 @@ namespace gSqlUtils
 						}
 					}
 					Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + " Starting to execute SQL code:");
-					Debug.WriteLine(DebugWriteSQL(myAdapter.SelectCommand));
+					Debug.WriteLine(GetSQLCommandString(myAdapter.SelectCommand));
 					myStopWatch.Start();
 					myAdapter.Fill(myDataset);
 					myStopWatch.Stop();
@@ -483,7 +483,7 @@ namespace gSqlUtils
 						}
 					}
 					Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + " Starting to execute SQL code:");
-					Debug.WriteLine(DebugWriteSQL(myCommand));
+					Debug.WriteLine(GetSQLCommandString(myCommand));
 					myStopWatch.Start();
 					Object resultObject = myCommand.ExecuteScalar();
 					myStopWatch.Stop();
@@ -755,7 +755,7 @@ namespace gSqlUtils
 
 		#region "Debug Functions"
 
-		private static String DebugWriteSQL(SqlCommand argSqlCmd)
+		public static String GetSQLCommandString(SqlCommand argSqlCmd)
 		{
 			try
 			{

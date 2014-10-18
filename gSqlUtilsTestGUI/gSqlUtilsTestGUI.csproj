@@ -48,6 +48,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Test.cs" />
     <EmbeddedResource Include="frmSqlUtils.resx">
       <DependentUpon>frmSqlUtils.cs</DependentUpon>
     </EmbeddedResource>

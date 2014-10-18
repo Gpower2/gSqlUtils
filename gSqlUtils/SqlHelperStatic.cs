@@ -7,6 +7,8 @@ using System.Data;
 using System.Diagnostics;
 using System.Data.SqlTypes;
 using System.Text.RegularExpressions;
+using System.Collections;
+using System.Reflection;
 
 namespace gSqlUtils
 {
@@ -507,9 +509,193 @@ namespace gSqlUtils
 
 		#endregion
 
-		#region "IsNull"
-		
-		/// <summary>
+        #region "GetDataList"
+
+        /// <summary>
+        /// Returns a List of objects of the type specified, containing the data from 
+        /// executing the SQL code provided.
+        /// It maps each column name from the dataset to the same named property of the
+        /// object, replacing '_' character in column name using case insensitive comparison.
+        /// If the results are empty, it returns an empty List
+        /// It sets a default timeout of 120 seconds and doesn't use a transaction.
+        /// </summary>
+        /// <param name="argSqlCode">The SQL code to execute</param>
+        /// <param name="argSqlCon">The SQL connection to use</param>
+        /// <returns>The List of objects filled with data</returns>
+        public static IList GetDataList(Type argObjectType, String argSqlCode, SqlConnection argSqlCon)
+        {
+            return GetDataList(argObjectType, argSqlCode, argSqlCon, 120, null, null);
+        }
+
+        /// <summary>
+        /// Returns a List of objects of the type specified, containing the data from 
+        /// executing the SQL code provided.
+        /// It maps each column name from the dataset to the same named property of the
+        /// object, replacing '_' character in column name using case insensitive comparison.
+        /// If the results are empty, it returns an empty List
+        /// It doesn't use a transaction.
+        /// </summary>
+        /// <param name="argSqlCode">The SQL code to execute</param>
+        /// <param name="argSqlCon">The SQL connection to use</param>
+        /// <param name="argTimeout">The timeout for the SQL command in seconds</param>
+        /// <returns>The List of objects filled with data</returns>
+        public static IList GetDataList(Type argObjectType, String argSqlCode, SqlConnection argSqlCon, Int32 argTimeout)
+        {
+            return GetDataList(argObjectType, argSqlCode, argSqlCon, argTimeout, null, null);
+        }
+
+        /// <summary>
+        /// Returns a List of objects of the type specified, containing the data from 
+        /// executing the SQL code provided.
+        /// It maps each column name from the dataset to the same named property of the
+        /// object, replacing '_' character in column name using case insensitive comparison.
+        /// If the results are empty, it returns an empty List
+        /// It sets a default timeout of 120 seconds.
+        /// </summary>
+        /// <param name="argSqlCode">The SQL code to execute</param>
+        /// <param name="argSqlCon">The SQL connection to use</param>
+        /// <param name="argSqlTransaction">The SQL transaction to use</param>
+        /// <returns>The List of objects filled with data</returns>
+        public static IList GetDataList(Type argObjectType, String argSqlCode, SqlConnection argSqlCon, SqlTransaction argSqlTransaction)
+        {
+            return GetDataList(argObjectType, argSqlCode, argSqlCon, 120, argSqlTransaction, null);
+        }
+
+        /// <summary>
+        /// Returns a List of objects of the type specified, containing the data from 
+        /// executing the SQL code provided.
+        /// It maps each column name from the dataset to the same named property of the
+        /// object, replacing '_' character in column name using case insensitive comparison.
+        /// If the results are empty, it returns an empty List
+        /// </summary>
+        /// <param name="argObjectType"></param>
+        /// <param name="argSqlCode">The SQL code to execute</param>
+        /// <param name="argSqlCon">The SQL connection to use</param>
+        /// <param name="argTimeout">The timeout for the SQL command in seconds</param>
+        /// <param name="argSqlTransaction">The SQL transaction to use</param>
+        /// <param name="argSqlParameters">The SQL Parameters for the SQL command</param>
+        /// <returns>The List of objects filled with data</returns>
+        public static IList GetDataList(Type argObjectType, String argSqlCode, SqlConnection argSqlCon, Int32 argTimeout, SqlTransaction argSqlTransaction, List<SqlParameter> argSqlParameters)
+        {
+            Stopwatch myStopWatch = new Stopwatch();
+            _LastOperationException = null;
+            try
+            {
+                // check for null connection
+                if (argSqlCon == null)
+                {
+                    throw new Exception("Null SQL connection!");
+                }
+                // check for empty SQL query
+                if (String.IsNullOrEmpty(argSqlCode.Trim()))
+                {
+                    throw new Exception("Empty SQL query!");
+                }
+                // Get the List<T> type for our object type
+                Type genericListType = typeof(List<>).MakeGenericType(argObjectType);
+                // Instantiate the List<T>
+                IList objectList = (IList)Activator.CreateInstance(genericListType);
+                // Get the properties for the object
+                PropertyInfo[] objectProperties = argObjectType.GetProperties();
+                // Open the SQL connection in case it's closed
+                if (argSqlCon.State == System.Data.ConnectionState.Closed)
+                {
+                    argSqlCon.Open();
+                }
+                // Create the SQL command from the SQL query using object's connection
+                using (SqlCommand sqlCmd = new SqlCommand(argSqlCode, argSqlCon))
+                {
+                    // Set the SQL command timeout
+                    sqlCmd.CommandTimeout = argTimeout;
+                    // Check if transaction is needed
+                    if (argSqlTransaction != null)
+                    {
+                        sqlCmd.Transaction = argSqlTransaction;
+                    }
+                    // if user supplied with command parameters, add them to the select command
+                    if (argSqlParameters != null)
+                    {
+                        foreach (SqlParameter sqlParam in argSqlParameters)
+                        {
+                            sqlCmd.Parameters.Add(sqlParam);
+                        }
+                    }
+                    Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + " Starting to execute SQL code:");
+                    Debug.WriteLine(GetSQLCommandString(sqlCmd));
+                    myStopWatch.Start();
+                    // Create the DataReader from our command
+                    using (SqlDataReader myReader = sqlCmd.ExecuteReader())
+                    {
+                        // Check if there are rows
+                        if (myReader.HasRows)
+                        {
+                            // Make a list with already assigned column indeces
+                            List<Int32> assignedColumnIndeces = new List<Int32>();
+                            // Begin reading
+                            while (myReader.Read())
+                            {
+                                // Instantiate a new object for filling it from datarow
+                                Object myObject = Activator.CreateInstance(argObjectType);
+                                // clear the list of assigned columns
+                                assignedColumnIndeces.Clear();
+                                // for each property of the object, try to find a column of the same name
+                                foreach (PropertyInfo myProp in objectProperties)
+                                {
+                                    // Only for properties that can be written to
+                                    if (myProp.CanWrite)
+                                    {
+                                        // try to find a column with the same property name
+                                        // Remove '_' character from column name
+                                        // Make the comparison case insensitive
+                                        for (Int32 curColumn = 0; curColumn < myReader.FieldCount; curColumn++)
+                                        {
+                                            // check if the column is already assigned
+                                            if (!assignedColumnIndeces.Contains(curColumn))
+                                            {
+                                                // check column name with property name
+                                                if (myReader.GetName(curColumn).ToLower().Replace("_", "").Equals(myProp.Name.ToLower()))
+                                                {
+                                                    // Set the value to the property of our object
+                                                    myProp.SetValue(myObject, myReader.GetValue(curColumn), null);
+                                                    // Add the column index to the assigned indeces list
+                                                    assignedColumnIndeces.Add(curColumn);
+                                                    // exit the loop
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                // Add the object to the list
+                                objectList.Add(myObject);
+                            }
+                        }
+                    }
+                }
+                myStopWatch.Stop();
+                _LastOperationEllapsedTime = new TimeSpan(myStopWatch.ElapsedTicks);
+                Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + " Finished executing SQL code (duration: " + myStopWatch.Elapsed.ToString() + ")");
+                GC.Collect();
+                // Return our list
+                return objectList;
+            }
+            catch (Exception ex)
+            {
+                myStopWatch.Stop();
+                _LastOperationEllapsedTime = new TimeSpan(myStopWatch.ElapsedTicks);
+                _LastOperationException = ex;
+                Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + " Error executing SQL code!");
+                Debug.WriteLine(ex);
+                GC.Collect();
+                throw;
+            }
+        }
+
+        #endregion
+
+        #region "IsNull"
+
+        /// <summary>
 		/// It checks if an Object is null or equal to DBNull.Value
 		/// and then it returns the user defined Object for that case, 
 		/// else it returns the source Object.

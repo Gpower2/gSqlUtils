@@ -25,12 +25,14 @@ namespace gSqlUtilsTestGUI
             {
                 // Create new connection to Database
                 // SqlConnection sqlCon = new SqlConnection("data source=RCS10;initial catalog=rescom;packet size=4096;integrated security=SSPI;persist security info=False");
-                SqlConnection sqlCon = gSqlUtils.SqlHelperStatic.CreateSqlConnection("RCS10", "resCom");
+                SqlConnection sqlCon = gSqlUtils.SqlHelperStatic.CreateSqlConnection(".", "TestDB");
 
                 // Make a test SQL Code
-                String sqlCode = "SELECT 1";
+                String sqlCode = "SELECT * FROM TestTable";
 
                 // Call the execute sql function
+                grdResults.DataSource = SqlHelperStatic.GetDataList(typeof(Test), sqlCode, sqlCon);
+                grdResults.Refresh();
                 Int32 affectedRows = SqlHelperStatic.ExecuteSql(sqlCode, sqlCon);
 
                 Debug.WriteLine("affected rows: " + affectedRows);

@@ -145,7 +145,7 @@ namespace gSqlUtils
 					myStopWatch.Start();
 					rowsAffected = sqlCmd.ExecuteNonQuery();
 					myStopWatch.Stop();
-					_LastOperationEllapsedTime = new TimeSpan(myStopWatch.ElapsedTicks);
+                    _LastOperationEllapsedTime = myStopWatch.Elapsed;
                     Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[ExecuteSql] Finished executing SQL code (duration: " + myStopWatch.Elapsed.ToString() + ")");
 					sqlCmd.Dispose();
 					return rowsAffected;
@@ -154,11 +154,10 @@ namespace gSqlUtils
 			catch (Exception ex)
 			{
 				myStopWatch.Stop();
-				_LastOperationEllapsedTime = new TimeSpan(myStopWatch.ElapsedTicks);
-				_LastOperationException = ex;
+                _LastOperationEllapsedTime = myStopWatch.Elapsed;
+                _LastOperationException = ex;
                 Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[ExecuteSql] Error executing SQL code! (duration: " + myStopWatch.Elapsed.ToString() + ")");
 				Debug.WriteLine(ex);
-				GC.Collect();
 				throw;
 			}
 		}
@@ -259,17 +258,16 @@ namespace gSqlUtils
 					myStopWatch.Start();
 					myAdapter.Fill(myDatatable);
 					myStopWatch.Stop();
-					_LastOperationEllapsedTime = new TimeSpan(myStopWatch.ElapsedTicks);
-					Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[GetDataTable] Finished executing SQL code (duration: " + myStopWatch.Elapsed.ToString() + ")");
+                    _LastOperationEllapsedTime = myStopWatch.Elapsed;
+                    Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[GetDataTable] Finished executing SQL code (duration: " + myStopWatch.Elapsed.ToString() + ")");
 				}
-				GC.Collect();
 				return myDatatable;
 			}
 			catch (Exception ex)
 			{
 				myStopWatch.Stop();
-				_LastOperationEllapsedTime = new TimeSpan(myStopWatch.ElapsedTicks);
-				_LastOperationException = ex;
+                _LastOperationEllapsedTime = myStopWatch.Elapsed;
+                _LastOperationException = ex;
                 Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[GetDataTable] Error executing SQL code! (duration: " + myStopWatch.Elapsed.ToString() + ")");
 				if (myDatatable != null)
 				{
@@ -277,7 +275,6 @@ namespace gSqlUtils
 					myDatatable = null;
 				}
 				Debug.WriteLine(ex);
-				GC.Collect();
 				throw;
 			}
 		}
@@ -373,17 +370,16 @@ namespace gSqlUtils
 					myStopWatch.Start();
 					myAdapter.Fill(myDataset);
 					myStopWatch.Stop();
-					_LastOperationEllapsedTime = new TimeSpan(myStopWatch.ElapsedTicks);
-					Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[GetDataSet] Finished executing SQL code (duration: " + myStopWatch.Elapsed.ToString() + ")");
+                    _LastOperationEllapsedTime = myStopWatch.Elapsed;
+                    Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[GetDataSet] Finished executing SQL code (duration: " + myStopWatch.Elapsed.ToString() + ")");
 				}
-				GC.Collect();
 				return myDataset;
 			}
 			catch (Exception ex)
 			{
 				myStopWatch.Stop();
-				_LastOperationEllapsedTime = new TimeSpan(myStopWatch.ElapsedTicks);
-				_LastOperationException = ex;
+                _LastOperationEllapsedTime = myStopWatch.Elapsed;
+                _LastOperationException = ex;
                 Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[GetDataSet] Error executing SQL code! (duration: " + myStopWatch.Elapsed.ToString() + ")");
 				if (myDataset != null)
 				{
@@ -391,7 +387,6 @@ namespace gSqlUtils
 					myDataset = null;
 				}
 				Debug.WriteLine(ex);
-				GC.Collect();
 				throw;
 			}
 		}
@@ -489,20 +484,18 @@ namespace gSqlUtils
 					myStopWatch.Start();
 					Object resultObject = myCommand.ExecuteScalar();
 					myStopWatch.Stop();
-					_LastOperationEllapsedTime = new TimeSpan(myStopWatch.ElapsedTicks);
-					Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[GetDataValue] Finished executing SQL code (duration: " + myStopWatch.Elapsed.ToString() + ")");
-					GC.Collect();
+                    _LastOperationEllapsedTime = myStopWatch.Elapsed;
+                    Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[GetDataValue] Finished executing SQL code (duration: " + myStopWatch.Elapsed.ToString() + ")");
 					return resultObject;
 				}
 			}
 			catch (Exception ex)
 			{
 				myStopWatch.Stop();
-				_LastOperationEllapsedTime = new TimeSpan(myStopWatch.ElapsedTicks);
-				_LastOperationException = ex;
+                _LastOperationEllapsedTime = myStopWatch.Elapsed;
+                _LastOperationException = ex;
                 Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[GetDataValue] Error executing SQL code! (duration: " + myStopWatch.Elapsed.ToString() + ")");
 				Debug.WriteLine(ex);
-				GC.Collect();
 				throw;
 			}
 		}
@@ -683,20 +676,18 @@ namespace gSqlUtils
                     }
                 }
                 myStopWatch.Stop();
-                _LastOperationEllapsedTime = new TimeSpan(myStopWatch.ElapsedTicks);
+                _LastOperationEllapsedTime = myStopWatch.Elapsed;
                 Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[GetDataList] Finished executing SQL code (duration: " + myStopWatch.Elapsed.ToString() + ")");
-                GC.Collect();
                 // Return our list
                 return objectList;
             }
             catch (Exception ex)
             {
                 myStopWatch.Stop();
-                _LastOperationEllapsedTime = new TimeSpan(myStopWatch.ElapsedTicks);
+                _LastOperationEllapsedTime = myStopWatch.Elapsed;
                 _LastOperationException = ex;
                 Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[GetDataList] Error executing SQL code! (duration: " + myStopWatch.Elapsed.ToString() + ")");
                 Debug.WriteLine(ex);
-                GC.Collect();
                 throw;
             }
         }
@@ -907,44 +898,70 @@ namespace gSqlUtils
 		public static SqlConnection CreateSqlConnection(String argDataSource, String argInitialCatalog, Int32 argConnectTimeout, 
 			Boolean argIntegratedSecurity, Int32 argPacketSize, String argUserId, String argPassword)
 		{
-			SqlConnectionStringBuilder myBuilder = new SqlConnectionStringBuilder();
+            Stopwatch sw = new Stopwatch();
+            _LastOperationException = null;
+            _LastOperationEllapsedTime = new TimeSpan();
+            try
+            {
+                SqlConnectionStringBuilder myBuilder = new SqlConnectionStringBuilder();
 
-			// Default value: String.Empty
-			// This property corresponds to the "Data Source", "server", "address", "addr", and "network address" keys within the connection string. 
-			// Regardless of which of these values has been supplied within the supplied connection string, the connection string created by the 
-			// SqlConnectionStringBuilder will use the well-known "Data Source" key.
-			myBuilder.DataSource = argDataSource;
+                // Default value: String.Empty
+                // This property corresponds to the "Data Source", "server", "address", "addr", and "network address" keys within the connection string. 
+                // Regardless of which of these values has been supplied within the supplied connection string, the connection string created by the 
+                // SqlConnectionStringBuilder will use the well-known "Data Source" key.
+                myBuilder.DataSource = argDataSource;
 
-			// Default value: String.Empty
-			// This property corresponds to the "Initial Catalog" and "database" keys within the connection string.
-			myBuilder.InitialCatalog = argInitialCatalog;
+                // Default value: String.Empty
+                // This property corresponds to the "Initial Catalog" and "database" keys within the connection string.
+                myBuilder.InitialCatalog = argInitialCatalog;
 
-			// Default value: 15
-			// This property corresponds to the "Connect Timeout", "connection timeout", and "timeout" keys within the connection string.
-			myBuilder.ConnectTimeout = argConnectTimeout;
+                // Default value: 15
+                // This property corresponds to the "Connect Timeout", "connection timeout", and "timeout" keys within the connection string.
+                myBuilder.ConnectTimeout = argConnectTimeout;
 
-			// Default value: false
-			// This property corresponds to the "Integrated Security" and "trusted_connection" keys within the connection string.
-			myBuilder.IntegratedSecurity = argIntegratedSecurity;
+                // Default value: false
+                // This property corresponds to the "Integrated Security" and "trusted_connection" keys within the connection string.
+                myBuilder.IntegratedSecurity = argIntegratedSecurity;
 
-			// Default value: 8000 
-			// This property corresponds to the "Packet Size" key within the connection string.
-			myBuilder.PacketSize = argPacketSize;
+                // Default value: 8000 
+                // This property corresponds to the "Packet Size" key within the connection string.
+                myBuilder.PacketSize = argPacketSize;
 
-			// Check if integrated security is true and in that case, leave UserID and Password fields empty
-			if (!argIntegratedSecurity)
-			{
-				// Default value: String.Empty
-				// This property corresponds to the "User ID", "user", and "uid" keys within the connection string.
-				myBuilder.UserID = argUserId;
+                // Check if integrated security is true and in that case, leave UserID and Password fields empty
+                if (!argIntegratedSecurity)
+                {
+                    // Default value: String.Empty
+                    // This property corresponds to the "User ID", "user", and "uid" keys within the connection string.
+                    myBuilder.UserID = argUserId;
 
-				// Default value: String.Empty
-				// This property corresponds to the "Password" and "pwd" keys within the connection string.
-				myBuilder.Password = argPassword;
-			}
+                    // Default value: String.Empty
+                    // This property corresponds to the "Password" and "pwd" keys within the connection string.
+                    myBuilder.Password = argPassword;
+                }
 
-			// Return a new connection with the connection string of the builder
-			return new SqlConnection(myBuilder.ConnectionString);
+                Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[CreateSqlConnection] Starting to connect to SQL server:");
+                Debug.WriteLine(myBuilder.ConnectionString);
+
+                // Return a new connection with the connection string of the builder
+                sw.Start();
+                SqlConnection myCon = new SqlConnection(myBuilder.ConnectionString);
+                sw.Stop();
+
+                _LastOperationEllapsedTime = sw.Elapsed;
+
+                Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[CreateSqlConnection] Finished connecting to SQL server (duration: " + sw.Elapsed.ToString() + ")");
+
+                return myCon;
+            }
+            catch (Exception ex)
+            {
+                sw.Stop();
+                _LastOperationException = ex;
+                _LastOperationEllapsedTime = sw.Elapsed;
+                Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[CreateSqlConnection] Error connecting to SQL server! (duration: " + sw.Elapsed.ToString() + ")");
+                Debug.WriteLine(ex);
+                throw;
+            }
 		}
 
 		#endregion

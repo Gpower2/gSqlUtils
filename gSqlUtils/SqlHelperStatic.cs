@@ -140,13 +140,13 @@ namespace gSqlUtils
 						}
 					}
 					sqlCmd.CommandTimeout = argTimeout;
-					Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + " Starting to execute SQL code:");
+					Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[ExecuteSql] Starting to execute SQL code:");
 					Debug.WriteLine(GetSQLCommandString(sqlCmd));
 					myStopWatch.Start();
 					rowsAffected = sqlCmd.ExecuteNonQuery();
 					myStopWatch.Stop();
 					_LastOperationEllapsedTime = new TimeSpan(myStopWatch.ElapsedTicks);
-					Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + " Finished executing SQL code (duration: " + myStopWatch.Elapsed.ToString() + ")");
+                    Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[ExecuteSql] Finished executing SQL code (duration: " + myStopWatch.Elapsed.ToString() + ")");
 					sqlCmd.Dispose();
 					return rowsAffected;
 				}
@@ -156,7 +156,7 @@ namespace gSqlUtils
 				myStopWatch.Stop();
 				_LastOperationEllapsedTime = new TimeSpan(myStopWatch.ElapsedTicks);
 				_LastOperationException = ex;
-				Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + " Error executing SQL code!");
+                Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[ExecuteSql] Error executing SQL code! (duration: " + myStopWatch.Elapsed.ToString() + ")");
 				Debug.WriteLine(ex);
 				GC.Collect();
 				throw;
@@ -254,13 +254,13 @@ namespace gSqlUtils
 							myAdapter.SelectCommand.Parameters.Add(sqlParam);
 						}
 					}
-					Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + " Starting to execute SQL code:");
+					Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[GetDataTable] Starting to execute SQL code:");
 					Debug.WriteLine(GetSQLCommandString(myAdapter.SelectCommand));
 					myStopWatch.Start();
 					myAdapter.Fill(myDatatable);
 					myStopWatch.Stop();
 					_LastOperationEllapsedTime = new TimeSpan(myStopWatch.ElapsedTicks);
-					Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + " Finished executing SQL code (duration: " + myStopWatch.Elapsed.ToString() + ")");
+					Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[GetDataTable] Finished executing SQL code (duration: " + myStopWatch.Elapsed.ToString() + ")");
 				}
 				GC.Collect();
 				return myDatatable;
@@ -270,7 +270,7 @@ namespace gSqlUtils
 				myStopWatch.Stop();
 				_LastOperationEllapsedTime = new TimeSpan(myStopWatch.ElapsedTicks);
 				_LastOperationException = ex;
-				Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + " Error executing SQL code!");
+                Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[GetDataTable] Error executing SQL code! (duration: " + myStopWatch.Elapsed.ToString() + ")");
 				if (myDatatable != null)
 				{
 					myDatatable.Dispose();
@@ -368,13 +368,13 @@ namespace gSqlUtils
 							myAdapter.SelectCommand.Parameters.Add(sqlParam);
 						}
 					}
-					Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + " Starting to execute SQL code:");
+					Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[GetDataSet] Starting to execute SQL code:");
 					Debug.WriteLine(GetSQLCommandString(myAdapter.SelectCommand));
 					myStopWatch.Start();
 					myAdapter.Fill(myDataset);
 					myStopWatch.Stop();
 					_LastOperationEllapsedTime = new TimeSpan(myStopWatch.ElapsedTicks);
-					Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + " Finished executing SQL code (duration: " + myStopWatch.Elapsed.ToString() + ")");
+					Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[GetDataSet] Finished executing SQL code (duration: " + myStopWatch.Elapsed.ToString() + ")");
 				}
 				GC.Collect();
 				return myDataset;
@@ -384,7 +384,7 @@ namespace gSqlUtils
 				myStopWatch.Stop();
 				_LastOperationEllapsedTime = new TimeSpan(myStopWatch.ElapsedTicks);
 				_LastOperationException = ex;
-				Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + " Error executing SQL code!");
+                Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[GetDataSet] Error executing SQL code! (duration: " + myStopWatch.Elapsed.ToString() + ")");
 				if (myDataset != null)
 				{
 					myDataset.Dispose();
@@ -484,13 +484,13 @@ namespace gSqlUtils
 							myCommand.Parameters.Add(sqlParam);
 						}
 					}
-					Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + " Starting to execute SQL code:");
+					Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[GetDataValue] Starting to execute SQL code:");
 					Debug.WriteLine(GetSQLCommandString(myCommand));
 					myStopWatch.Start();
 					Object resultObject = myCommand.ExecuteScalar();
 					myStopWatch.Stop();
 					_LastOperationEllapsedTime = new TimeSpan(myStopWatch.ElapsedTicks);
-					Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + " Finished executing SQL code (duration: " + myStopWatch.Elapsed.ToString() + ")");
+					Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[GetDataValue] Finished executing SQL code (duration: " + myStopWatch.Elapsed.ToString() + ")");
 					GC.Collect();
 					return resultObject;
 				}
@@ -500,7 +500,7 @@ namespace gSqlUtils
 				myStopWatch.Stop();
 				_LastOperationEllapsedTime = new TimeSpan(myStopWatch.ElapsedTicks);
 				_LastOperationException = ex;
-				Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + " Error executing SQL code!");
+                Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[GetDataValue] Error executing SQL code! (duration: " + myStopWatch.Elapsed.ToString() + ")");
 				Debug.WriteLine(ex);
 				GC.Collect();
 				throw;
@@ -620,7 +620,7 @@ namespace gSqlUtils
                             sqlCmd.Parameters.Add(sqlParam);
                         }
                     }
-                    Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + " Starting to execute SQL code:");
+                    Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[GetDataList] Starting to execute SQL code:");
                     Debug.WriteLine(GetSQLCommandString(sqlCmd));
                     myStopWatch.Start();
                     // Create the DataReader from our command
@@ -629,43 +629,53 @@ namespace gSqlUtils
                         // Check if there are rows
                         if (myReader.HasRows)
                         {
-                            // Make a list with already assigned column indeces
-                            List<Int32> assignedColumnIndeces = new List<Int32>();
+                            // Make a map for properties <-> columns
+                            Dictionary<PropertyInfo, Int32> mapDict = new Dictionary<PropertyInfo, Int32>();
+                            Boolean mapCreated = false;
                             // Begin reading
                             while (myReader.Read())
                             {
-                                // Instantiate a new object for filling it from datarow
-                                Object myObject = Activator.CreateInstance(argObjectType);
-                                // clear the list of assigned columns
-                                assignedColumnIndeces.Clear();
-                                // for each property of the object, try to find a column of the same name
-                                foreach (PropertyInfo myProp in objectProperties)
+                                // Check if map is created
+                                if (!mapCreated)
                                 {
-                                    // Only for properties that can be written to
-                                    if (myProp.CanWrite)
+                                    // for each property of the object, try to find a column of the same name
+                                    foreach (PropertyInfo myProp in objectProperties)
                                     {
-                                        // try to find a column with the same property name
-                                        // Remove '_' character from column name
-                                        // Make the comparison case insensitive
-                                        for (Int32 curColumn = 0; curColumn < myReader.FieldCount; curColumn++)
+                                        // Only for properties that can be written to
+                                        if (myProp.CanWrite)
                                         {
-                                            // check if the column is already assigned
-                                            if (!assignedColumnIndeces.Contains(curColumn))
+                                            // try to find a column with the same property name
+                                            // Remove '_' character from column name
+                                            // Make the comparison case insensitive
+                                            for (Int32 curColumn = 0; curColumn < myReader.FieldCount; curColumn++)
                                             {
+                                                // Check if column is already mapped
+                                                if (mapDict.ContainsValue(curColumn))
+                                                {
+                                                    // continue to next column
+                                                    continue;
+                                                }
                                                 // check column name with property name
                                                 if (myReader.GetName(curColumn).ToLower().Replace("_", "").Equals(myProp.Name.ToLower()))
                                                 {
-                                                    // Set the value to the property of our object
-                                                    myProp.SetValue(myObject, myReader.GetValue(curColumn), null);
-                                                    // Add the column index to the assigned indeces list
-                                                    assignedColumnIndeces.Add(curColumn);
-                                                    // exit the loop
+                                                    // Add the map entry
+                                                    mapDict.Add(myProp, curColumn);
+                                                    // Exit the loop
                                                     break;
                                                 }
                                             }
                                         }
                                     }
+                                    mapCreated = true;
                                 }
+                                // Instantiate a new object for filling it from datarow
+                                Object myObject = Activator.CreateInstance(argObjectType);
+                                // Make the assignment
+                                foreach (PropertyInfo mapProp in mapDict.Keys)
+                                {
+                                    mapProp.SetValue(myObject, myReader.GetValue(mapDict[mapProp]), null);
+                                }
+                                
                                 // Add the object to the list
                                 objectList.Add(myObject);
                             }
@@ -674,7 +684,7 @@ namespace gSqlUtils
                 }
                 myStopWatch.Stop();
                 _LastOperationEllapsedTime = new TimeSpan(myStopWatch.ElapsedTicks);
-                Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + " Finished executing SQL code (duration: " + myStopWatch.Elapsed.ToString() + ")");
+                Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[GetDataList] Finished executing SQL code (duration: " + myStopWatch.Elapsed.ToString() + ")");
                 GC.Collect();
                 // Return our list
                 return objectList;
@@ -684,7 +694,7 @@ namespace gSqlUtils
                 myStopWatch.Stop();
                 _LastOperationEllapsedTime = new TimeSpan(myStopWatch.ElapsedTicks);
                 _LastOperationException = ex;
-                Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + " Error executing SQL code!");
+                Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[GetDataList] Error executing SQL code! (duration: " + myStopWatch.Elapsed.ToString() + ")");
                 Debug.WriteLine(ex);
                 GC.Collect();
                 throw;

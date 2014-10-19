@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text;
 using System.Reflection;
+using System.Data;
 
 namespace gSqlUtils
 {
@@ -14,6 +15,8 @@ namespace gSqlUtils
     /// </summary>
     public class gSqlHelper
     {
+        #region "Properties"
+
         private SqlConnection _SqlConnection = null;
 
         /// <summary>
@@ -47,6 +50,8 @@ namespace gSqlUtils
         {
             get { return _LastOperationTimeSpan; }
         }
+
+        #endregion
 
         #region "Constructor"
 
@@ -147,7 +152,367 @@ namespace gSqlUtils
 
         #endregion
 
+        #region "IsNull"
 
+        /// <summary>
+        /// It checks if an Object is null or equal to DBNull.Value
+        /// and then it returns the user defined Object for that case, 
+        /// else it returns the source Object.
+        /// </summary>
+        /// <param name="argSourceObject">The Object to check</param>
+        /// <param name="argNullValue">The Object to return, if the source Object is null or equals to DBNull.Value</param>
+        /// <returns></returns>
+        public Object IsNull(Object argSourceObject, Object argNullValue)
+        {
+            return SqlHelperStatic.IsNull(argSourceObject, argNullValue);
+        }
+
+        #endregion
+
+        #region "IsNullString"
+
+        /// <summary>
+        /// It checks if a String is null and then it returns NULL.
+        /// Else, it replaces the escape characters ' and " and 
+        /// returns the String single quoted eg. text => 'text'
+        /// </summary>
+        /// <param name="argSourceString">The source String to check for null</param>
+        /// <returns></returns>
+        public String IsNullString(String argSourceString)
+        {
+            return IsNullString(argSourceString, true, false, true);
+        }
+
+        /// <summary>
+        /// It checks if a String is null and then it returns NULL.
+        /// Else, according to user options, it either replaces the
+        /// escape characters ' and " or not, it either replaces the
+        /// wildcard characters % and _ or not, and it either single
+        /// quotes the String or not eg. text => 'text'
+        /// </summary>
+        /// <param name="argSourceString">The source String to check for null</param>
+        /// <param name="argEscapeString">The flag whether to replace the escape characters or not</param>
+        /// <param name="argEscapeWildcards">The flag whether to replace the wildcard characters or not</param>
+        /// <param name="argQuoteString">The flag whether to single quote the String or not</param>
+        /// <returns></returns>
+        public String IsNullString(String argSourceString, Boolean argEscapeString, Boolean argEscapeWildcards, Boolean argQuoteString)
+        {
+            return SqlHelperStatic.IsNullString(argSourceString, argEscapeString, argEscapeWildcards, argQuoteString);
+        }
+
+        #endregion
+
+        #region "EscapeString"
+
+        /// <summary>
+        /// It escapes the String by replacing ' with '' and " with "".
+        /// </summary>
+        /// <param name="argSourceString"></param>
+        /// <returns></returns>
+        public String EscapeString(String argSourceString)
+        {
+            return EscapeString(argSourceString, false);
+        }
+
+        /// <summary>
+        /// It escapes the String by replacing ' with ''
+        /// and " with "".
+        /// It also escapes the wildcard charactes % and _ 
+        /// if the user specifies it.
+        /// </summary>
+        /// <param name="argSourceString">The source String to escape</param>
+        /// <param name="argEscapeWildcards">The flag to whether escape the wildcard characters or not</param>
+        /// <returns>The escaped String</returns>
+        public String EscapeString(String argSourceString, Boolean argEscapeWildcards)
+        {
+            return SqlHelperStatic.EscapeString(argSourceString, argEscapeWildcards);
+        }
+
+        #endregion
+
+        #region "ExecuteSql"
+
+        /// <summary>
+        /// Executes a non scalar SQL statement.
+        /// It sets a default timeout of 120 seconds and doesn't use a transaction.
+        /// It returns the number of rows affected.
+        /// </summary>
+        /// <param name="argSqlCode">The SQL code to execute</param>
+        /// <returns>The number of rows affected</returns>
+        public Int32 ExecuteSql(String argSqlCode)
+        {
+            return ExecuteSql(argSqlCode, 120, false, null);
+        }
+
+        /// <summary>
+        /// Executes a non scalar SQL statement.
+        /// It doesn't use a transaction.
+        /// It returns the number of rows affected.
+        /// </summary>
+        /// <param name="argSqlCode">The SQL code to execute</param>
+        /// <param name="argTimeout">The timeout for the SQL command in seconds</param>
+        /// <returns>The number of rows affected</returns>
+        public Int32 ExecuteSql(String argSqlCode, Int32 argTimeout)
+        {
+            return ExecuteSql(argSqlCode, argTimeout, false, null);
+        }
+
+        /// <summary>
+        /// Executes a non scalar SQL statement.
+        /// It sets a default timeout of 120 seconds.
+        /// It returns the number of rows affected.
+        /// </summary>
+        /// <param name="argSqlCode">The SQL code to execute</param>
+        /// <param name="argUseTransaction">The SQL transaction to use</param>
+        /// <returns>The number of rows affected</returns>
+        public Int32 ExecuteSql(String argSqlCode, Boolean argUseTransaction)
+        {
+            return ExecuteSql(argSqlCode, 120, argUseTransaction, null);
+        }
+
+        /// <summary>
+        /// Executes a non scalar SQL statement.
+        /// It returns the number of rows affected.
+        /// </summary>
+        /// <param name="argSqlCode">The SQL code to execute</param>
+        /// <param name="argTimeout">The timeout for the SQL command in seconds</param>
+        /// <param name="argUseTransaction">The SQL transaction to use</param>
+        /// <param name="argSqlParameters">The SQL Parameters for the SQL command</param>
+        /// <returns>The number of rows affected</returns>
+        public Int32 ExecuteSql(String argSqlCode, Int32 argTimeout, Boolean argUseTransaction, List<SqlParameter> argSqlParameters)
+        {
+            _LastOperationException = null;
+            _LastOperationTimeSpan = new TimeSpan();
+            try
+            {
+                Int32 resultValue = SqlHelperStatic.ExecuteSql(argSqlCode, _SqlConnection, argTimeout, argUseTransaction ? _SqlTransaction : null, argSqlParameters);
+                _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
+                return resultValue;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                _LastOperationException = SqlHelperStatic.LastOperationException;
+                _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
+            }
+        }
+
+        #endregion
+
+        #region "GetDataTable"
+
+        /// <summary>
+        /// Returns a DataTable that contains the results of the execution of an SQL statement.
+        /// If the results are a DataSet, then only the first DataTable is returned.
+        /// It sets a default timeout of 120 seconds and doesn't use a transaction.
+        /// </summary>
+        /// <param name="argSqlCode">The SQL code to execute</param>
+        /// <returns>The DataTable that contains the results</returns>
+        public DataTable GetDataTable(String argSqlCode)
+        {
+            return GetDataTable(argSqlCode, 120, false, null);
+        }
+
+        /// <summary>
+        /// Returns a DataTable that contains the results of the execution of an SQL statement.
+        /// If the results are a DataSet, then only the first DataTable is returned.
+        /// It doesn't use a transaction.
+        /// </summary>
+        /// <param name="argSqlCode">The SQL code to execute</param>
+        /// <param name="argTimeout">The timeout for the SQL command in seconds</param>
+        /// <returns>The DataTable that contains the results</returns>
+        public DataTable GetDataTable(String argSqlCode, Int32 argTimeout)
+        {
+            return GetDataTable(argSqlCode, argTimeout, false, null);
+        }
+
+        /// <summary>
+        /// Returns a DataTable that contains the results of the execution of an SQL statement.
+        /// If the results are a DataSet, then only the first DataTable is returned.
+        /// It sets a default timeout of 120 seconds.
+        /// </summary>
+        /// <param name="argSqlCode">The SQL code to execute</param>
+        /// <param name="argUseTransaction">The SQL transaction to use</param>
+        /// <returns>The DataTable that contains the results</returns>
+        public DataTable GetDataTable(String argSqlCode, Boolean argUseTransaction)
+        {
+            return GetDataTable(argSqlCode, 120, argUseTransaction, null);
+        }
+
+        /// <summary>
+        /// Returns a DataTable that contains the results of the execution of an SQL statement.
+        /// If the results are a DataSet, then only the first DataTable is returned.
+        /// </summary>
+        /// <param name="argSqlCode">The SQL code to execute</param>
+        /// <param name="argTimeout">The timeout for the SQL command in seconds</param>
+        /// <param name="argUseTransaction">The SQL transaction to use</param>
+        /// <param name="argSqlParameters">The SQL Parameters for the SQL command</param>
+        /// <returns>The DataTable that contains the results</returns>
+        public DataTable GetDataTable(String argSqlCode, Int32 argTimeout, Boolean argUseTransaction, List<SqlParameter> argSqlParameters)
+        {
+            _LastOperationException = null;
+            _LastOperationTimeSpan = new TimeSpan();
+            try
+            {
+                DataTable resultValue = SqlHelperStatic.GetDataTable(argSqlCode, _SqlConnection, argTimeout, argUseTransaction ? _SqlTransaction : null, argSqlParameters);
+                _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
+                return resultValue;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                _LastOperationException = SqlHelperStatic.LastOperationException;
+                _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
+            }
+        }
+
+        #endregion
+
+        #region "GetDataSet"
+
+        /// <summary>
+        /// Returns a DataSet that contains the results of the execution of an SQL statement.
+        /// It sets a default timeout of 120 seconds and doesn't use a transaction.
+        /// </summary>
+        /// <param name="argSqlCode">The SQL code to execute</param>
+        /// <returns>The DataSet that contains the results</returns>
+        public DataSet GetDataSet(String argSqlCode)
+        {
+            return GetDataSet(argSqlCode, 120, false, null);
+        }
+
+        /// <summary>
+        /// Returns a DataSet that contains the results of the execution of an SQL statement.
+        /// It doesn't use a transaction.
+        /// </summary>
+        /// <param name="argSqlCode">The SQL code to execute</param>
+        /// <param name="argTimeout">The timeout for the SQL command in seconds</param>
+        /// <returns>The DataSet that contains the results</returns>
+        public DataSet GetDataSet(String argSqlCode, Int32 argTimeout)
+        {
+            return GetDataSet(argSqlCode, argTimeout, false, null);
+        }
+
+        /// <summary>
+        /// Returns a DataSet that contains the results of the execution of an SQL statement.
+        /// It sets a default timeout of 120 seconds.
+        /// </summary>
+        /// <param name="argSqlCode">The SQL code to execute</param>
+        /// <param name="argUseTransaction">The SQL transaction to use</param>
+        /// <returns>The DataSet that contains the results</returns>
+        public DataSet GetDataSet(String argSqlCode, Boolean argUseTransaction)
+        {
+            return GetDataSet(argSqlCode, 120, argUseTransaction, null);
+        }
+
+        /// <summary>
+        /// Returns a DataSet that contains the results of the execution of an SQL statement.
+        /// </summary>
+        /// <param name="argSqlCode">The SQL code to execute</param>
+        /// <param name="argTimeout">The timeout for the SQL command in seconds</param>
+        /// <param name="argUseTransaction">The SQL transaction to use</param>
+        /// <param name="argSqlParameters">The SQL Parameters for the SQL command</param>
+        /// <returns>The DataSet that contains the results</returns>
+        public DataSet GetDataSet(String argSqlCode, Int32 argTimeout, Boolean argUseTransaction, List<SqlParameter> argSqlParameters)
+        {
+            _LastOperationException = null;
+            _LastOperationTimeSpan = new TimeSpan();
+            try
+            {
+                DataSet resultValue = SqlHelperStatic.GetDataSet(argSqlCode, _SqlConnection, argTimeout, argUseTransaction ? _SqlTransaction : null, argSqlParameters);
+                _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
+                return resultValue;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                _LastOperationException = SqlHelperStatic.LastOperationException;
+                _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
+            }
+        }
+
+        #endregion
+
+        #region "GetDataValue"
+
+        /// <summary>
+        /// Returns the value of the first cell of the first DataTable from the results
+        /// of the execution of an SQL statement.
+        /// It sets a default timeout of 120 seconds and doesn't use a transaction.
+        /// </summary>
+        /// <param name="argSqlCode">The SQL code to execute</param>
+        /// <returns></returns>
+        public Object GetDataValue(String argSqlCode)
+        {
+            return GetDataValue(argSqlCode, 120, false, null);
+        }
+
+        /// <summary>
+        /// Returns the value of the first cell of the first DataTable from the results
+        /// of the execution of an SQL statement.
+        /// It doesn't use a transaction.
+        /// </summary>
+        /// <param name="argSqlCode">The SQL code to execute</param>
+        /// <param name="argTimeout">The timeout for the SQL command in seconds</param>
+        /// <returns></returns>
+        public Object GetDataValue(String argSqlCode, Int32 argTimeout)
+        {
+            return GetDataValue(argSqlCode, argTimeout, false, null);
+        }
+
+        /// <summary>
+        /// Returns the value of the first cell of the first DataTable from the results
+        /// of the execution of an SQL statement.
+        /// It sets a default timeout of 120 seconds.
+        /// </summary>
+        /// <param name="argSqlCode">The SQL code to execute</param>
+        /// <param name="argUseTransaction">Whether to use SQL Transaction</param>
+        /// <returns></returns>
+        public Object GetDataValue(String argSqlCode, Boolean argUseTransaction)
+        {
+            return GetDataValue(argSqlCode, 120, argUseTransaction, null);
+        }
+
+        /// <summary>
+        /// Returns the value of the first cell of the first DataTable from the results
+        /// of the execution of an SQL statement.
+        /// </summary>
+        /// <param name="argSqlCode">The SQL code to execute</param>
+        /// <param name="argTimeout">The timeout for the SQL command in seconds</param>
+        /// <param name="argUseTransaction">Whether to use SQL Transaction</param>
+        /// <param name="argSqlParameters">The SQL Parameters for the SQL command</param>
+        /// <returns></returns>
+        public Object GetDataValue(String argSqlCode, Int32 argTimeout, Boolean argUseTransaction, List<SqlParameter> argSqlParameters)
+        {
+            _LastOperationException = null;
+            _LastOperationTimeSpan = new TimeSpan();
+            try
+            {
+                Object resultValue = SqlHelperStatic.GetDataValue(argSqlCode, _SqlConnection, argTimeout, argUseTransaction ? _SqlTransaction : null, argSqlParameters);
+                _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
+                return resultValue;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                _LastOperationException = SqlHelperStatic.LastOperationException;
+                _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
+            }
+        }
+
+        #endregion
 
         #region "GetDataList"
 
@@ -158,6 +523,7 @@ namespace gSqlUtils
         /// object, replacing '_' character in column name using case insensitive comparison.
         /// If the results are empty, it returns an empty List
         /// It sets a default timeout of 120 seconds and doesn't use a transaction.
+        /// WARNING! DBNull is mapped to null!
         /// </summary>
         /// <param name="argObjectType">The object Type to map the data to</param>
         /// <param name="argSqlCode">The SQL code to execute</param>
@@ -174,6 +540,7 @@ namespace gSqlUtils
         /// object, replacing '_' character in column name using case insensitive comparison.
         /// If the results are empty, it returns an empty List
         /// It doesn't use a transaction.
+        /// WARNING! DBNull is mapped to null!
         /// </summary>
         /// <param name="argObjectType">The object Type to map the data to</param>
         /// <param name="argSqlCode">The SQL code to execute</param>
@@ -191,10 +558,11 @@ namespace gSqlUtils
         /// object, replacing '_' character in column name using case insensitive comparison.
         /// If the results are empty, it returns an empty List
         /// It sets a default timeout of 120 seconds.
+        /// WARNING! DBNull is mapped to null!
         /// </summary>
         /// <param name="argObjectType">The object Type to map the data to</param>
         /// <param name="argSqlCode">The SQL code to execute</param>
-        /// <param name="argUseTransaction"></param>
+        /// <param name="argUseTransaction">Whether to use transaction or not</param>
         /// <returns>The List of objects filled with data</returns>
         public IList GetDataList(Type argObjectType, String argSqlCode, Boolean argUseTransaction)
         {
@@ -207,11 +575,12 @@ namespace gSqlUtils
         /// It maps each column name from the dataset to the same named property of the
         /// object, replacing '_' character in column name using case insensitive comparison.
         /// If the results are empty, it returns an empty List
+        /// WARNING! DBNull is mapped to null!
         /// </summary>
         /// <param name="argObjectType">The object Type to map the data to</param>
         /// <param name="argSqlCode">The SQL code to execute</param>
         /// <param name="argTimeout">The timeout for the SQL command in seconds</param>
-        /// <param name="argUseTransaction"></param>
+        /// <param name="argUseTransaction">Whether to use transaction or not</param>
         /// <param name="argSqlParameters">The SQL Parameters for the SQL command</param>
         /// <returns>The List of objects filled with data</returns>
         public IList GetDataList(Type argObjectType, String argSqlCode, Int32 argTimeout, Boolean argUseTransaction, List<SqlParameter> argSqlParameters)
@@ -221,6 +590,7 @@ namespace gSqlUtils
             try
             {
                 IList results = SqlHelperStatic.GetDataList(argObjectType, argSqlCode, _SqlConnection, argTimeout, argUseTransaction ? _SqlTransaction : null, argSqlParameters);
+                _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
                 return results;
             }
             catch (Exception)

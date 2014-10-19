@@ -511,6 +511,7 @@ namespace gSqlUtils
         /// object, replacing '_' character in column name using case insensitive comparison.
         /// If the results are empty, it returns an empty List
         /// It sets a default timeout of 120 seconds and doesn't use a transaction.
+        /// WARNING! DBNull is mapped to null!
         /// </summary>
         /// <param name="argSqlCode">The SQL code to execute</param>
         /// <param name="argSqlCon">The SQL connection to use</param>
@@ -527,6 +528,7 @@ namespace gSqlUtils
         /// object, replacing '_' character in column name using case insensitive comparison.
         /// If the results are empty, it returns an empty List
         /// It doesn't use a transaction.
+        /// WARNING! DBNull is mapped to null!
         /// </summary>
         /// <param name="argSqlCode">The SQL code to execute</param>
         /// <param name="argSqlCon">The SQL connection to use</param>
@@ -544,6 +546,7 @@ namespace gSqlUtils
         /// object, replacing '_' character in column name using case insensitive comparison.
         /// If the results are empty, it returns an empty List
         /// It sets a default timeout of 120 seconds.
+        /// WARNING! DBNull is mapped to null!
         /// </summary>
         /// <param name="argSqlCode">The SQL code to execute</param>
         /// <param name="argSqlCon">The SQL connection to use</param>
@@ -560,6 +563,7 @@ namespace gSqlUtils
         /// It maps each column name from the dataset to the same named property of the
         /// object, replacing '_' character in column name using case insensitive comparison.
         /// If the results are empty, it returns an empty List
+        /// WARNING! DBNull is mapped to null!
         /// </summary>
         /// <param name="argObjectType"></param>
         /// <param name="argSqlCode">The SQL code to execute</param>
@@ -666,7 +670,8 @@ namespace gSqlUtils
                                 // Make the assignment
                                 foreach (PropertyInfo mapProp in mapDict.Keys)
                                 {
-                                    mapProp.SetValue(myObject, myReader.GetValue(mapDict[mapProp]), null);
+                                    Object cellValue = myReader.GetValue(mapDict[mapProp]);
+                                    mapProp.SetValue(myObject, cellValue == DBNull.Value ? null:cellValue , null);
                                 }
                                 
                                 // Add the object to the list

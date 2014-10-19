@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Text;
-using System.Reflection;
 using System.Data;
+using System.Data.SqlClient;
+using System.Diagnostics;
 
 namespace gSqlUtils
 {
@@ -114,6 +114,8 @@ namespace gSqlUtils
             if (_SqlConnection.State != System.Data.ConnectionState.Closed)
             {
                 _SqlConnection.Close();
+                Debug.WriteLine(String.Format("{0}[CloseConnection]Closed connection...", GetNowString()));
+
             }
         }
 
@@ -126,8 +128,10 @@ namespace gSqlUtils
             if (_SqlConnection.State == System.Data.ConnectionState.Closed)
             {
                 _SqlConnection.Open();
+                Debug.WriteLine(String.Format("{0}[BeginTransaction]Opened connection...", GetNowString()));
             }
             _SqlConnection.BeginTransaction();
+            Debug.WriteLine(String.Format("{0}Beginned transaction...", GetNowString()));
         }
 
         public void CommitTransaction()
@@ -137,6 +141,7 @@ namespace gSqlUtils
                 throw new Exception("There was no transaction to commit!");
             }
             _SqlTransaction.Commit();
+            Debug.WriteLine(String.Format("{0}[CommitTransaction]Transaction was committed...", GetNowString()));
             _SqlTransaction = null;
         }
 
@@ -147,6 +152,7 @@ namespace gSqlUtils
                 throw new Exception("There was no transaction to rollback!");
             }
             _SqlTransaction.Rollback();
+            Debug.WriteLine(String.Format("{0}[RollbackTransaction]Transaction was rollbacked...", GetNowString()));
             _SqlTransaction = null;
         }
 
@@ -605,5 +611,19 @@ namespace gSqlUtils
         }
 
         #endregion
+
+        #region "Debug Functions"
+
+        /// <summary>
+        /// Returns the current time as a String with format "[dd/MM/yyyy][hh:mm:ss.fff]"
+        /// </summary>
+        /// <returns></returns>
+        public String GetNowString()
+        {
+            return DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]");
+        }
+
+        #endregion
+
     }
 }

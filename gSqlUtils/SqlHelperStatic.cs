@@ -124,7 +124,8 @@ namespace gSqlUtils
 				if (argSqlCon.State == System.Data.ConnectionState.Closed)
 				{
 					argSqlCon.Open();
-				}
+                    Debug.WriteLine(String.Format("{0}[ExecuteSql]Opened connection...", GetNowString()));
+                }
 				using (SqlCommand sqlCmd = new SqlCommand(argSqlCode, argSqlCon))
 				{
 					if (argSqlTransaction != null)
@@ -140,13 +141,13 @@ namespace gSqlUtils
 						}
 					}
 					sqlCmd.CommandTimeout = argTimeout;
-					Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[ExecuteSql] Starting to execute SQL code:");
+                    Debug.WriteLine(String.Format("{0}[ExecuteSql] Starting to execute SQL code:", GetNowString()));
 					Debug.WriteLine(GetSQLCommandString(sqlCmd));
 					myStopWatch.Start();
 					rowsAffected = sqlCmd.ExecuteNonQuery();
 					myStopWatch.Stop();
                     _LastOperationEllapsedTime = myStopWatch.Elapsed;
-                    Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[ExecuteSql] Finished executing SQL code (duration: " + myStopWatch.Elapsed.ToString() + ")");
+                    Debug.WriteLine(String.Format("{0}[ExecuteSql] Finished executing SQL code (duration: {1})", GetNowString(), myStopWatch.Elapsed));
 					sqlCmd.Dispose();
 					return rowsAffected;
 				}
@@ -156,7 +157,7 @@ namespace gSqlUtils
 				myStopWatch.Stop();
                 _LastOperationEllapsedTime = myStopWatch.Elapsed;
                 _LastOperationException = ex;
-                Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[ExecuteSql] Error executing SQL code! (duration: " + myStopWatch.Elapsed.ToString() + ")");
+                Debug.WriteLine(String.Format("{0}[ExecuteSql] Error executing SQL code! (duration: {1})", GetNowString(), myStopWatch.Elapsed));
 				Debug.WriteLine(ex);
 				throw;
 			}
@@ -235,7 +236,8 @@ namespace gSqlUtils
 				if (argSqlCon.State == System.Data.ConnectionState.Closed)
 				{
 					argSqlCon.Open();
-				}
+                    Debug.WriteLine(String.Format("{0}[GetDataTable]Opened connection...", GetNowString()));
+                }
 				myDatatable = new DataTable();
 				using (SqlDataAdapter myAdapter = new SqlDataAdapter(argSqlCode, argSqlCon))
 				{
@@ -253,13 +255,13 @@ namespace gSqlUtils
 							myAdapter.SelectCommand.Parameters.Add(sqlParam);
 						}
 					}
-					Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[GetDataTable] Starting to execute SQL code:");
+                    Debug.WriteLine(String.Format("{0}[GetDataTable] Starting to execute SQL code:", GetNowString()));
 					Debug.WriteLine(GetSQLCommandString(myAdapter.SelectCommand));
 					myStopWatch.Start();
 					myAdapter.Fill(myDatatable);
 					myStopWatch.Stop();
                     _LastOperationEllapsedTime = myStopWatch.Elapsed;
-                    Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[GetDataTable] Finished executing SQL code (duration: " + myStopWatch.Elapsed.ToString() + ")");
+                    Debug.WriteLine(String.Format("{0}[GetDataTable] Finished executing SQL code (duration: {1})", GetNowString(), myStopWatch.Elapsed));
 				}
 				return myDatatable;
 			}
@@ -268,7 +270,7 @@ namespace gSqlUtils
 				myStopWatch.Stop();
                 _LastOperationEllapsedTime = myStopWatch.Elapsed;
                 _LastOperationException = ex;
-                Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[GetDataTable] Error executing SQL code! (duration: " + myStopWatch.Elapsed.ToString() + ")");
+                Debug.WriteLine(String.Format("{0}[GetDataTable] Error executing SQL code! (duration: {1})", GetNowString(), myStopWatch.Elapsed));
 				if (myDatatable != null)
 				{
 					myDatatable.Dispose();
@@ -348,7 +350,8 @@ namespace gSqlUtils
 				if (argSqlCon.State == System.Data.ConnectionState.Closed)
 				{
 					argSqlCon.Open();
-				}
+                    Debug.WriteLine(String.Format("{0}[GetDataSet]Opened connection...", GetNowString()));
+                }
 				myDataset = new DataSet();
 				using (SqlDataAdapter myAdapter = new SqlDataAdapter(argSqlCode, argSqlCon))
 				{
@@ -365,13 +368,13 @@ namespace gSqlUtils
 							myAdapter.SelectCommand.Parameters.Add(sqlParam);
 						}
 					}
-					Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[GetDataSet] Starting to execute SQL code:");
+                    Debug.WriteLine(String.Format("{0}[GetDataSet] Starting to execute SQL code:", GetNowString()));
 					Debug.WriteLine(GetSQLCommandString(myAdapter.SelectCommand));
 					myStopWatch.Start();
 					myAdapter.Fill(myDataset);
 					myStopWatch.Stop();
                     _LastOperationEllapsedTime = myStopWatch.Elapsed;
-                    Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[GetDataSet] Finished executing SQL code (duration: " + myStopWatch.Elapsed.ToString() + ")");
+                    Debug.WriteLine(String.Format("{0}[GetDataSet] Finished executing SQL code (duration: {1})", GetNowString(), myStopWatch.Elapsed));
 				}
 				return myDataset;
 			}
@@ -380,7 +383,7 @@ namespace gSqlUtils
 				myStopWatch.Stop();
                 _LastOperationEllapsedTime = myStopWatch.Elapsed;
                 _LastOperationException = ex;
-                Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[GetDataSet] Error executing SQL code! (duration: " + myStopWatch.Elapsed.ToString() + ")");
+                Debug.WriteLine(String.Format("{0}[GetDataSet] Error executing SQL code! (duration: {1})", GetNowString(), myStopWatch.Elapsed));
 				if (myDataset != null)
 				{
 					myDataset.Dispose();
@@ -463,7 +466,8 @@ namespace gSqlUtils
 				if (argSqlCon.State == System.Data.ConnectionState.Closed)
 				{
 					argSqlCon.Open();
-				}
+                    Debug.WriteLine(String.Format("{0}[GetDataValue]Opened connection...", GetNowString()));
+                }
 				using (SqlCommand myCommand = new SqlCommand(argSqlCode, argSqlCon))
 				{
 					myCommand.CommandTimeout = argTimeout;
@@ -479,13 +483,13 @@ namespace gSqlUtils
 							myCommand.Parameters.Add(sqlParam);
 						}
 					}
-					Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[GetDataValue] Starting to execute SQL code:");
+                    Debug.WriteLine(String.Format("{0}[GetDataValue] Starting to execute SQL code:", GetNowString()));
 					Debug.WriteLine(GetSQLCommandString(myCommand));
 					myStopWatch.Start();
 					Object resultObject = myCommand.ExecuteScalar();
 					myStopWatch.Stop();
                     _LastOperationEllapsedTime = myStopWatch.Elapsed;
-                    Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[GetDataValue] Finished executing SQL code (duration: " + myStopWatch.Elapsed.ToString() + ")");
+                    Debug.WriteLine(String.Format("{0}[GetDataValue] Finished executing SQL code (duration: {1})", GetNowString(), myStopWatch.Elapsed));
 					return resultObject;
 				}
 			}
@@ -494,7 +498,7 @@ namespace gSqlUtils
 				myStopWatch.Stop();
                 _LastOperationEllapsedTime = myStopWatch.Elapsed;
                 _LastOperationException = ex;
-                Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[GetDataValue] Error executing SQL code! (duration: " + myStopWatch.Elapsed.ToString() + ")");
+                Debug.WriteLine(String.Format("{0}[GetDataValue] Error executing SQL code! (duration: {1})", GetNowString(), myStopWatch.Elapsed));
 				Debug.WriteLine(ex);
 				throw;
 			}
@@ -598,6 +602,7 @@ namespace gSqlUtils
                 if (argSqlCon.State == System.Data.ConnectionState.Closed)
                 {
                     argSqlCon.Open();
+                    Debug.WriteLine(String.Format("{0}[GetDataList]Opened connection...", GetNowString()));
                 }
                 // Create the SQL command from the SQL query using object's connection
                 using (SqlCommand sqlCmd = new SqlCommand(argSqlCode, argSqlCon))
@@ -617,7 +622,7 @@ namespace gSqlUtils
                             sqlCmd.Parameters.Add(sqlParam);
                         }
                     }
-                    Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[GetDataList] Starting to execute SQL code:");
+                    Debug.WriteLine(String.Format("{0}[GetDataList] Starting to execute SQL code:", GetNowString()));
                     Debug.WriteLine(GetSQLCommandString(sqlCmd));
                     myStopWatch.Start();
                     // Create the DataReader from our command
@@ -671,7 +676,7 @@ namespace gSqlUtils
                                 foreach (PropertyInfo mapProp in mapDict.Keys)
                                 {
                                     Object cellValue = myReader.GetValue(mapDict[mapProp]);
-                                    mapProp.SetValue(myObject, cellValue == DBNull.Value ? null:cellValue , null);
+                                    mapProp.SetValue(myObject, cellValue == DBNull.Value ? null : cellValue, null);
                                 }
                                 
                                 // Add the object to the list
@@ -682,7 +687,7 @@ namespace gSqlUtils
                 }
                 myStopWatch.Stop();
                 _LastOperationEllapsedTime = myStopWatch.Elapsed;
-                Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[GetDataList] Finished executing SQL code (duration: " + myStopWatch.Elapsed.ToString() + ")");
+                Debug.WriteLine(String.Format("{0}[GetDataList] Finished executing SQL code (duration: {1})", GetNowString(), myStopWatch.Elapsed));
                 // Return our list
                 return objectList;
             }
@@ -691,7 +696,7 @@ namespace gSqlUtils
                 myStopWatch.Stop();
                 _LastOperationEllapsedTime = myStopWatch.Elapsed;
                 _LastOperationException = ex;
-                Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[GetDataList] Error executing SQL code! (duration: " + myStopWatch.Elapsed.ToString() + ")");
+                Debug.WriteLine(String.Format("{0}[GetDataList] Error executing SQL code! (duration: {1})", GetNowString(), myStopWatch.Elapsed));
                 Debug.WriteLine(ex);
                 throw;
             }
@@ -944,7 +949,7 @@ namespace gSqlUtils
                     myBuilder.Password = argPassword;
                 }
 
-                Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[CreateSqlConnection] Starting to connect to SQL server:");
+                Debug.WriteLine(String.Format("{0}[CreateSqlConnection] Starting to connect to SQL server:", GetNowString()));
                 Debug.WriteLine(myBuilder.ConnectionString);
 
                 // Return a new connection with the connection string of the builder
@@ -954,7 +959,7 @@ namespace gSqlUtils
 
                 _LastOperationEllapsedTime = sw.Elapsed;
 
-                Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[CreateSqlConnection] Finished connecting to SQL server (duration: " + sw.Elapsed.ToString() + ")");
+                Debug.WriteLine(String.Format("{0}[CreateSqlConnection] Finished connecting to SQL server (duration: {1})", GetNowString(), sw.Elapsed));
 
                 return myCon;
             }
@@ -963,7 +968,7 @@ namespace gSqlUtils
                 sw.Stop();
                 _LastOperationException = ex;
                 _LastOperationEllapsedTime = sw.Elapsed;
-                Debug.WriteLine(DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]") + "[CreateSqlConnection] Error connecting to SQL server! (duration: " + sw.Elapsed.ToString() + ")");
+                Debug.WriteLine(String.Format("{0}[CreateSqlConnection] Error connecting to SQL server! (duration: {1})", GetNowString(), sw.Elapsed));
                 Debug.WriteLine(ex);
                 throw;
             }
@@ -972,6 +977,15 @@ namespace gSqlUtils
 		#endregion
 
 		#region "Debug Functions"
+
+        /// <summary>
+        /// Returns the current time as a String with format "[dd/MM/yyyy][hh:mm:ss.fff]"
+        /// </summary>
+        /// <returns></returns>
+        public static String GetNowString()
+        {
+            return DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]");
+        }
 
 		public static String GetSQLCommandString(SqlCommand argSqlCmd)
 		{

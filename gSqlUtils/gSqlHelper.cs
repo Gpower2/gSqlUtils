@@ -5,6 +5,7 @@ using System.Text;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace gSqlUtils
 {
@@ -608,6 +609,54 @@ namespace gSqlUtils
                 _LastOperationException = SqlHelperStatic.LastOperationException;
                 _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
             }
+        }
+
+        #endregion
+
+        #region "GetClipboardTest"
+        public String GetClipboardTextFromValueObject(Object argValue)
+        {
+            return ClipboardHelper.GetClipboardTextFromValueObject(argValue);
+        }
+
+        public String GetClipboardTextFromValueObject(Object argValue, CultureInfo argCultureInfo)
+        {
+            return ClipboardHelper.GetClipboardTextFromValueObject(argValue, argCultureInfo);
+        }
+
+        public String GetClipboardText(Object argList, CultureInfo argCultureInfo, Boolean argWithHeaders)
+        {
+            return ClipboardHelper.GetClipboardText(argList, argCultureInfo, argWithHeaders);
+        }
+
+        public String GetClipboardText(Object argList, Boolean argWithHeaders) 
+        {
+            return ClipboardHelper.GetClipboardText(argList, argWithHeaders);
+        }
+
+        public String GetClipboardText(Object argList, Boolean argWithHeaders, String argCellSeparator) 
+        {
+            return ClipboardHelper.GetClipboardText(argList, argWithHeaders, argCellSeparator);
+        }
+
+        public String GetClipboardText(Object argList, CultureInfo argCultureInfo, Boolean argWithHeaders, String argCellSeparator) 
+        {
+            return ClipboardHelper.GetClipboardText(argList, argCultureInfo, argWithHeaders, argCellSeparator);
+        }
+
+        public String GetClipboardTextFromIList(IList argList, CultureInfo argCultureInfo, Boolean argWithHeaders, String argCellSeparator) 
+        {
+            return ClipboardHelper.GetClipboardTextFromIList(argList, argCultureInfo, argWithHeaders, argCellSeparator);
+        }
+
+        public String GetClipboardTextFromDataTable(DataTable argDataTable, CultureInfo argCultureInfo, Boolean argWithHeaders, String argCellSeparator) 
+        {
+            return ClipboardHelper.GetClipboardTextFromDataTable(argDataTable, argCultureInfo, argWithHeaders, argCellSeparator);
+        }
+
+        public String GetClipboardTextFromObject(Object argObject, CultureInfo argCultureInfo, String argCellSeparator) 
+        {
+            return ClipboardHelper.GetClipboardTextFromObject(argObject, argCultureInfo, argCellSeparator);
         }
 
         #endregion

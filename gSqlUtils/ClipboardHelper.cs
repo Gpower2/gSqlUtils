@@ -125,7 +125,7 @@ namespace gSqlUtils
             }
         }
 
-        private static String GetClipboardTextFromIList(IList argList, CultureInfo argCultureInfo, Boolean argWithHeaders, String argCellSeparator)
+        public static String GetClipboardTextFromIList(IList argList, CultureInfo argCultureInfo, Boolean argWithHeaders, String argCellSeparator)
         {
             // Create the StringBuilder
             StringBuilder finalBuilder = new StringBuilder();
@@ -152,8 +152,7 @@ namespace gSqlUtils
             return finalBuilder.ToString();
         }
 
-
-        private static String GetClipboardTextFromDataTable(DataTable argDataTable, CultureInfo argCultureInfo, Boolean argWithHeaders, String argCellSeparator)
+        public static String GetClipboardTextFromDataTable(DataTable argDataTable, CultureInfo argCultureInfo, Boolean argWithHeaders, String argCellSeparator)
         {
             // Create the StringBuilder
             StringBuilder finalBuilder = new StringBuilder();

@@ -31,12 +31,13 @@ namespace gSqlUtilsTestGUI
 
                 // Call the execute sql function
                 //grdResults.DataSource = SqlHelperStatic.GetDataList(typeof(Test), sqlCode, sqlCon);
-                grdResults.DataSource = _helper.GetDataList(typeof(Test), sqlCode);
+                List<Test> testList = (List<Test>)_helper.GetDataList(typeof(Test), sqlCode);
+                grdResults.DataSource = testList;
                 _helper.CloseConnection();
                 grdResults.Refresh();
                 SqlConnection sqlCon = gSqlUtils.SqlHelperStatic.CreateSqlConnection(".", "TestDB");
                 DataTable dt = SqlHelperStatic.GetDataTable(sqlCode, sqlCon);
-
+                Clipboard.SetText(ClipboardHelper.GetClipboardText(dt, true));
                 Debug.WriteLine("returned rows: " + dt.Rows.Count);
             }
 

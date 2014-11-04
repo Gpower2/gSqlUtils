@@ -825,8 +825,23 @@ namespace gSqlUtils
 		/// <returns></returns>
 		public static SqlConnection CreateSqlConnection(String argDataSource, String argInitialCatalog, String argUserId, String argPassword)
 		{
-			return CreateSqlConnection(argDataSource, argInitialCatalog, 15, false, 8000, argUserId, argPassword);
+            return CreateSqlConnection(argDataSource, argInitialCatalog, 15, false, 8000, argUserId, argPassword, String.Empty);
 		}
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="argDataSource">The name or network adress of the instance of SQL Server to connect to (Default: String.Empty)</param>
+        /// <param name="argInitialCatalog">The name of the Database associated with the connection (Default: String.Empty)</param>
+        /// <param name="argUserId">The user ID to be used when connecting to SQL Server (Default: String.Empty)</param>
+        /// <param name="argPassword">The password for the SQL Server account (Default: String.Empty)</param>
+        /// <param name="argApplicationName">The name of the application associated with the connection string</param>
+        /// <returns></returns>
+        public static SqlConnection CreateSqlConnection(String argDataSource, String argInitialCatalog, String argUserId, String argPassword, 
+            String argApplicationName)
+        {
+            return CreateSqlConnection(argDataSource, argInitialCatalog, 15, false, 8000, argUserId, argPassword, argApplicationName);
+        }
 
 		/// <summary>
 		/// 
@@ -837,10 +852,27 @@ namespace gSqlUtils
 		/// <param name="argPassword">The password for the SQL Server account (Default: String.Empty)</param>
 		/// <param name="argConnectTimeout">The length of time (in seconds) to wait for a connection to the server (Default: 15)</param>
 		/// <returns></returns>
-		public static SqlConnection CreateSqlConnection(String argDataSource, String argInitialCatalog, String argUserId, String argPassword, Int32 argConnectTimeout)
+		public static SqlConnection CreateSqlConnection(String argDataSource, String argInitialCatalog, String argUserId, String argPassword, 
+            Int32 argConnectTimeout)
 		{
-			return CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, false, 8000, argUserId, argPassword);
+            return CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, false, 8000, argUserId, argPassword, String.Empty);
 		}
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="argDataSource">The name or network adress of the instance of SQL Server to connect to (Default: String.Empty)</param>
+        /// <param name="argInitialCatalog">The name of the Database associated with the connection (Default: String.Empty)</param>
+        /// <param name="argUserId">The user ID to be used when connecting to SQL Server (Default: String.Empty)</param>
+        /// <param name="argPassword">The password for the SQL Server account (Default: String.Empty)</param>
+        /// <param name="argConnectTimeout">The length of time (in seconds) to wait for a connection to the server (Default: 15)</param>
+        /// <param name="argApplicationName">The name of the application associated with the connection string</param>
+        /// <returns></returns>
+        public static SqlConnection CreateSqlConnection(String argDataSource, String argInitialCatalog, String argUserId, String argPassword,
+            Int32 argConnectTimeout, String argApplicationName)
+        {
+            return CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, false, 8000, argUserId, argPassword, argApplicationName);
+        }
 
 		/// <summary>
 		/// 
@@ -852,10 +884,28 @@ namespace gSqlUtils
 		/// <param name="argConnectTimeout">The length of time (in seconds) to wait for a connection to the server (Default: 15)</param>
 		/// <param name="argPacketSize">The size (in bytes) of the network packets used to communicate with an instance of SQL Server (Default: 8000)</param>
 		/// <returns></returns>
-		public static SqlConnection CreateSqlConnection(String argDataSource, String argInitialCatalog, String argUserId, String argPassword, Int32 argConnectTimeout, Int32 argPacketSize)
+		public static SqlConnection CreateSqlConnection(String argDataSource, String argInitialCatalog, String argUserId, String argPassword, 
+            Int32 argConnectTimeout, Int32 argPacketSize)
 		{
-			return CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, false, argPacketSize, argUserId, argPassword);
+            return CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, false, argPacketSize, argUserId, argPassword, String.Empty);
 		}
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="argDataSource">The name or network adress of the instance of SQL Server to connect to (Default: String.Empty)</param>
+        /// <param name="argInitialCatalog">The name of the Database associated with the connection (Default: String.Empty)</param>
+        /// <param name="argUserId">The user ID to be used when connecting to SQL Server (Default: String.Empty)</param>
+        /// <param name="argPassword">The password for the SQL Server account (Default: String.Empty)</param>
+        /// <param name="argConnectTimeout">The length of time (in seconds) to wait for a connection to the server (Default: 15)</param>
+        /// <param name="argPacketSize">The size (in bytes) of the network packets used to communicate with an instance of SQL Server (Default: 8000)</param>
+        /// <param name="argApplicationName">The name of the application associated with the connection string</param>
+        /// <returns></returns>
+        public static SqlConnection CreateSqlConnection(String argDataSource, String argInitialCatalog, String argUserId, String argPassword,
+            Int32 argConnectTimeout, Int32 argPacketSize, String argApplicationName)
+        {
+            return CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, false, argPacketSize, argUserId, argPassword, argApplicationName);
+        }
 
 		/// <summary>
 		/// 
@@ -865,8 +915,20 @@ namespace gSqlUtils
 		/// <returns></returns>
 		public static SqlConnection CreateSqlConnection(String argDataSource, String argInitialCatalog)
 		{
-			return CreateSqlConnection(argDataSource, argInitialCatalog, 15, true, 8000, String.Empty, String.Empty);
+			return CreateSqlConnection(argDataSource, argInitialCatalog, 15, true, 8000, String.Empty, String.Empty, String.Empty);
 		}
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="argDataSource">The name or network adress of the instance of SQL Server to connect to (Default: String.Empty)</param>
+        /// <param name="argInitialCatalog">The name of the Database associated with the connection (Default: String.Empty)</param>
+        /// <param name="argApplicationName">The name of the application associated with the connection string</param>
+        /// <returns></returns>
+        public static SqlConnection CreateSqlConnection(String argDataSource, String argInitialCatalog, String argApplicationName)
+        {
+            return CreateSqlConnection(argDataSource, argInitialCatalog, 15, true, 8000, String.Empty, String.Empty, argApplicationName);
+        }
 
 		/// <summary>
 		/// 
@@ -877,10 +939,23 @@ namespace gSqlUtils
 		/// <returns></returns>
 		public static SqlConnection CreateSqlConnection(String argDataSource, String argInitialCatalog, Int32 argConnectTimeout)
 		{
-			return CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, true, 8000, String.Empty, String.Empty);
+			return CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, true, 8000, String.Empty, String.Empty, String.Empty);
 		}
 
-		/// <summary>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="argDataSource">The name or network adress of the instance of SQL Server to connect to (Default: String.Empty)</param>
+        /// <param name="argInitialCatalog">The name of the Database associated with the connection (Default: String.Empty)</param>
+        /// <param name="argConnectTimeout">The length of time (in seconds) to wait for a connection to the server (Default: 15)</param>
+        /// <param name="argApplicationName">The name of the application associated with the connection string</param>
+        /// <returns></returns>
+        public static SqlConnection CreateSqlConnection(String argDataSource, String argInitialCatalog, Int32 argConnectTimeout, String argApplicationName)
+        {
+            return CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, true, 8000, String.Empty, String.Empty, argApplicationName);
+        }
+        
+        /// <summary>
 		/// 
 		/// </summary>
 		/// <param name="argDataSource">The name or network adress of the instance of SQL Server to connect to (Default: String.Empty)</param>
@@ -890,8 +965,22 @@ namespace gSqlUtils
 		/// <returns></returns>
 		public static SqlConnection CreateSqlConnection(String argDataSource, String argInitialCatalog, Int32 argConnectTimeout, Int32 argPacketSize)
 		{
-			return CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, true, argPacketSize, String.Empty, String.Empty);
+            return CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, true, argPacketSize, String.Empty, String.Empty, String.Empty);
 		}
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="argDataSource">The name or network adress of the instance of SQL Server to connect to (Default: String.Empty)</param>
+        /// <param name="argInitialCatalog">The name of the Database associated with the connection (Default: String.Empty)</param>
+        /// <param name="argConnectTimeout">The length of time (in seconds) to wait for a connection to the server (Default: 15)</param>
+        /// <param name="argPacketSize">The size (in bytes) of the network packets used to communicate with an instance of SQL Server (Default: 8000)</param>
+        /// <param name="argApplicationName">The name of the application associated with the connection string</param>
+        /// <returns></returns>
+        public static SqlConnection CreateSqlConnection(String argDataSource, String argInitialCatalog, Int32 argConnectTimeout, Int32 argPacketSize, String argApplicationName)
+        {
+            return CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, true, argPacketSize, String.Empty, String.Empty, argApplicationName);
+        }
 
 		/// <summary>
 		/// 
@@ -904,9 +993,10 @@ namespace gSqlUtils
 		/// <param name="argPacketSize">The size (in bytes) of the network packets used to communicate with an instance of SQL Server (Default: 8000)</param>
 		/// <param name="argUserId">The user ID to be used when connecting to SQL Server (Default: String.Empty)</param>
 		/// <param name="argPassword">The password for the SQL Server account (Default: String.Empty)</param>
+        /// <param name="argApplicationName">The name of the application associated with the connection string</param>
 		/// <returns></returns>
 		public static SqlConnection CreateSqlConnection(String argDataSource, String argInitialCatalog, Int32 argConnectTimeout, 
-			Boolean argIntegratedSecurity, Int32 argPacketSize, String argUserId, String argPassword)
+			Boolean argIntegratedSecurity, Int32 argPacketSize, String argUserId, String argPassword, String argApplicationName)
 		{
             Stopwatch sw = new Stopwatch();
             _LastOperationException = null;
@@ -936,6 +1026,13 @@ namespace gSqlUtils
                 // Default value: 8000 
                 // This property corresponds to the "Packet Size" key within the connection string.
                 myBuilder.PacketSize = argPacketSize;
+
+                // Default value: ".Net SqlClient Data Provider                                                                                                    "
+                // This property corresponds to the "Application Name" key within the connection string.
+                if (!String.IsNullOrEmpty(argApplicationName.Trim()))
+                {
+                    myBuilder.ApplicationName = argApplicationName;
+                }
 
                 // Check if integrated security is true and in that case, leave UserID and Password fields empty
                 if (!argIntegratedSecurity)

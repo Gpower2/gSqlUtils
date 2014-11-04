@@ -75,9 +75,19 @@ namespace gSqlUtils
             _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argUserId, argPassword);
         }
 
+        public gSqlHelper(String argDataSource, String argInitialCatalog, String argUserId, String argPassword, String argApplicationName)
+        {
+            _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argUserId, argPassword, argApplicationName);
+        }
+
         public gSqlHelper(String argDataSource, String argInitialCatalog, String argUserId, String argPassword, Int32 argConnectTimeout)
         {
             _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argUserId, argPassword, argConnectTimeout);
+        }
+
+        public gSqlHelper(String argDataSource, String argInitialCatalog, String argUserId, String argPassword, Int32 argConnectTimeout, String argApplicationName)
+        {
+            _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argUserId, argPassword, argConnectTimeout, argApplicationName);
         }
 
         public gSqlHelper(String argDataSource, String argInitialCatalog, String argUserId, String argPassword, Int32 argConnectTimeout, Int32 argPacketSize)
@@ -85,9 +95,19 @@ namespace gSqlUtils
             _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argUserId, argPassword, argConnectTimeout, argPacketSize);
         }
 
+        public gSqlHelper(String argDataSource, String argInitialCatalog, String argUserId, String argPassword, Int32 argConnectTimeout, Int32 argPacketSize, String argApplicationName)
+        {
+            _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argUserId, argPassword, argConnectTimeout, argPacketSize, argApplicationName);
+        }
+
         public gSqlHelper(String argDataSource, String argInitialCatalog)
         {
             _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog);
+        }
+
+        public gSqlHelper(String argDataSource, String argInitialCatalog, String argApplicationName)
+        {
+            _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argApplicationName);
         }
 
         public gSqlHelper(String argDataSource, String argInitialCatalog, Int32 argConnectTimeout)
@@ -95,15 +115,25 @@ namespace gSqlUtils
             _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout);
         }
 
+        public gSqlHelper(String argDataSource, String argInitialCatalog, Int32 argConnectTimeout, String argApplicationName)
+        {
+            _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, argApplicationName);
+        }
+
         public gSqlHelper(String argDataSource, String argInitialCatalog, Int32 argConnectTimeout, Int32 argPacketSize)
         {
             _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, argPacketSize);
         }
 
-        public gSqlHelper(String argDataSource, String argInitialCatalog, Int32 argConnectTimeout,
-            Boolean argIntegratedSecurity, Int32 argPacketSize, String argUserId, String argPassword)
+        public gSqlHelper(String argDataSource, String argInitialCatalog, Int32 argConnectTimeout, Int32 argPacketSize, String argApplicationName)
         {
-            _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, argIntegratedSecurity, argPacketSize, argUserId, argPassword);
+            _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, argPacketSize, argApplicationName);
+        }
+
+        public gSqlHelper(String argDataSource, String argInitialCatalog, Int32 argConnectTimeout,
+            Boolean argIntegratedSecurity, Int32 argPacketSize, String argUserId, String argPassword, String argApplicationName)
+        {
+            _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, argIntegratedSecurity, argPacketSize, argUserId, argPassword, argApplicationName);
         }
 
         #endregion

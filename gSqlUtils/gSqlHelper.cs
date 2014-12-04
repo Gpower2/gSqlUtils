@@ -161,7 +161,7 @@ namespace gSqlUtils
                 _SqlConnection.Open();
                 Debug.WriteLine(String.Format("{0}[BeginTransaction]Opened connection...", GetNowString()));
             }
-            _SqlConnection.BeginTransaction();
+            _SqlTransaction = _SqlConnection.BeginTransaction();
             Debug.WriteLine(String.Format("{0}Beginned transaction...", GetNowString()));
         }
 

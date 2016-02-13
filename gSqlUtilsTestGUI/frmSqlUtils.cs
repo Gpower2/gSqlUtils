@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Data.Sql;
 using System.Data.SqlClient;
-using gSqlUtils;
+using gpower2.gSqlUtils;
 
 namespace gSqlUtilsTestGUI
 {
@@ -24,7 +24,6 @@ namespace gSqlUtilsTestGUI
             try
             {
                 // Create new connection to Database
-                // SqlConnection sqlCon = new SqlConnection("data source=RCS10;initial catalog=rescom;packet size=4096;integrated security=SSPI;persist security info=False");
                 gSqlHelper _helper = new gSqlHelper(".", "TestDB");
                 // Make a test SQL Code
                 String sqlCode = "SELECT * FROM TestNULL";
@@ -35,7 +34,7 @@ namespace gSqlUtilsTestGUI
                 grdResults.DataSource = testList;
                 _helper.CloseConnection();
                 grdResults.Refresh();
-                SqlConnection sqlCon = gSqlUtils.SqlHelperStatic.CreateSqlConnection(".", "TestDB");
+                SqlConnection sqlCon = SqlHelperStatic.CreateSqlConnection(".", "TestDB");
                 DataTable dt = SqlHelperStatic.GetDataTable(sqlCode, sqlCon);
                 Clipboard.SetText(ClipboardHelper.GetClipboardText(dt, true));
                 Debug.WriteLine("returned rows: " + dt.Rows.Count);

@@ -145,7 +145,7 @@ namespace gpower2.gSqlUtils
             if (_SqlConnection.State != System.Data.ConnectionState.Closed)
             {
                 _SqlConnection.Close();
-                Debug.WriteLine(String.Format("{0}[CloseConnection]Closed connection...", GetNowString()));
+                Debug.WriteLine(String.Format("{0}[CloseConnection] Closed connection...", GetNowString()));
 
             }
         }
@@ -159,10 +159,10 @@ namespace gpower2.gSqlUtils
             if (_SqlConnection.State == System.Data.ConnectionState.Closed)
             {
                 _SqlConnection.Open();
-                Debug.WriteLine(String.Format("{0}[BeginTransaction]Opened connection...", GetNowString()));
+                Debug.WriteLine(String.Format("{0}[BeginTransaction] Opened connection...", GetNowString()));
             }
             _SqlTransaction = _SqlConnection.BeginTransaction();
-            Debug.WriteLine(String.Format("{0}Beginned transaction...", GetNowString()));
+            Debug.WriteLine(String.Format("{0} Beginned transaction...", GetNowString()));
         }
 
         public void CommitTransaction()
@@ -172,7 +172,7 @@ namespace gpower2.gSqlUtils
                 throw new Exception("There was no transaction to commit!");
             }
             _SqlTransaction.Commit();
-            Debug.WriteLine(String.Format("{0}[CommitTransaction]Transaction was committed...", GetNowString()));
+            Debug.WriteLine(String.Format("{0}[CommitTransaction] Transaction was committed...", GetNowString()));
             _SqlTransaction = null;
         }
 
@@ -183,7 +183,7 @@ namespace gpower2.gSqlUtils
                 throw new Exception("There was no transaction to rollback!");
             }
             _SqlTransaction.Rollback();
-            Debug.WriteLine(String.Format("{0}[RollbackTransaction]Transaction was rollbacked...", GetNowString()));
+            Debug.WriteLine(String.Format("{0}[RollbackTransaction] Transaction was rollbacked...", GetNowString()));
             _SqlTransaction = null;
         }
 
@@ -550,6 +550,78 @@ namespace gpower2.gSqlUtils
 
         #endregion
 
+        #region "GetDataValue<>"
+
+        /// <summary>
+        /// Returns the value of the first cell of the first DataTable from the results
+        /// of the execution of an SQL statement.
+        /// It sets a default timeout of 120 seconds and doesn't use a transaction.
+        /// </summary>
+        /// <param name="argSqlCode">The SQL code to execute</param>
+        /// <returns>If the result is DBNull, then it returns the default value for the Type provided</returns>
+        public T GetDataValue<T>(String argSqlCode)
+        {
+            return GetDataValue<T>(argSqlCode, 120, false, null);
+        }
+
+        /// <summary>
+        /// Returns the value of the first cell of the first DataTable from the results
+        /// of the execution of an SQL statement.
+        /// It doesn't use a transaction.
+        /// </summary>
+        /// <param name="argSqlCode">The SQL code to execute</param>
+        /// <param name="argTimeout">The timeout for the SQL command in seconds</param>
+        /// <returns>If the result is DBNull, then it returns the default value for the Type provided</returns>
+        public T GetDataValue<T>(String argSqlCode, Int32 argTimeout)
+        {
+            return GetDataValue<T>(argSqlCode, argTimeout, false, null);
+        }
+
+        /// <summary>
+        /// Returns the value of the first cell of the first DataTable from the results
+        /// of the execution of an SQL statement.
+        /// It sets a default timeout of 120 seconds.
+        /// </summary>
+        /// <param name="argSqlCode">The SQL code to execute</param>
+        /// <param name="argUseTransaction">Whether to use SQL Transaction</param>
+        /// <returns>If the result is DBNull, then it returns the default value for the Type provided</returns>
+        public T GetDataValue<T>(String argSqlCode, Boolean argUseTransaction)
+        {
+            return GetDataValue<T>(argSqlCode, 120, argUseTransaction, null);
+        }
+
+        /// <summary>
+        /// Returns the value of the first cell of the first DataTable from the results
+        /// of the execution of an SQL statement.
+        /// </summary>
+        /// <param name="argSqlCode">The SQL code to execute</param>
+        /// <param name="argTimeout">The timeout for the SQL command in seconds</param>
+        /// <param name="argUseTransaction">Whether to use SQL Transaction</param>
+        /// <param name="argSqlParameters">The SQL Parameters for the SQL command</param>
+        /// <returns>If the result is DBNull, then it returns the default value for the Type provided</returns>
+        public T GetDataValue<T>(String argSqlCode, Int32 argTimeout, Boolean argUseTransaction, List<SqlParameter> argSqlParameters)
+        {
+            _LastOperationException = null;
+            _LastOperationTimeSpan = new TimeSpan();
+            try
+            {
+                T resultValue = SqlHelperStatic.GetDataValue<T>(argSqlCode, _SqlConnection, argTimeout, argUseTransaction ? _SqlTransaction : null, argSqlParameters);
+                _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
+                return resultValue;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                _LastOperationException = SqlHelperStatic.LastOperationException;
+                _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
+            }
+        }
+
+        #endregion
+
         #region "GetDataList"
 
         /// <summary>
@@ -626,6 +698,98 @@ namespace gpower2.gSqlUtils
             try
             {
                 IList results = SqlHelperStatic.GetDataList(argObjectType, argSqlCode, _SqlConnection, argTimeout, argUseTransaction ? _SqlTransaction : null, argSqlParameters);
+                _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
+                return results;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                _LastOperationException = SqlHelperStatic.LastOperationException;
+                _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
+            }
+        }
+
+        #endregion
+
+        #region "GetDataList<>"
+
+        /// <summary>
+        /// Returns a List of objects of the type specified, containing the data from 
+        /// executing the SQL code provided.
+        /// It maps each column name from the dataset to the same named property of the
+        /// object, replacing '_' character in column name using case insensitive comparison.
+        /// If the results are empty, it returns an empty List
+        /// It sets a default timeout of 120 seconds and doesn't use a transaction.
+        /// WARNING! DBNull is mapped to null!
+        /// </summary>
+        /// <param name="argObjectType">The object Type to map the data to</param>
+        /// <param name="argSqlCode">The SQL code to execute</param>
+        /// <returns>The List of objects filled with data</returns>
+        public IList<T> GetDataList<T>(String argSqlCode)
+        {
+            return GetDataList<T>(argSqlCode, 120, false, null);
+        }
+
+        /// <summary>
+        /// Returns a List of objects of the type specified, containing the data from 
+        /// executing the SQL code provided.
+        /// It maps each column name from the dataset to the same named property of the
+        /// object, replacing '_' character in column name using case insensitive comparison.
+        /// If the results are empty, it returns an empty List
+        /// It doesn't use a transaction.
+        /// WARNING! DBNull is mapped to null!
+        /// </summary>
+        /// <param name="argObjectType">The object Type to map the data to</param>
+        /// <param name="argSqlCode">The SQL code to execute</param>
+        /// <param name="argTimeout">The timeout for the SQL command in seconds</param>
+        /// <returns>The List of objects filled with data</returns>
+        public IList<T> GetDataList<T>(String argSqlCode, Int32 argTimeout)
+        {
+            return GetDataList<T>(argSqlCode, argTimeout, false, null);
+        }
+
+        /// <summary>
+        /// Returns a List of objects of the type specified, containing the data from 
+        /// executing the SQL code provided.
+        /// It maps each column name from the dataset to the same named property of the
+        /// object, replacing '_' character in column name using case insensitive comparison.
+        /// If the results are empty, it returns an empty List
+        /// It sets a default timeout of 120 seconds.
+        /// WARNING! DBNull is mapped to null!
+        /// </summary>
+        /// <param name="argObjectType">The object Type to map the data to</param>
+        /// <param name="argSqlCode">The SQL code to execute</param>
+        /// <param name="argUseTransaction">Whether to use transaction or not</param>
+        /// <returns>The List of objects filled with data</returns>
+        public IList<T> GetDataList<T>(String argSqlCode, Boolean argUseTransaction)
+        {
+            return GetDataList<T>(argSqlCode, 120, argUseTransaction, null);
+        }
+
+        /// <summary>
+        /// Returns a List of objects of the type specified, containing the data from 
+        /// executing the SQL code provided.
+        /// It maps each column name from the dataset to the same named property of the
+        /// object, replacing '_' character in column name using case insensitive comparison.
+        /// If the results are empty, it returns an empty List
+        /// WARNING! DBNull is mapped to null!
+        /// </summary>
+        /// <param name="argObjectType">The object Type to map the data to</param>
+        /// <param name="argSqlCode">The SQL code to execute</param>
+        /// <param name="argTimeout">The timeout for the SQL command in seconds</param>
+        /// <param name="argUseTransaction">Whether to use transaction or not</param>
+        /// <param name="argSqlParameters">The SQL Parameters for the SQL command</param>
+        /// <returns>The List of objects filled with data</returns>
+        public IList<T> GetDataList<T>(String argSqlCode, Int32 argTimeout, Boolean argUseTransaction, List<SqlParameter> argSqlParameters)
+        {
+            _LastOperationException = null;
+            _LastOperationTimeSpan = new TimeSpan();
+            try
+            {
+                IList<T> results = SqlHelperStatic.GetDataList<T>(argSqlCode, _SqlConnection, argTimeout, argUseTransaction ? _SqlTransaction : null, argSqlParameters);
                 _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
                 return results;
             }

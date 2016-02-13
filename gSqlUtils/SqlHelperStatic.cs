@@ -1135,8 +1135,6 @@ namespace gpower2.gSqlUtils
 
         #endregion
 
-
-
         #region "IsNull"
 
         /// <summary>

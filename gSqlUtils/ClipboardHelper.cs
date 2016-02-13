@@ -6,7 +6,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Data;
 
-namespace gSqlUtils
+namespace gpower2.gSqlUtils
 {
     public class ClipboardHelper
     {

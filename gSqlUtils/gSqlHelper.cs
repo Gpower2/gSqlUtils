@@ -7,7 +7,7 @@ using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Globalization;
 
-namespace gSqlUtils
+namespace gpower2.gSqlUtils
 {
     /// <summary>
     /// This is a wrapper class for SqlHeperStatic class, in order to allow
@@ -242,7 +242,7 @@ namespace gSqlUtils
         #region "EscapeString"
 
         /// <summary>
-        /// It escapes the String by replacing ' with '' and " with "".
+        /// It escapes the String by replacing ' with ''.
         /// </summary>
         /// <param name="argSourceString"></param>
         /// <returns></returns>
@@ -252,8 +252,7 @@ namespace gSqlUtils
         }
 
         /// <summary>
-        /// It escapes the String by replacing ' with ''
-        /// and " with "".
+        /// It escapes the String by replacing ' with ''.
         /// It also escapes the wildcard charactes % and _ 
         /// if the user specifies it.
         /// </summary>

@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 using System.Collections;
 using System.Reflection;
 
-namespace gSqlUtils
+namespace gpower2.gSqlUtils
 {
 	/// <summary>
 	/// A static class that provides methods for CRUD operations on MS SQL Server
@@ -148,7 +148,6 @@ namespace gSqlUtils
 					myStopWatch.Stop();
                     _LastOperationEllapsedTime = myStopWatch.Elapsed;
                     Debug.WriteLine(String.Format("{0}[ExecuteSql] Finished executing SQL code (duration: {1})", GetNowString(), myStopWatch.Elapsed));
-					sqlCmd.Dispose();
 					return rowsAffected;
 				}
 			}
@@ -658,7 +657,7 @@ namespace gSqlUtils
                                                     continue;
                                                 }
                                                 // check column name with property name
-                                                if (myReader.GetName(curColumn).ToLower().Replace("_", "").Equals(myProp.Name.ToLower()))
+                                                if (myReader.GetName(curColumn).Replace("_", "").ToLower().Equals(myProp.Name.Replace("_", "").ToLower()))
                                                 {
                                                     // Add the map entry
                                                     mapDict.Add(myProp, curColumn);
@@ -676,7 +675,16 @@ namespace gSqlUtils
                                 foreach (PropertyInfo mapProp in mapDict.Keys)
                                 {
                                     Object cellValue = myReader.GetValue(mapDict[mapProp]);
-                                    mapProp.SetValue(myObject, cellValue == DBNull.Value ? null : cellValue, null);
+                                    // Check for Nullable<T> properties
+                                    if (mapProp.PropertyType.IsGenericType && mapProp.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                                    {
+                                        mapProp.SetValue(myObject, cellValue == DBNull.Value ? null : System.Convert.ChangeType(cellValue,
+        Nullable.GetUnderlyingType(mapProp.PropertyType)), null);
+                                    }
+                                    else
+                                    {
+                                        mapProp.SetValue(myObject, cellValue == DBNull.Value ? null : System.Convert.ChangeType(cellValue, mapProp.PropertyType), null);
+                                    }
                                 }
                                 
                                 // Add the object to the list
@@ -767,7 +775,7 @@ namespace gSqlUtils
 			}
 			if (argQuoteString)
 			{
-				argSourceString = String.Format("'{0}'", argSourceString);
+				argSourceString = String.Format("N'{0}'", argSourceString);
 			}
 			return argSourceString;
 		}
@@ -787,8 +795,7 @@ namespace gSqlUtils
 		}
 
 		/// <summary>
-		/// It escapes the String by replacing ' with ''
-		/// and " with "".
+		/// It escapes the String by replacing ' with ''.
 		/// It also escapes the wildcard charactes % and _ 
 		/// if the user specifies it.
 		/// </summary>
@@ -797,12 +804,12 @@ namespace gSqlUtils
 		/// <returns>The escaped String</returns>
 		public static String EscapeString(String argSourceString, Boolean argEscapeWildcards)
 		{
-			if (argSourceString == null)
-			{
-				return "NULL";
-			}
+            if (argSourceString == null)
+            {
+                return "";
+            }
 			argSourceString = argSourceString.Replace("'", "''");
-			argSourceString = argSourceString.Replace("\"", "\"\"");
+            //argSourceString = argSourceString.Replace("\"", "\"\"");
 			if (argEscapeWildcards)
 			{
 				argSourceString = argSourceString.Replace("%", "[%]");

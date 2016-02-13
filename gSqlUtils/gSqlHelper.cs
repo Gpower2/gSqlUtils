@@ -806,6 +806,99 @@ namespace gpower2.gSqlUtils
 
         #endregion
 
+        #region "GetDataObject<>"
+
+        /// <summary>
+        /// Returns a List of objects of the type specified, containing the data from 
+        /// executing the SQL code provided.
+        /// It maps each column name from the dataset to the same named property of the
+        /// object, replacing '_' character in column name using case insensitive comparison.
+        /// If the results are empty, it returns an empty List
+        /// It sets a default timeout of 120 seconds and doesn't use a transaction.
+        /// WARNING! DBNull is mapped to null!
+        /// </summary>
+        /// <param name="argObjectType">The object Type to map the data to</param>
+        /// <param name="argSqlCode">The SQL code to execute</param>
+        /// <returns>The List of objects filled with data</returns>
+        public T GetDataObject<T>(String argSqlCode)
+        {
+            return GetDataObject<T>(argSqlCode, 120, false, null);
+        }
+
+        /// <summary>
+        /// Returns a List of objects of the type specified, containing the data from 
+        /// executing the SQL code provided.
+        /// It maps each column name from the dataset to the same named property of the
+        /// object, replacing '_' character in column name using case insensitive comparison.
+        /// If the results are empty, it returns an empty List
+        /// It doesn't use a transaction.
+        /// WARNING! DBNull is mapped to null!
+        /// </summary>
+        /// <param name="argObjectType">The object Type to map the data to</param>
+        /// <param name="argSqlCode">The SQL code to execute</param>
+        /// <param name="argTimeout">The timeout for the SQL command in seconds</param>
+        /// <returns>The List of objects filled with data</returns>
+        public T GetDataObject<T>(String argSqlCode, Int32 argTimeout)
+        {
+            return GetDataObject<T>(argSqlCode, argTimeout, false, null);
+        }
+
+        /// <summary>
+        /// Returns a List of objects of the type specified, containing the data from 
+        /// executing the SQL code provided.
+        /// It maps each column name from the dataset to the same named property of the
+        /// object, replacing '_' character in column name using case insensitive comparison.
+        /// If the results are empty, it returns an empty List
+        /// It sets a default timeout of 120 seconds.
+        /// WARNING! DBNull is mapped to null!
+        /// </summary>
+        /// <param name="argObjectType">The object Type to map the data to</param>
+        /// <param name="argSqlCode">The SQL code to execute</param>
+        /// <param name="argUseTransaction">Whether to use transaction or not</param>
+        /// <returns>The List of objects filled with data</returns>
+        public T GetDataObject<T>(String argSqlCode, Boolean argUseTransaction)
+        {
+            return GetDataObject<T>(argSqlCode, 120, argUseTransaction, null);
+        }
+
+        /// <summary>
+        /// Returns a List of objects of the type specified, containing the data from 
+        /// executing the SQL code provided.
+        /// It maps each column name from the dataset to the same named property of the
+        /// object, replacing '_' character in column name using case insensitive comparison.
+        /// If the results are empty, it returns an empty List
+        /// WARNING! DBNull is mapped to null!
+        /// </summary>
+        /// <param name="argObjectType">The object Type to map the data to</param>
+        /// <param name="argSqlCode">The SQL code to execute</param>
+        /// <param name="argTimeout">The timeout for the SQL command in seconds</param>
+        /// <param name="argUseTransaction">Whether to use transaction or not</param>
+        /// <param name="argSqlParameters">The SQL Parameters for the SQL command</param>
+        /// <returns>The List of objects filled with data</returns>
+        public T GetDataObject<T>(String argSqlCode, Int32 argTimeout, Boolean argUseTransaction, List<SqlParameter> argSqlParameters)
+        {
+            _LastOperationException = null;
+            _LastOperationTimeSpan = new TimeSpan();
+            try
+            {
+                T results = SqlHelperStatic.GetDataObject<T>(argSqlCode, _SqlConnection, argTimeout, argUseTransaction ? _SqlTransaction : null, argSqlParameters);
+                _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
+                return results;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                _LastOperationException = SqlHelperStatic.LastOperationException;
+                _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
+            }
+        }
+
+        #endregion
+
+
         #region "GetClipboardTest"
         public String GetClipboardTextFromValueObject(Object argValue)
         {

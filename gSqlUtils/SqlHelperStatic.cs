@@ -609,7 +609,16 @@ namespace gpower2.gSqlUtils
                     }
                     else
                     {
-                        return (T)Convert.ChangeType(res, typeof(T));
+                        // Check for Nullable<T> properties
+                        if (typeof(T).IsGenericType && typeof(T).GetGenericTypeDefinition() == typeof(Nullable<>))
+                        {
+                            // If the type is Nullable<T> we change the value to the Nullable<T> equivalent
+                            return (T)Convert.ChangeType(res, Nullable.GetUnderlyingType(typeof(T)));
+                        }
+                        else
+                        {
+                            return (T)Convert.ChangeType(res, typeof(T));
+                        }
                     }
                 }
             }
@@ -923,6 +932,210 @@ namespace gpower2.gSqlUtils
         }
 
         #endregion
+
+        #region "GetDataObject<>"
+
+        /// <summary>
+        /// Returns a List of objects of the type specified, containing the data from 
+        /// executing the SQL code provided.
+        /// It maps each column name from the dataset to the same named property of the
+        /// object, replacing '_' character in column name using case insensitive comparison.
+        /// If the results are empty, it returns an empty List
+        /// It sets a default timeout of 120 seconds and doesn't use a transaction.
+        /// WARNING! DBNull is mapped to null!
+        /// </summary>
+        /// <param name="argSqlCode">The SQL code to execute</param>
+        /// <param name="argSqlCon">The SQL connection to use</param>
+        /// <returns>The List of objects filled with data</returns>
+        public static T GetDataObject<T>(String argSqlCode, SqlConnection argSqlCon)
+        {
+            return GetDataObject<T>(argSqlCode, argSqlCon, 120, null, null);
+        }
+
+        /// <summary>
+        /// Returns a List of objects of the type specified, containing the data from 
+        /// executing the SQL code provided.
+        /// It maps each column name from the dataset to the same named property of the
+        /// object, replacing '_' character in column name using case insensitive comparison.
+        /// If the results are empty, it returns an empty List
+        /// It doesn't use a transaction.
+        /// WARNING! DBNull is mapped to null!
+        /// </summary>
+        /// <param name="argSqlCode">The SQL code to execute</param>
+        /// <param name="argSqlCon">The SQL connection to use</param>
+        /// <param name="argTimeout">The timeout for the SQL command in seconds</param>
+        /// <returns>The List of objects filled with data</returns>
+        public static T GetDataObject<T>(String argSqlCode, SqlConnection argSqlCon, Int32 argTimeout)
+        {
+            return GetDataObject<T>(argSqlCode, argSqlCon, argTimeout, null, null);
+        }
+
+        /// <summary>
+        /// Returns a List of objects of the type specified, containing the data from 
+        /// executing the SQL code provided.
+        /// It maps each column name from the dataset to the same named property of the
+        /// object, replacing '_' character in column name using case insensitive comparison.
+        /// If the results are empty, it returns an empty List
+        /// It sets a default timeout of 120 seconds.
+        /// WARNING! DBNull is mapped to null!
+        /// </summary>
+        /// <param name="argSqlCode">The SQL code to execute</param>
+        /// <param name="argSqlCon">The SQL connection to use</param>
+        /// <param name="argSqlTransaction">The SQL transaction to use</param>
+        /// <returns>The List of objects filled with data</returns>
+        public static T GetDataObject<T>(String argSqlCode, SqlConnection argSqlCon, SqlTransaction argSqlTransaction)
+        {
+            return GetDataObject<T>(argSqlCode, argSqlCon, 120, argSqlTransaction, null);
+        }
+
+        /// <summary>
+        /// Returns a List of objects of the type specified, containing the data from 
+        /// executing the SQL code provided.
+        /// It maps each column name from the dataset to the same named property of the
+        /// object, replacing '_' character in column name using case insensitive comparison.
+        /// If the results are empty, it returns an empty List
+        /// WARNING! DBNull is mapped to null!
+        /// </summary>
+        /// <param name="argSqlCode">The SQL code to execute</param>
+        /// <param name="argSqlCon">The SQL connection to use</param>
+        /// <param name="argTimeout">The timeout for the SQL command in seconds</param>
+        /// <param name="argSqlTransaction">The SQL transaction to use</param>
+        /// <param name="argSqlParameters">The SQL Parameters for the SQL command</param>
+        /// <returns>The List of objects filled with data</returns>
+        public static T GetDataObject<T>(String argSqlCode, SqlConnection argSqlCon, Int32 argTimeout, SqlTransaction argSqlTransaction, List<SqlParameter> argSqlParameters)
+        {
+            Stopwatch myStopWatch = new Stopwatch();
+            _LastOperationException = null;
+            try
+            {
+                // check for null connection
+                if (argSqlCon == null)
+                {
+                    throw new Exception("Null SQL connection!");
+                }
+                // check for empty SQL query
+                if (String.IsNullOrEmpty(argSqlCode.Trim()))
+                {
+                    throw new Exception("Empty SQL query!");
+                }
+                // Open the SQL connection in case it's closed
+                if (argSqlCon.State == System.Data.ConnectionState.Closed)
+                {
+                    argSqlCon.Open();
+                    Debug.WriteLine(String.Format("{0}[GetDataObject<>] Opened connection...", GetNowString()));
+                }
+                // Instantiate a new object for filling it from datarow
+                T myObject = default(T);
+                // Get the properties for the object
+                PropertyInfo[] objectProperties = typeof(T).GetProperties();
+
+                // Create the SQL command from the SQL query using object's connection
+                using (SqlCommand sqlCmd = new SqlCommand(argSqlCode, argSqlCon))
+                {
+                    // Set the SQL command timeout
+                    sqlCmd.CommandTimeout = argTimeout;
+                    // Check if transaction is needed
+                    if (argSqlTransaction != null)
+                    {
+                        sqlCmd.Transaction = argSqlTransaction;
+                    }
+                    // if user supplied with command parameters, add them to the select command
+                    if (argSqlParameters != null)
+                    {
+                        foreach (SqlParameter sqlParam in argSqlParameters)
+                        {
+                            sqlCmd.Parameters.Add(sqlParam);
+                        }
+                    }
+                    Debug.WriteLine(String.Format("{0}[GetDataObject<>] Starting to execute SQL code:", GetNowString()));
+                    Debug.WriteLine(GetSQLCommandString(sqlCmd));
+                    myStopWatch.Start();
+                    // Create the DataReader from our command
+                    using (SqlDataReader myReader = sqlCmd.ExecuteReader())
+                    {
+                        // Check if there are rows
+                        if (myReader.HasRows)
+                        {
+                            // Read the first row
+                            if (myReader.Read())
+                            {
+                                // Instantiate the object
+                                myObject = (T)Activator.CreateInstance(typeof(T));
+                                // Create a list with the mapped indeces, in order to avoid a lot of loops
+                                List<Int32> mappedColumnIndeces = new List<Int32>();
+                                // for each property of the object, try to find a column of the same name
+                                foreach (PropertyInfo myProp in objectProperties)
+                                {
+                                    // Only for properties that can be written to
+                                    if (myProp.CanWrite)
+                                    {
+                                        // try to find a column with the same property name
+                                        // Remove '_' character from column name
+                                        // Make the comparison case insensitive
+                                        for (Int32 curColumn = 0; curColumn < myReader.FieldCount; curColumn++)
+                                        {
+                                            // Check if the column was already mapped
+                                            if (mappedColumnIndeces.Contains(curColumn))
+                                            {
+                                                continue;
+                                            }
+                                            // check column name with property name
+                                            if (myReader.GetName(curColumn).Replace("_", "").Replace(" ", "").Trim().ToLower().Equals( // Column Name
+                                                myProp.Name.Replace("_", "").ToLower()) // Property Name
+                                                )
+                                            {
+                                                // Add the column Index to the mapped indeces list
+                                                mappedColumnIndeces.Add(curColumn);
+
+                                                Object cellValue = myReader.GetValue(curColumn);
+
+                                                // Check for Nullable<T> properties
+                                                if (myProp.PropertyType.IsGenericType && myProp.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                                                {
+                                                    // If the type is Nullable<T> we change the value to the Nullable<T> equivalent
+                                                    myProp.SetValue(myObject, cellValue == DBNull.Value ? null : Convert.ChangeType(cellValue,
+                    Nullable.GetUnderlyingType(myProp.PropertyType)), null);
+                                                }
+                                                else if (myProp.PropertyType.IsValueType)
+                                                {
+                                                    // if type is value type, then it doesn't allow null, so we get the default value by using Activator
+                                                    myProp.SetValue(myObject, cellValue == DBNull.Value ? Activator.CreateInstance(myProp.PropertyType) : Convert.ChangeType(cellValue, myProp.PropertyType), null);
+                                                }
+                                                else
+                                                {
+                                                    // if type is not a value type and not a nullable type, we can assign null
+                                                    myProp.SetValue(myObject, cellValue == DBNull.Value ? null : Convert.ChangeType(cellValue, myProp.PropertyType), null);
+                                                }
+                                                // Exit the loop
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                myStopWatch.Stop();
+                _LastOperationEllapsedTime = myStopWatch.Elapsed;
+                Debug.WriteLine(String.Format("{0}[GetDataObject<>] Finished executing SQL code (duration: {1})", GetNowString(), myStopWatch.Elapsed));
+                // Return our object
+                return myObject;
+            }
+            catch (Exception ex)
+            {
+                myStopWatch.Stop();
+                _LastOperationEllapsedTime = myStopWatch.Elapsed;
+                _LastOperationException = ex;
+                Debug.WriteLine(String.Format("{0}[GetDataObject<>] Error executing SQL code! (duration: {1})", GetNowString(), myStopWatch.Elapsed));
+                Debug.WriteLine(ex);
+                throw;
+            }
+        }
+
+        #endregion
+
+
 
         #region "IsNull"
 

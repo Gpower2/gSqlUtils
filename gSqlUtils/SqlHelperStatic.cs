@@ -1488,6 +1488,9 @@ namespace gpower2.gSqlUtils
 
                 Debug.WriteLine(String.Format("{0}[CreateSqlConnection] Finished connecting to SQL server (duration: {1})", GetNowString(), sw.Elapsed));
 
+                // Clears the Connection pool associated with this connection
+                SqlConnection.ClearPool(myCon);
+
                 return myCon;
             }
             catch (Exception ex)

@@ -142,11 +142,10 @@ namespace gpower2.gSqlUtils
 
         public void CloseConnection()
         {
-            if (_SqlConnection.State != System.Data.ConnectionState.Closed)
+            if (_SqlConnection != null && _SqlConnection.State != System.Data.ConnectionState.Closed)
             {
                 _SqlConnection.Close();
                 Debug.WriteLine(String.Format("{0}[CloseConnection] Closed connection...", GetNowString()));
-
             }
         }
 
@@ -174,6 +173,7 @@ namespace gpower2.gSqlUtils
             _SqlTransaction.Commit();
             Debug.WriteLine(String.Format("{0}[CommitTransaction] Transaction was committed...", GetNowString()));
             _SqlTransaction = null;
+            CloseConnection();
         }
 
         public void RollbackTransaction()
@@ -185,6 +185,7 @@ namespace gpower2.gSqlUtils
             _SqlTransaction.Rollback();
             Debug.WriteLine(String.Format("{0}[RollbackTransaction] Transaction was rollbacked...", GetNowString()));
             _SqlTransaction = null;
+            CloseConnection();
         }
 
         #endregion
@@ -333,6 +334,11 @@ namespace gpower2.gSqlUtils
             {
                 _LastOperationException = SqlHelperStatic.LastOperationException;
                 _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
+                // When we don't use transaction, we close the connection
+                if (!argUseTransaction)
+                {
+                    CloseConnection();
+                }
             }
         }
 
@@ -405,6 +411,11 @@ namespace gpower2.gSqlUtils
             {
                 _LastOperationException = SqlHelperStatic.LastOperationException;
                 _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
+                // When we don't use transaction, we close the connection
+                if (!argUseTransaction)
+                {
+                    CloseConnection();
+                }
             }
         }
 
@@ -473,6 +484,11 @@ namespace gpower2.gSqlUtils
             {
                 _LastOperationException = SqlHelperStatic.LastOperationException;
                 _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
+                // When we don't use transaction, we close the connection
+                if (!argUseTransaction)
+                {
+                    CloseConnection();
+                }
             }
         }
 
@@ -545,6 +561,11 @@ namespace gpower2.gSqlUtils
             {
                 _LastOperationException = SqlHelperStatic.LastOperationException;
                 _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
+                // When we don't use transaction, we close the connection
+                if (!argUseTransaction)
+                {
+                    CloseConnection();
+                }
             }
         }
 
@@ -617,6 +638,11 @@ namespace gpower2.gSqlUtils
             {
                 _LastOperationException = SqlHelperStatic.LastOperationException;
                 _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
+                // When we don't use transaction, we close the connection
+                if (!argUseTransaction)
+                {
+                    CloseConnection();
+                }
             }
         }
 
@@ -709,6 +735,11 @@ namespace gpower2.gSqlUtils
             {
                 _LastOperationException = SqlHelperStatic.LastOperationException;
                 _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
+                // When we don't use transaction, we close the connection
+                if (!argUseTransaction)
+                {
+                    CloseConnection();
+                }
             }
         }
 
@@ -801,6 +832,11 @@ namespace gpower2.gSqlUtils
             {
                 _LastOperationException = SqlHelperStatic.LastOperationException;
                 _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
+                // When we don't use transaction, we close the connection
+                if (!argUseTransaction)
+                {
+                    CloseConnection();
+                }
             }
         }
 
@@ -893,11 +929,15 @@ namespace gpower2.gSqlUtils
             {
                 _LastOperationException = SqlHelperStatic.LastOperationException;
                 _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
+                // When we don't use transaction, we close the connection
+                if (!argUseTransaction)
+                {
+                    CloseConnection();
+                }
             }
         }
 
         #endregion
-
 
         #region "GetClipboardTest"
         public String GetClipboardTextFromValueObject(Object argValue)

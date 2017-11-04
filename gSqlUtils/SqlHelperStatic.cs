@@ -720,7 +720,7 @@ namespace gpower2.gSqlUtils
                     throw new Exception("Null SQL connection!");
                 }
                 // check for empty SQL query
-                if (String.IsNullOrEmpty(argSqlCode.Trim()))
+                if (String.IsNullOrWhiteSpace(argSqlCode))
                 {
                     throw new Exception("Empty SQL query!");
                 }
@@ -1014,7 +1014,7 @@ namespace gpower2.gSqlUtils
                     throw new Exception("Null SQL connection!");
                 }
                 // check for empty SQL query
-                if (String.IsNullOrEmpty(argSqlCode.Trim()))
+                if (String.IsNullOrWhiteSpace(argSqlCode))
                 {
                     throw new Exception("Empty SQL query!");
                 }
@@ -1459,7 +1459,7 @@ namespace gpower2.gSqlUtils
 
                 // Default value: ".Net SqlClient Data Provider                                                                                                    "
                 // This property corresponds to the "Application Name" key within the connection string.
-                if (!String.IsNullOrEmpty(argApplicationName.Trim()))
+                if (!String.IsNullOrWhiteSpace(argApplicationName))
                 {
                     myBuilder.ApplicationName = argApplicationName;
                 }

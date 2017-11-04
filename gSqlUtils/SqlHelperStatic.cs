@@ -1464,6 +1464,10 @@ namespace gpower2.gSqlUtils
                     myBuilder.ApplicationName = argApplicationName;
                 }
 
+                // Default Value: 100
+                // We use more 
+                myBuilder.MaxPoolSize = 300;
+
                 // Check if integrated security is true and in that case, leave UserID and Password fields empty
                 if (!argIntegratedSecurity)
                 {

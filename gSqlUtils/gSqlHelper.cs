@@ -75,9 +75,26 @@ namespace gpower2.gSqlUtils
             _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argUserId, argPassword);
         }
 
+        public gSqlHelper(String argDataSource, String argInitialCatalog, String argUserId, String argPassword, Boolean argPersistSecurityInfo)
+        {
+            _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argUserId, argPassword, argPersistSecurityInfo);
+        }
+
+        public gSqlHelper(String argDataSource, String argInitialCatalog, String argUserId, String argPassword, Boolean argPersistSecurityInfo, 
+            Boolean argMultipleActiveResultSets)
+        {
+            _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argUserId, argPassword, argPersistSecurityInfo, argMultipleActiveResultSets);
+        }
+
         public gSqlHelper(String argDataSource, String argInitialCatalog, String argUserId, String argPassword, String argApplicationName)
         {
             _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argUserId, argPassword, argApplicationName);
+        }
+
+        public gSqlHelper(String argDataSource, String argInitialCatalog, String argUserId, String argPassword, String argApplicationName, 
+            Boolean argPersistSecurityInfo, Boolean argMultipleActiveResultSets)
+        {
+            _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argUserId, argPassword, argApplicationName, argPersistSecurityInfo, argMultipleActiveResultSets);
         }
 
         public gSqlHelper(String argDataSource, String argInitialCatalog, String argUserId, String argPassword, Int32 argConnectTimeout)
@@ -110,6 +127,11 @@ namespace gpower2.gSqlUtils
             _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argApplicationName);
         }
 
+        public gSqlHelper(String argDataSource, String argInitialCatalog, String argApplicationName, Boolean argMultipleActiveResultSets)
+        {
+            _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argApplicationName, argMultipleActiveResultSets);
+        }
+
         public gSqlHelper(String argDataSource, String argInitialCatalog, Int32 argConnectTimeout)
         {
             _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout);
@@ -133,7 +155,14 @@ namespace gpower2.gSqlUtils
         public gSqlHelper(String argDataSource, String argInitialCatalog, Int32 argConnectTimeout,
             Boolean argIntegratedSecurity, Int32 argPacketSize, String argUserId, String argPassword, String argApplicationName)
         {
-            _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, argIntegratedSecurity, argPacketSize, argUserId, argPassword, argApplicationName);
+            _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, argIntegratedSecurity, argPacketSize, argUserId, argPassword, argApplicationName, false, false);
+        }
+
+        public gSqlHelper(String argDataSource, String argInitialCatalog, Int32 argConnectTimeout,
+            Boolean argIntegratedSecurity, Int32 argPacketSize, String argUserId, String argPassword, String argApplicationName,
+            Boolean argMultipleActiveResultSets, Boolean argPersistSecurityInfo)
+        {
+            _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, argIntegratedSecurity, argPacketSize, argUserId, argPassword, argApplicationName, argMultipleActiveResultSets, argPersistSecurityInfo);
         }
 
         #endregion

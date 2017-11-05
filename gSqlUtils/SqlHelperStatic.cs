@@ -1317,8 +1317,37 @@ namespace gpower2.gSqlUtils
 		/// <returns></returns>
 		public static SqlConnection CreateSqlConnection(String argDataSource, String argInitialCatalog, String argUserId, String argPassword)
 		{
-            return CreateSqlConnection(argDataSource, argInitialCatalog, 15, false, 8000, argUserId, argPassword, String.Empty);
+            return CreateSqlConnection(argDataSource, argInitialCatalog, 15, false, 8000, argUserId, argPassword, String.Empty, false, false);
 		}
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="argDataSource">The name or network adress of the instance of SQL Server to connect to (Default: String.Empty)</param>
+        /// <param name="argInitialCatalog">The name of the Database associated with the connection (Default: String.Empty)</param>
+        /// <param name="argUserId">The user ID to be used when connecting to SQL Server (Default: String.Empty)</param>
+        /// <param name="argPassword">The password for the SQL Server account (Default: String.Empty)</param>
+        /// <param name="argPersistSecurityInfo">The flag that indicates if security-sensitive information, such as the password, is not returned as part of the connection if the connection is open or has ever been in an open state (Default: false)</param>
+        /// <returns></returns>
+        public static SqlConnection CreateSqlConnection(String argDataSource, String argInitialCatalog, String argUserId, String argPassword, Boolean argPersistSecurityInfo)
+        {
+            return CreateSqlConnection(argDataSource, argInitialCatalog, 15, false, 8000, argUserId, argPassword, String.Empty, false, argPersistSecurityInfo);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="argDataSource">The name or network adress of the instance of SQL Server to connect to (Default: String.Empty)</param>
+        /// <param name="argInitialCatalog">The name of the Database associated with the connection (Default: String.Empty)</param>
+        /// <param name="argUserId">The user ID to be used when connecting to SQL Server (Default: String.Empty)</param>
+        /// <param name="argPassword">The password for the SQL Server account (Default: String.Empty)</param>
+        /// <param name="argPersistSecurityInfo">The flag that indicates if security-sensitive information, such as the password, is not returned as part of the connection if the connection is open or has ever been in an open state (Default: false)</param>
+        /// <param name="argMultipleActiveResultSets">The flag that indicates if an application can maintain multiple active result sets (MARS) (Default: false).</param>
+        /// <returns></returns>
+        public static SqlConnection CreateSqlConnection(String argDataSource, String argInitialCatalog, String argUserId, String argPassword, Boolean argPersistSecurityInfo, Boolean argMultipleActiveResultSets)
+        {
+            return CreateSqlConnection(argDataSource, argInitialCatalog, 15, false, 8000, argUserId, argPassword, String.Empty, argMultipleActiveResultSets, argPersistSecurityInfo);
+        }
 
         /// <summary>
         /// 
@@ -1332,22 +1361,39 @@ namespace gpower2.gSqlUtils
         public static SqlConnection CreateSqlConnection(String argDataSource, String argInitialCatalog, String argUserId, String argPassword, 
             String argApplicationName)
         {
-            return CreateSqlConnection(argDataSource, argInitialCatalog, 15, false, 8000, argUserId, argPassword, argApplicationName);
+            return CreateSqlConnection(argDataSource, argInitialCatalog, 15, false, 8000, argUserId, argPassword, argApplicationName, false, false);
         }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="argDataSource">The name or network adress of the instance of SQL Server to connect to (Default: String.Empty)</param>
-		/// <param name="argInitialCatalog">The name of the Database associated with the connection (Default: String.Empty)</param>
-		/// <param name="argUserId">The user ID to be used when connecting to SQL Server (Default: String.Empty)</param>
-		/// <param name="argPassword">The password for the SQL Server account (Default: String.Empty)</param>
-		/// <param name="argConnectTimeout">The length of time (in seconds) to wait for a connection to the server (Default: 15)</param>
-		/// <returns></returns>
-		public static SqlConnection CreateSqlConnection(String argDataSource, String argInitialCatalog, String argUserId, String argPassword, 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="argDataSource">The name or network adress of the instance of SQL Server to connect to (Default: String.Empty)</param>
+        /// <param name="argInitialCatalog">The name of the Database associated with the connection (Default: String.Empty)</param>
+        /// <param name="argUserId">The user ID to be used when connecting to SQL Server (Default: String.Empty)</param>
+        /// <param name="argPassword">The password for the SQL Server account (Default: String.Empty)</param>
+        /// <param name="argApplicationName">The name of the application associated with the connection string</param>
+        /// <param name="argPersistSecurityInfo">The flag that indicates if security-sensitive information, such as the password, is not returned as part of the connection if the connection is open or has ever been in an open state (Default: false)</param>
+        /// <param name="argMultipleActiveResultSets">The flag that indicates if an application can maintain multiple active result sets (MARS) (Default: false).</param>
+        /// <returns></returns>
+        public static SqlConnection CreateSqlConnection(String argDataSource, String argInitialCatalog, String argUserId, String argPassword,
+            String argApplicationName, Boolean argPersistSecurityInfo, Boolean argMultipleActiveResultSets)
+        {
+            return CreateSqlConnection(argDataSource, argInitialCatalog, 15, false, 8000, argUserId, argPassword, argApplicationName, argMultipleActiveResultSets, argPersistSecurityInfo);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="argDataSource">The name or network adress of the instance of SQL Server to connect to (Default: String.Empty)</param>
+        /// <param name="argInitialCatalog">The name of the Database associated with the connection (Default: String.Empty)</param>
+        /// <param name="argUserId">The user ID to be used when connecting to SQL Server (Default: String.Empty)</param>
+        /// <param name="argPassword">The password for the SQL Server account (Default: String.Empty)</param>
+        /// <param name="argConnectTimeout">The length of time (in seconds) to wait for a connection to the server (Default: 15)</param>
+        /// <returns></returns>
+        public static SqlConnection CreateSqlConnection(String argDataSource, String argInitialCatalog, String argUserId, String argPassword, 
             Int32 argConnectTimeout)
 		{
-            return CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, false, 8000, argUserId, argPassword, String.Empty);
+            return CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, false, 8000, argUserId, argPassword, String.Empty, false, false);
 		}
 
         /// <summary>
@@ -1363,7 +1409,7 @@ namespace gpower2.gSqlUtils
         public static SqlConnection CreateSqlConnection(String argDataSource, String argInitialCatalog, String argUserId, String argPassword,
             Int32 argConnectTimeout, String argApplicationName)
         {
-            return CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, false, 8000, argUserId, argPassword, argApplicationName);
+            return CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, false, 8000, argUserId, argPassword, argApplicationName, false, false);
         }
 
 		/// <summary>
@@ -1379,7 +1425,7 @@ namespace gpower2.gSqlUtils
 		public static SqlConnection CreateSqlConnection(String argDataSource, String argInitialCatalog, String argUserId, String argPassword, 
             Int32 argConnectTimeout, Int32 argPacketSize)
 		{
-            return CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, false, argPacketSize, argUserId, argPassword, String.Empty);
+            return CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, false, argPacketSize, argUserId, argPassword, String.Empty, false, false);
 		}
 
         /// <summary>
@@ -1396,7 +1442,7 @@ namespace gpower2.gSqlUtils
         public static SqlConnection CreateSqlConnection(String argDataSource, String argInitialCatalog, String argUserId, String argPassword,
             Int32 argConnectTimeout, Int32 argPacketSize, String argApplicationName)
         {
-            return CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, false, argPacketSize, argUserId, argPassword, argApplicationName);
+            return CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, false, argPacketSize, argUserId, argPassword, argApplicationName, false, false);
         }
 
 		/// <summary>
@@ -1407,7 +1453,7 @@ namespace gpower2.gSqlUtils
 		/// <returns></returns>
 		public static SqlConnection CreateSqlConnection(String argDataSource, String argInitialCatalog)
 		{
-			return CreateSqlConnection(argDataSource, argInitialCatalog, 15, true, 8000, String.Empty, String.Empty, String.Empty);
+			return CreateSqlConnection(argDataSource, argInitialCatalog, 15, true, 8000, String.Empty, String.Empty, String.Empty, false, false);
 		}
 
         /// <summary>
@@ -1419,19 +1465,32 @@ namespace gpower2.gSqlUtils
         /// <returns></returns>
         public static SqlConnection CreateSqlConnection(String argDataSource, String argInitialCatalog, String argApplicationName)
         {
-            return CreateSqlConnection(argDataSource, argInitialCatalog, 15, true, 8000, String.Empty, String.Empty, argApplicationName);
+            return CreateSqlConnection(argDataSource, argInitialCatalog, 15, true, 8000, String.Empty, String.Empty, argApplicationName, false, false);
         }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="argDataSource">The name or network adress of the instance of SQL Server to connect to (Default: String.Empty)</param>
-		/// <param name="argInitialCatalog">The name of the Database associated with the connection (Default: String.Empty)</param>
-		/// <param name="argConnectTimeout">The length of time (in seconds) to wait for a connection to the server (Default: 15)</param>
-		/// <returns></returns>
-		public static SqlConnection CreateSqlConnection(String argDataSource, String argInitialCatalog, Int32 argConnectTimeout)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="argDataSource">The name or network adress of the instance of SQL Server to connect to (Default: String.Empty)</param>
+        /// <param name="argInitialCatalog">The name of the Database associated with the connection (Default: String.Empty)</param>
+        /// <param name="argApplicationName">The name of the application associated with the connection string</param>
+        /// <param name="argMultipleActiveResultSets">The flag that indicates if an application can maintain multiple active result sets (MARS) (Default: false).</param>
+        /// <returns></returns>
+        public static SqlConnection CreateSqlConnection(String argDataSource, String argInitialCatalog, String argApplicationName, Boolean argMultipleActiveResultSets)
+        {
+            return CreateSqlConnection(argDataSource, argInitialCatalog, 15, true, 8000, String.Empty, String.Empty, argApplicationName, argMultipleActiveResultSets, false);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="argDataSource">The name or network adress of the instance of SQL Server to connect to (Default: String.Empty)</param>
+        /// <param name="argInitialCatalog">The name of the Database associated with the connection (Default: String.Empty)</param>
+        /// <param name="argConnectTimeout">The length of time (in seconds) to wait for a connection to the server (Default: 15)</param>
+        /// <returns></returns>
+        public static SqlConnection CreateSqlConnection(String argDataSource, String argInitialCatalog, Int32 argConnectTimeout)
 		{
-			return CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, true, 8000, String.Empty, String.Empty, String.Empty);
+			return CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, true, 8000, String.Empty, String.Empty, String.Empty, false, false);
 		}
 
         /// <summary>
@@ -1444,7 +1503,7 @@ namespace gpower2.gSqlUtils
         /// <returns></returns>
         public static SqlConnection CreateSqlConnection(String argDataSource, String argInitialCatalog, Int32 argConnectTimeout, String argApplicationName)
         {
-            return CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, true, 8000, String.Empty, String.Empty, argApplicationName);
+            return CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, true, 8000, String.Empty, String.Empty, argApplicationName, false, false);
         }
         
         /// <summary>
@@ -1457,7 +1516,7 @@ namespace gpower2.gSqlUtils
 		/// <returns></returns>
 		public static SqlConnection CreateSqlConnection(String argDataSource, String argInitialCatalog, Int32 argConnectTimeout, Int32 argPacketSize)
 		{
-            return CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, true, argPacketSize, String.Empty, String.Empty, String.Empty);
+            return CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, true, argPacketSize, String.Empty, String.Empty, String.Empty, false, false);
 		}
 
         /// <summary>
@@ -1471,24 +1530,27 @@ namespace gpower2.gSqlUtils
         /// <returns></returns>
         public static SqlConnection CreateSqlConnection(String argDataSource, String argInitialCatalog, Int32 argConnectTimeout, Int32 argPacketSize, String argApplicationName)
         {
-            return CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, true, argPacketSize, String.Empty, String.Empty, argApplicationName);
+            return CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, true, argPacketSize, String.Empty, String.Empty, argApplicationName, false, false);
         }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="argDataSource">The name or network adress of the instance of SQL Server to connect to (Default: String.Empty)</param>
-		/// <param name="argInitialCatalog">The name of the Database associated with the connection (Default: String.Empty)</param>
-		/// <param name="argConnectTimeout">The length of time (in seconds) to wait for a connection to the server (Default: 15)</param>
-		/// <param name="argIntegratedSecurity">The flag that indicates whether User ID and Password are specified in the connection 
-		/// or the current Windows account credentials are used for authentication (Default: false)</param>
-		/// <param name="argPacketSize">The size (in bytes) of the network packets used to communicate with an instance of SQL Server (Default: 8000)</param>
-		/// <param name="argUserId">The user ID to be used when connecting to SQL Server (Default: String.Empty)</param>
-		/// <param name="argPassword">The password for the SQL Server account (Default: String.Empty)</param>
-        /// <param name="argApplicationName">The name of the application associated with the connection string</param>
-		/// <returns></returns>
-		public static SqlConnection CreateSqlConnection(String argDataSource, String argInitialCatalog, Int32 argConnectTimeout, 
-			Boolean argIntegratedSecurity, Int32 argPacketSize, String argUserId, String argPassword, String argApplicationName)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="argDataSource">The name or network adress of the instance of SQL Server to connect to (Default: String.Empty)</param>
+        /// <param name="argInitialCatalog">The name of the Database associated with the connection (Default: String.Empty)</param>
+        /// <param name="argConnectTimeout">The length of time (in seconds) to wait for a connection to the server (Default: 15)</param>
+        /// <param name="argIntegratedSecurity">The flag that indicates whether User ID and Password are specified in the connection 
+        /// or the current Windows account credentials are used for authentication (Default: false)</param>
+        /// <param name="argPacketSize">The size (in bytes) of the network packets used to communicate with an instance of SQL Server (Default: 8000)</param>
+        /// <param name="argUserId">The user ID to be used when connecting to SQL Server (Default: String.Empty)</param>
+        /// <param name="argPassword">The password for the SQL Server account (Default: String.Empty)</param>
+        /// <param name="argApplicationName">The name of the application associated with the connection string (Default: ".Net SqlClient Data Provider")</param>
+        /// <param name="argMultipleActiveResultSets">The flag that indicates if an application can maintain multiple active result sets (MARS) (Default: false).</param>
+        /// <param name="argPersistSecurityInfo">The flag that indicates if security-sensitive information, such as the password, is not returned as part of the connection if the connection is open or has ever been in an open state (Default: false)</param>
+        /// <returns></returns>
+        public static SqlConnection CreateSqlConnection(String argDataSource, String argInitialCatalog, Int32 argConnectTimeout, 
+			Boolean argIntegratedSecurity, Int32 argPacketSize, String argUserId, String argPassword, String argApplicationName,
+            Boolean argMultipleActiveResultSets, Boolean argPersistSecurityInfo)
 		{
             Stopwatch sw = new Stopwatch();
             _LastOperationException = null;
@@ -1519,7 +1581,7 @@ namespace gpower2.gSqlUtils
                 // This property corresponds to the "Packet Size" key within the connection string.
                 myBuilder.PacketSize = argPacketSize;
 
-                // Default value: ".Net SqlClient Data Provider                                                                                                    "
+                // Default value: ".Net SqlClient Data Provider"
                 // This property corresponds to the "Application Name" key within the connection string.
                 if (!String.IsNullOrWhiteSpace(argApplicationName))
                 {
@@ -1527,8 +1589,12 @@ namespace gpower2.gSqlUtils
                 }
 
                 // Default Value: 100
-                // We use more 
+                // This property corresponds to the "Max Pool Size" key within the connection string.
                 myBuilder.MaxPoolSize = 300;
+
+                // Default Value: false
+                // This property corresponds to the "MultipleActiveResultSets" key within the connection string.
+                myBuilder.MultipleActiveResultSets = argMultipleActiveResultSets;
 
                 // Check if integrated security is true and in that case, leave UserID and Password fields empty
                 if (!argIntegratedSecurity)
@@ -1540,6 +1606,10 @@ namespace gpower2.gSqlUtils
                     // Default value: String.Empty
                     // This property corresponds to the "Password" and "pwd" keys within the connection string.
                     myBuilder.Password = argPassword;
+
+                    // Default Value: false
+                    // This property corresponds to the "Persist Security Info" and "persistsecurityinfo" keys within the connection string.
+                    myBuilder.PersistSecurityInfo = argPersistSecurityInfo;
                 }
 
                 Debug.WriteLine(String.Format("{0}[CreateSqlConnection] Starting to connect to SQL server:", GetNowString()));

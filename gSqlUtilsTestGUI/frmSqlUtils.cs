@@ -28,16 +28,19 @@ namespace gSqlUtilsTestGUI
                 // Make a test SQL Code
                 String sqlCode = "SELECT * FROM TestNULL";
 
-                // Call the execute sql function
-                //grdResults.DataSource = SqlHelperStatic.GetDataList(typeof(Test), sqlCode, sqlCon);
-                List<Test> testList = (List<Test>)_helper.GetDataList(typeof(Test), sqlCode);
+                // Call the execute sql function                
+                //List<Int32?> testList = (List<Int32?>)_helper.GetDataList(typeof(Int32?), sqlCode);
+                IList<Int32?> testList = _helper.GetDataList<Int32?>(sqlCode);
+                Int32 testObject = _helper.GetDataObject<Int32>(sqlCode);
                 grdResults.DataSource = testList;
                 _helper.CloseConnection();
                 grdResults.Refresh();
-                SqlConnection sqlCon = SqlHelperStatic.CreateSqlConnection(".", "TestDB");
-                DataTable dt = SqlHelperStatic.GetDataTable(sqlCode, sqlCon);
-                Clipboard.SetText(ClipboardHelper.GetClipboardText(dt, true));
-                Debug.WriteLine("returned rows: " + dt.Rows.Count);
+                using (SqlConnection sqlCon = SqlHelperStatic.CreateSqlConnection(".", "TestDB"))
+                {
+                    DataTable dt = SqlHelperStatic.GetDataTable(sqlCode, sqlCon);
+                    Clipboard.SetText(ClipboardHelper.GetClipboardText(dt, true));
+                    Debug.WriteLine("returned rows: " + dt.Rows.Count);
+                }
             }
 
             catch (Exception ex)

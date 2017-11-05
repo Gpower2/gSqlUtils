@@ -126,7 +126,9 @@ namespace gpower2.gSqlUtils
 					argSqlCon.Open();
                     Debug.WriteLine(String.Format("{0}[ExecuteSql] Opened connection...", GetNowString()));
                 }
-				using (SqlCommand sqlCmd = new SqlCommand(argSqlCode, argSqlCon))
+                // Wait for the connection to finish connecting
+                while (argSqlCon.State == ConnectionState.Connecting) { }
+                using (SqlCommand sqlCmd = new SqlCommand(argSqlCode, argSqlCon))
 				{
 					if (argSqlTransaction != null)
 					{
@@ -237,7 +239,9 @@ namespace gpower2.gSqlUtils
 					argSqlCon.Open();
                     Debug.WriteLine(String.Format("{0}[GetDataTable] Opened connection...", GetNowString()));
                 }
-				myDatatable = new DataTable();
+                // Wait for the connection to finish connecting
+                while (argSqlCon.State == ConnectionState.Connecting) { }
+                myDatatable = new DataTable();
 				using (SqlDataAdapter myAdapter = new SqlDataAdapter(argSqlCode, argSqlCon))
 				{
 					myAdapter.SelectCommand.CommandTimeout = argTimeout;
@@ -351,7 +355,9 @@ namespace gpower2.gSqlUtils
 					argSqlCon.Open();
                     Debug.WriteLine(String.Format("{0}[GetDataSet] Opened connection...", GetNowString()));
                 }
-				myDataset = new DataSet();
+                // Wait for the connection to finish connecting
+                while (argSqlCon.State == ConnectionState.Connecting) { }
+                myDataset = new DataSet();
 				using (SqlDataAdapter myAdapter = new SqlDataAdapter(argSqlCode, argSqlCon))
 				{
 					myAdapter.SelectCommand.CommandTimeout = argTimeout;
@@ -467,7 +473,9 @@ namespace gpower2.gSqlUtils
 					argSqlCon.Open();
                     Debug.WriteLine(String.Format("{0}[GetDataValue] Opened connection...", GetNowString()));
                 }
-				using (SqlCommand myCommand = new SqlCommand(argSqlCode, argSqlCon))
+                // Wait for the connection to finish connecting
+                while (argSqlCon.State == ConnectionState.Connecting) { }
+                using (SqlCommand myCommand = new SqlCommand(argSqlCode, argSqlCon))
 				{
 					myCommand.CommandTimeout = argTimeout;
 					if (argSqlTransaction != null)
@@ -577,6 +585,8 @@ namespace gpower2.gSqlUtils
                     argSqlCon.Open();
                     Debug.WriteLine(String.Format("{0}[GetDataValue<>] Opened connection...", GetNowString()));
                 }
+                // Wait for the connection to finish connecting
+                while (argSqlCon.State == ConnectionState.Connecting) { }
                 using (SqlCommand myCommand = new SqlCommand(argSqlCode, argSqlCon))
                 {
                     myCommand.CommandTimeout = argTimeout;
@@ -736,6 +746,9 @@ namespace gpower2.gSqlUtils
                     argSqlCon.Open();
                     Debug.WriteLine(String.Format("{0}[GetDataList] Opened connection...", GetNowString()));
                 }
+                // Wait for the connection to finish connecting
+                while (argSqlCon.State == ConnectionState.Connecting) { }
+
                 // Create the SQL command from the SQL query using object's connection
                 using (SqlCommand sqlCmd = new SqlCommand(argSqlCode, argSqlCon))
                 {
@@ -1061,6 +1074,8 @@ namespace gpower2.gSqlUtils
                     argSqlCon.Open();
                     Debug.WriteLine(String.Format("{0}[GetDataObject<>] Opened connection...", GetNowString()));
                 }
+                // Wait for the connection to finish connecting
+                while (argSqlCon.State == ConnectionState.Connecting) { }
                 // Instantiate a new object for filling it from datarow
                 T myObject = default(T);
                 // Get the properties for the object

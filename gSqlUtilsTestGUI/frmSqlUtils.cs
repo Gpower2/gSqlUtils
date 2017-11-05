@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using System.Data.Sql;
 using System.Data.SqlClient;
 using gpower2.gSqlUtils;
+using System.Threading.Tasks;
 
 namespace gSqlUtilsTestGUI
 {
@@ -24,14 +25,23 @@ namespace gSqlUtilsTestGUI
             try
             {
                 // Create new connection to Database
-                gSqlHelper _helper = new gSqlHelper(".", "TestDB");
+                gSqlHelper _helper = new gSqlHelper(".", "TestDB", "", true);
                 // Make a test SQL Code
                 String sqlCode = "SELECT * FROM TestNULL";
 
                 // Call the execute sql function                
                 //List<Int32?> testList = (List<Int32?>)_helper.GetDataList(typeof(Int32?), sqlCode);
-                IList<Int32?> testList = _helper.GetDataList<Int32?>(sqlCode);
+                IList<Int32?> testList = null;
+                IList<Int32> testList2 = null;
+
+                //Task.Factory.StartNew(() => { testList = _helper.GetDataList<Int32?>(sqlCode); });
+                testList = _helper.GetDataList<Int32?>(sqlCode);
+
+                //Task.Factory.StartNew(() => { testList2 = _helper.GetDataList<Int32>(sqlCode); });
+                testList2 = _helper.GetDataList<Int32>(sqlCode);
+
                 Int32 testObject = _helper.GetDataObject<Int32>(sqlCode);
+
                 grdResults.DataSource = testList;
                 _helper.CloseConnection();
                 grdResults.Refresh();

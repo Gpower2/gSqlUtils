@@ -936,11 +936,11 @@ namespace gpower2.gSqlUtils
         #region "GetDataObject<>"
 
         /// <summary>
-        /// Returns a List of objects of the type specified, containing the data from 
+        /// Returns a single object of the type specified, containing the data from 
         /// executing the SQL code provided.
         /// It maps each column name from the dataset to the same named property of the
         /// object, replacing '_' character in column name using case insensitive comparison.
-        /// If the results are empty, it returns an empty List
+        /// If the results are empty, it returns the default object
         /// It sets a default timeout of 120 seconds and doesn't use a transaction.
         /// WARNING! DBNull is mapped to null!
         /// </summary>
@@ -953,11 +953,11 @@ namespace gpower2.gSqlUtils
         }
 
         /// <summary>
-        /// Returns a List of objects of the type specified, containing the data from 
+        /// Returns a single object of the type specified, containing the data from 
         /// executing the SQL code provided.
         /// It maps each column name from the dataset to the same named property of the
         /// object, replacing '_' character in column name using case insensitive comparison.
-        /// If the results are empty, it returns an empty List
+        /// If the results are empty, it returns the default object
         /// It doesn't use a transaction.
         /// WARNING! DBNull is mapped to null!
         /// </summary>
@@ -971,11 +971,11 @@ namespace gpower2.gSqlUtils
         }
 
         /// <summary>
-        /// Returns a List of objects of the type specified, containing the data from 
+        /// Returns a single object of the type specified, containing the data from 
         /// executing the SQL code provided.
         /// It maps each column name from the dataset to the same named property of the
         /// object, replacing '_' character in column name using case insensitive comparison.
-        /// If the results are empty, it returns an empty List
+        /// If the results are empty, it returns the default object
         /// It sets a default timeout of 120 seconds.
         /// WARNING! DBNull is mapped to null!
         /// </summary>
@@ -989,11 +989,11 @@ namespace gpower2.gSqlUtils
         }
 
         /// <summary>
-        /// Returns a List of objects of the type specified, containing the data from 
+        /// Returns a single object of the type specified, containing the data from 
         /// executing the SQL code provided.
         /// It maps each column name from the dataset to the same named property of the
         /// object, replacing '_' character in column name using case insensitive comparison.
-        /// If the results are empty, it returns an empty List
+        /// If the results are empty, it returns the default object
         /// WARNING! DBNull is mapped to null!
         /// </summary>
         /// <param name="argSqlCode">The SQL code to execute</param>

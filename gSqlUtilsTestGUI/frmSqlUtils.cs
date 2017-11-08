@@ -34,16 +34,16 @@ namespace gSqlUtilsTestGUI
                 IList<Int32?> testList = null;
                 IList<Int32> testList2 = null;
 
-                //Task.Factory.StartNew(() => { testList = _helper.GetDataList<Int32?>(sqlCode); });
-                testList = _helper.GetDataList<Int32?>(sqlCode);
+                Task.Factory.StartNew(() => { Debug.WriteLine("testList"); testList = _helper.GetDataList<Int32?>(sqlCode); });
+                //testList = _helper.GetDataList<Int32?>(sqlCode);
 
-                //Task.Factory.StartNew(() => { testList2 = _helper.GetDataList<Int32>(sqlCode); });
-                testList2 = _helper.GetDataList<Int32>(sqlCode);
+                Task.Factory.StartNew(() => { Debug.WriteLine("testList2"); testList2 = _helper.GetDataList<Int32>(sqlCode); });
+                //testList2 = _helper.GetDataList<Int32>(sqlCode);
 
+                Debug.WriteLine("testObject");
                 Int32 testObject = _helper.GetDataObject<Int32>(sqlCode);
 
                 grdResults.DataSource = testList;
-                _helper.CloseConnection();
                 grdResults.Refresh();
                 using (SqlConnection sqlCon = SqlHelperStatic.CreateSqlConnection(".", "TestDB"))
                 {

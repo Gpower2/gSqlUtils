@@ -51,6 +51,8 @@ namespace gpower2.gSqlUtils
 		private static TimeSpan _LastOperationEllapsedTime;
 		private static Exception _LastOperationException;
 
+        private static string _ThreadAnchor = "ThreadAnchor";
+
 		#endregion
 
 		#region "ExecuteSql"
@@ -117,17 +119,20 @@ namespace gpower2.gSqlUtils
 				{
 					throw new Exception("Null SQL connection!");
 				}
-				if (argSqlCode.Trim().Length == 0)
+				if (String.IsNullOrWhiteSpace(argSqlCode))
 				{
 					throw new Exception("Empty SQL code!");
 				}
-				if (argSqlCon.State == System.Data.ConnectionState.Closed)
-				{
-					argSqlCon.Open();
-                    Debug.WriteLine(String.Format("{0}[ExecuteSql] Opened connection...", GetNowString()));
+                lock (_ThreadAnchor)
+                {
+                    if (argSqlCon.State == System.Data.ConnectionState.Closed)
+                    {
+                        argSqlCon.Open();
+                        Debug.WriteLine(String.Format("{0}[ExecuteSql] Opened connection...", GetNowString()));
+                    }
+                    // Wait for the connection to finish connecting
+                    while (argSqlCon.State == ConnectionState.Connecting) { }
                 }
-                // Wait for the connection to finish connecting
-                while (argSqlCon.State == ConnectionState.Connecting) { }
                 using (SqlCommand sqlCmd = new SqlCommand(argSqlCode, argSqlCon))
 				{
 					if (argSqlTransaction != null)
@@ -230,17 +235,21 @@ namespace gpower2.gSqlUtils
 				{
 					throw new Exception("Null SQL connection!");
 				}
-				if (argSqlCode.Trim().Length == 0)
-				{
-					throw new Exception("Empty SQL code!");
+                if (String.IsNullOrWhiteSpace(argSqlCode))
+                {
+                    throw new Exception("Empty SQL code!");
 				}
-				if (argSqlCon.State == System.Data.ConnectionState.Closed)
-				{
-					argSqlCon.Open();
-                    Debug.WriteLine(String.Format("{0}[GetDataTable] Opened connection...", GetNowString()));
+                lock (_ThreadAnchor)
+                {
+                    if (argSqlCon.State == System.Data.ConnectionState.Closed)
+                    {
+                        argSqlCon.Open();
+                        Debug.WriteLine(String.Format("{0}[GetDataTable] Opened connection...", GetNowString()));
+                    }
+                    // Wait for the connection to finish connecting
+                    while (argSqlCon.State == ConnectionState.Connecting) { }
                 }
-                // Wait for the connection to finish connecting
-                while (argSqlCon.State == ConnectionState.Connecting) { }
+
                 myDatatable = new DataTable();
 				using (SqlDataAdapter myAdapter = new SqlDataAdapter(argSqlCode, argSqlCon))
 				{
@@ -346,17 +355,20 @@ namespace gpower2.gSqlUtils
 				{
 					throw new Exception("Null SQL connection!");
 				}
-				if (argSqlCode.Trim().Length == 0)
-				{
-					throw new Exception("Empty SQL code!");
+                if (String.IsNullOrWhiteSpace(argSqlCode))
+                {
+                    throw new Exception("Empty SQL code!");
 				}
-				if (argSqlCon.State == System.Data.ConnectionState.Closed)
-				{
-					argSqlCon.Open();
-                    Debug.WriteLine(String.Format("{0}[GetDataSet] Opened connection...", GetNowString()));
+                lock (_ThreadAnchor)
+                {
+                    if (argSqlCon.State == System.Data.ConnectionState.Closed)
+                    {
+                        argSqlCon.Open();
+                        Debug.WriteLine(String.Format("{0}[GetDataSet] Opened connection...", GetNowString()));
+                    }
+                    // Wait for the connection to finish connecting
+                    while (argSqlCon.State == ConnectionState.Connecting) { }
                 }
-                // Wait for the connection to finish connecting
-                while (argSqlCon.State == ConnectionState.Connecting) { }
                 myDataset = new DataSet();
 				using (SqlDataAdapter myAdapter = new SqlDataAdapter(argSqlCode, argSqlCon))
 				{
@@ -464,17 +476,20 @@ namespace gpower2.gSqlUtils
 				{
 					throw new Exception("Null SQL connection!");
 				}
-				if (argSqlCode.Trim().Length == 0)
-				{
-					throw new Exception("Empty SQL code!");
+                if (String.IsNullOrWhiteSpace(argSqlCode))
+                {
+                    throw new Exception("Empty SQL code!");
 				}
-				if (argSqlCon.State == System.Data.ConnectionState.Closed)
-				{
-					argSqlCon.Open();
-                    Debug.WriteLine(String.Format("{0}[GetDataValue] Opened connection...", GetNowString()));
+                lock (_ThreadAnchor)
+                {
+                    if (argSqlCon.State == System.Data.ConnectionState.Closed)
+                    {
+                        argSqlCon.Open();
+                        Debug.WriteLine(String.Format("{0}[GetDataValue] Opened connection...", GetNowString()));
+                    }
+                    // Wait for the connection to finish connecting
+                    while (argSqlCon.State == ConnectionState.Connecting) { }
                 }
-                // Wait for the connection to finish connecting
-                while (argSqlCon.State == ConnectionState.Connecting) { }
                 using (SqlCommand myCommand = new SqlCommand(argSqlCode, argSqlCon))
 				{
 					myCommand.CommandTimeout = argTimeout;
@@ -576,17 +591,20 @@ namespace gpower2.gSqlUtils
                 {
                     throw new Exception("Null SQL connection!");
                 }
-                if (argSqlCode.Trim().Length == 0)
+                if (String.IsNullOrWhiteSpace(argSqlCode))
                 {
                     throw new Exception("Empty SQL code!");
                 }
-                if (argSqlCon.State == System.Data.ConnectionState.Closed)
+                lock (_ThreadAnchor)
                 {
-                    argSqlCon.Open();
-                    Debug.WriteLine(String.Format("{0}[GetDataValue<>] Opened connection...", GetNowString()));
+                    if (argSqlCon.State == System.Data.ConnectionState.Closed)
+                    {
+                        argSqlCon.Open();
+                        Debug.WriteLine(String.Format("{0}[GetDataValue<>] Opened connection...", GetNowString()));
+                    }
+                    // Wait for the connection to finish connecting
+                    while (argSqlCon.State == ConnectionState.Connecting) { }
                 }
-                // Wait for the connection to finish connecting
-                while (argSqlCon.State == ConnectionState.Connecting) { }
                 using (SqlCommand myCommand = new SqlCommand(argSqlCode, argSqlCon))
                 {
                     myCommand.CommandTimeout = argTimeout;
@@ -740,15 +758,17 @@ namespace gpower2.gSqlUtils
                 IList objectList = (IList)Activator.CreateInstance(genericListType);
                 // Get the properties for the object
                 PropertyInfo[] objectProperties = argObjectType.GetProperties();
-                // Open the SQL connection in case it's closed
-                if (argSqlCon.State == System.Data.ConnectionState.Closed)
-                {
-                    argSqlCon.Open();
-                    Debug.WriteLine(String.Format("{0}[GetDataList] Opened connection...", GetNowString()));
+                lock (_ThreadAnchor)
+                {                    
+                    // Open the SQL connection in case it's closed
+                    if (argSqlCon.State == System.Data.ConnectionState.Closed)
+                    {
+                        argSqlCon.Open();
+                        Debug.WriteLine(String.Format("{0}[GetDataList] Opened connection...", GetNowString()));
+                    }
+                    // Wait for the connection to finish connecting
+                    while (argSqlCon.State == ConnectionState.Connecting) { }
                 }
-                // Wait for the connection to finish connecting
-                while (argSqlCon.State == ConnectionState.Connecting) { }
-
                 // Create the SQL command from the SQL query using object's connection
                 using (SqlCommand sqlCmd = new SqlCommand(argSqlCode, argSqlCon))
                 {
@@ -1068,19 +1088,21 @@ namespace gpower2.gSqlUtils
                 {
                     throw new Exception("Empty SQL query!");
                 }
-                // Open the SQL connection in case it's closed
-                if (argSqlCon.State == System.Data.ConnectionState.Closed)
-                {
-                    argSqlCon.Open();
-                    Debug.WriteLine(String.Format("{0}[GetDataObject<>] Opened connection...", GetNowString()));
-                }
-                // Wait for the connection to finish connecting
-                while (argSqlCon.State == ConnectionState.Connecting) { }
                 // Instantiate a new object for filling it from datarow
                 T myObject = default(T);
                 // Get the properties for the object
                 PropertyInfo[] objectProperties = typeof(T).GetProperties();
-
+                lock (_ThreadAnchor)
+                {
+                    // Open the SQL connection in case it's closed
+                    if (argSqlCon.State == System.Data.ConnectionState.Closed)
+                    {
+                        argSqlCon.Open();
+                        Debug.WriteLine(String.Format("{0}[GetDataObject<>] Opened connection...", GetNowString()));
+                    }
+                    // Wait for the connection to finish connecting
+                    while (argSqlCon.State == ConnectionState.Connecting) { }
+                }
                 // Create the SQL command from the SQL query using object's connection
                 using (SqlCommand sqlCmd = new SqlCommand(argSqlCode, argSqlCon))
                 {
@@ -1632,7 +1654,11 @@ namespace gpower2.gSqlUtils
 
                 // Return a new connection with the connection string of the builder
                 sw.Start();
-                SqlConnection myCon = new SqlConnection(myBuilder.ConnectionString);
+                SqlConnection myCon = null;
+                lock (_ThreadAnchor)
+                {
+                    myCon = new SqlConnection(myBuilder.ConnectionString);
+                }
                 sw.Stop();
 
                 _LastOperationEllapsedTime = sw.Elapsed;

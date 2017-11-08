@@ -538,7 +538,7 @@ namespace gpower2.gSqlUtils
         /// <param name="argSqlCode">The SQL code to execute</param>
         /// <param name="argSqlCon">The SQL connection to use</param>
         /// <returns>If the result is DBNull, then it returns the default value for the Type provided</returns>
-        public static T GetDataValue<T>(String argSqlCode, SqlConnection argSqlCon)
+        public static T GetDataValue<T>(String argSqlCode, SqlConnection argSqlCon) where T : IComparable, IConvertible, IEquatable<T>
         {
             return GetDataValue<T>(argSqlCode, argSqlCon, 120, null, null);
         }
@@ -552,7 +552,7 @@ namespace gpower2.gSqlUtils
         /// <param name="argSqlCon">The SQL connection to use</param>
         /// <param name="argTimeout">The timeout for the SQL command in seconds</param>
         /// <returns>If the result is DBNull, then it returns the default value for the Type provided</returns>
-        public static T GetDataValue<T>(String argSqlCode, SqlConnection argSqlCon, Int32 argTimeout)
+        public static T GetDataValue<T>(String argSqlCode, SqlConnection argSqlCon, Int32 argTimeout) where T : IComparable, IConvertible, IEquatable<T>
         {
             return GetDataValue<T>(argSqlCode, argSqlCon, argTimeout, null, null);
         }
@@ -566,7 +566,7 @@ namespace gpower2.gSqlUtils
         /// <param name="argSqlCon">The SQL connection to use</param>
         /// <param name="argSqlTransaction">The SQL transaction to use</param>
         /// <returns>If the result is DBNull, then it returns the default value for the Type provided</returns>
-        public static T GetDataValue<T>(String argSqlCode, SqlConnection argSqlCon, SqlTransaction argSqlTransaction)
+        public static T GetDataValue<T>(String argSqlCode, SqlConnection argSqlCon, SqlTransaction argSqlTransaction) where T : IComparable, IConvertible, IEquatable<T>
         {
             return GetDataValue<T>(argSqlCode, argSqlCon, 120, argSqlTransaction, null);
         }
@@ -581,7 +581,7 @@ namespace gpower2.gSqlUtils
         /// <param name="argSqlTransaction">The SQL transaction to use</param>
         /// <param name="argSqlParameters">The SQL Parameters for the SQL command</param>
         /// <returns>If the result is DBNull, then it returns the default value for the Type provided</returns>
-        public static T GetDataValue<T>(String argSqlCode, SqlConnection argSqlCon, Int32 argTimeout, SqlTransaction argSqlTransaction, List<SqlParameter> argSqlParameters)
+        public static T GetDataValue<T>(String argSqlCode, SqlConnection argSqlCon, Int32 argTimeout, SqlTransaction argSqlTransaction, List<SqlParameter> argSqlParameters) where T : IComparable, IConvertible, IEquatable<T>
         {
             Stopwatch myStopWatch = new Stopwatch();
             _LastOperationException = null;

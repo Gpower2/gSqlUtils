@@ -692,7 +692,7 @@ namespace gpower2.gSqlUtils
         /// </summary>
         /// <param name="argSqlCode">The SQL code to execute</param>
         /// <returns>If the result is DBNull, then it returns the default value for the Type provided</returns>
-        public T GetDataValue<T>(String argSqlCode)
+        public T GetDataValue<T>(String argSqlCode) where T : IComparable, IConvertible, IEquatable<T>
         {
             return GetDataValue<T>(argSqlCode, 120, false, null);
         }
@@ -705,7 +705,7 @@ namespace gpower2.gSqlUtils
         /// <param name="argSqlCode">The SQL code to execute</param>
         /// <param name="argTimeout">The timeout for the SQL command in seconds</param>
         /// <returns>If the result is DBNull, then it returns the default value for the Type provided</returns>
-        public T GetDataValue<T>(String argSqlCode, Int32 argTimeout)
+        public T GetDataValue<T>(String argSqlCode, Int32 argTimeout) where T : IComparable, IConvertible, IEquatable<T>
         {
             return GetDataValue<T>(argSqlCode, argTimeout, false, null);
         }
@@ -718,7 +718,7 @@ namespace gpower2.gSqlUtils
         /// <param name="argSqlCode">The SQL code to execute</param>
         /// <param name="argUseTransaction">Whether to use SQL Transaction</param>
         /// <returns>If the result is DBNull, then it returns the default value for the Type provided</returns>
-        public T GetDataValue<T>(String argSqlCode, Boolean argUseTransaction)
+        public T GetDataValue<T>(String argSqlCode, Boolean argUseTransaction) where T : IComparable, IConvertible, IEquatable<T>
         {
             return GetDataValue<T>(argSqlCode, 120, argUseTransaction, null);
         }
@@ -732,7 +732,7 @@ namespace gpower2.gSqlUtils
         /// <param name="argUseTransaction">Whether to use SQL Transaction</param>
         /// <param name="argSqlParameters">The SQL Parameters for the SQL command</param>
         /// <returns>If the result is DBNull, then it returns the default value for the Type provided</returns>
-        public T GetDataValue<T>(String argSqlCode, Int32 argTimeout, Boolean argUseTransaction, List<SqlParameter> argSqlParameters)
+        public T GetDataValue<T>(String argSqlCode, Int32 argTimeout, Boolean argUseTransaction, List<SqlParameter> argSqlParameters) where T : IComparable, IConvertible, IEquatable<T>
         {
             _LastOperationException = null;
             _LastOperationTimeSpan = new TimeSpan();

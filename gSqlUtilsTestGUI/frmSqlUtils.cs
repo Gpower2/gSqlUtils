@@ -42,6 +42,7 @@ namespace gSqlUtilsTestGUI
 
                 Debug.WriteLine("testObject");
                 Int32 testObject = _helper.GetDataObject<Int32>(sqlCode);
+                string testString = _helper.GetDataValue<string>(sqlCode);
 
                 grdResults.DataSource = testList;
                 grdResults.Refresh();

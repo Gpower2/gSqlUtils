@@ -1137,7 +1137,7 @@ namespace gpower2.gSqlUtils
                                 myObject = (T)Activator.CreateInstance(typeof(T));
 
                                 // Check if the Type requested is ValueType
-                                if (!typeof(T).IsValueType)
+                                if (typeof(T).IsValueType)
                                 {
                                     // If we have a Value Type, then use the first column
                                     Object cellValue = myReader.GetValue(0);

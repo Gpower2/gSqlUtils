@@ -78,6 +78,8 @@
   <ItemGroup>
     <Compile Include="ClipboardHelper.cs" />
     <Compile Include="gSqlHelper.cs" />
+    <Compile Include="Mapper\MapObject.cs" />
+    <Compile Include="Mapper\MapProperty.cs" />
     <Compile Include="SqlHelperStatic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

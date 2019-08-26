@@ -795,7 +795,7 @@ namespace gpower2.gSqlUtils
                 argProp.SetValue(argObject, argValue == DBNull.Value ? null : Convert.ChangeType(argValue,
                     Nullable.GetUnderlyingType(argProp.PropertyType)), null);
             }
-            else if (argProp.PropertyType.IsValueType)
+            else if (argProp.PropertyType.IsValueType || argProp.PropertyType == typeof(String))
             {
                 // if type is value type, then it doesn't allow null, so we get the default value by using Activator
                 argProp.SetValue(argObject, argValue == DBNull.Value ? Activator.CreateInstance(argProp.PropertyType) : Convert.ChangeType(argValue,
@@ -882,14 +882,22 @@ namespace gpower2.gSqlUtils
                         if (myReader.HasRows)
                         {
                             // Check if the Type requested is ValueType
-                            if (argObjectType.IsValueType)
+                            if (argObjectType.IsValueType || argObjectType == typeof(String))
                             {
                                 // If we have a Value Type, we don't need to create a properties map
                                 // Begin reading
                                 while (myReader.Read())
                                 {
                                     // Instantiate a new object for filling it from datarow
-                                    Object myObject = Activator.CreateInstance(argObjectType);
+                                    Object myObject;
+                                    if (argObjectType == typeof(string))
+                                    {
+                                        myObject = null;
+                                    }
+                                    else
+                                    {
+                                        myObject = Activator.CreateInstance(argObjectType);
+                                    }
 
                                     // If we have a Value Type, then use the first column
                                     Object cellValue = myReader.GetValue(0);
@@ -903,7 +911,9 @@ namespace gpower2.gSqlUtils
                                     else
                                     {
                                         // If the type is a not Nullable Value Type, we use the default value when we have DBNull.Value
-                                        myObject = (cellValue == DBNull.Value ? Activator.CreateInstance(argObjectType) : Convert.ChangeType(cellValue, argObjectType));
+                                        myObject = (cellValue == DBNull.Value ?
+                                            argObjectType == typeof(string) ? null : Activator.CreateInstance(argObjectType)
+                                            : Convert.ChangeType(cellValue, argObjectType));
                                     }
 
                                     // Add the object to the list
@@ -1235,7 +1245,7 @@ namespace gpower2.gSqlUtils
                                 myObject = (T)Activator.CreateInstance(typeof(T));
 
                                 // Check if the Type requested is ValueType
-                                if (typeof(T).IsValueType)
+                                if (typeof(T).IsValueType || typeof(T) == typeof(String))
                                 {
                                     // If we have a Value Type, then use the first column
                                     Object cellValue = myReader.GetValue(0);

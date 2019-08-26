@@ -1,29 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Data.Sql;
-using System.Data.SqlClient;
-using System.Data;
-using System.Diagnostics;
-using System.Data.SqlTypes;
-using System.Text.RegularExpressions;
 using System.Collections;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Data.SqlTypes;
+using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace gpower2.gSqlUtils
 {
-	/// <summary>
-	/// A static class that provides methods for CRUD operations on MS SQL Server
-	/// and also some helper functions for creating SQL statements.
-	/// All the CRUD methods require an already initialized SQL connection.
-	/// All the CRUD methods have a stopwatch for timing the excecution time, 
-	/// but the results are shown only in Debug builds. The last operation's
-	/// ellapsed time can be accessed through the public static property:
-	/// LastOperationEllapsedTime
-	/// All the CRUD methods support SQL transactions to be passed as arguments,
-	/// in order to use it from outside environments in multiple calls.
-	/// </summary>
-	public static class SqlHelperStatic
+    /// <summary>
+    /// A static class that provides methods for CRUD operations on MS SQL Server
+    /// and also some helper functions for creating SQL statements.
+    /// All the CRUD methods require an already initialized SQL connection.
+    /// All the CRUD methods have a stopwatch for timing the excecution time, 
+    /// but the results are shown only in Debug builds. The last operation's
+    /// ellapsed time can be accessed through the public static property:
+    /// LastOperationEllapsedTime
+    /// All the CRUD methods support SQL transactions to be passed as arguments,
+    /// in order to use it from outside environments in multiple calls.
+    /// </summary>
+    public static class SqlHelperStatic
 	{
 		#region "Properties"
 		
@@ -722,6 +722,87 @@ namespace gpower2.gSqlUtils
         }
 
         /// <summary>
+        /// Fills a Dictionary that maps object properties to column index of a DataReader
+        /// </summary>
+        /// <param name="myReader"></param>
+        /// <param name="mapDict"></param>
+        /// <param name="objectProperties"></param>
+        /// <param name="argRootPropertyName"></param>
+        private static void FillMap(SqlDataReader myReader, Dictionary<PropertyInfo, Int32> mapDict, PropertyInfo[] objectProperties, String argRootPropertyName = "")
+        {
+            // for each property of the object, try to find a column of the same name
+            foreach (PropertyInfo myProp in objectProperties)
+            {
+                // Only for properties that can be written to
+                if (myProp.CanWrite)
+                {
+                    // Check for reference type
+                    if (!myProp.PropertyType.IsValueType && myProp.PropertyType != typeof(String)
+                        && !myProp.PropertyType.IsArray
+                        && !(myProp.PropertyType.IsGenericType && myProp.PropertyType.GetGenericTypeDefinition() != typeof(Nullable<>)))
+                    {
+                        // If reference type then try to find if we have columns for its properties
+                        FillMap(myReader, mapDict, myProp.PropertyType.GetProperties(),
+                            String.IsNullOrWhiteSpace(argRootPropertyName) ? myProp.Name : string.Format("{0}_{1}", argRootPropertyName, myProp.Name));
+                        continue;
+                    }
+
+                    // try to find a column with the same property name
+                    // Remove '_' character from column name
+                    // Make the comparison case insensitive
+                    for (Int32 curColumn = 0; curColumn < myReader.FieldCount; curColumn++)
+                    {
+                        // Check if column is already mapped
+                        if (mapDict.ContainsValue(curColumn))
+                        {
+                            // continue to next column
+                            continue;
+                        }
+
+                        // check column name with property name
+                        if (myReader.GetName(curColumn).Replace("_", "").Replace(" ", "").Trim().ToLower().Equals( // Column Name
+                            (String.IsNullOrWhiteSpace(argRootPropertyName) ? myProp.Name : string.Format("{0}_{1}", argRootPropertyName, myProp.Name)).Replace("_", "").ToLower()) // Property Name
+                            )
+                        {
+                            // Add the map entry
+                            mapDict.Add(myProp, curColumn);
+                            // Exit the loop
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="argProp"></param>
+        /// <param name="argObject"></param>
+        /// <param name="argValue"></param>
+        private static void SetPropertyValueToObject(PropertyInfo argProp, Object argObject, Object argValue)
+        {
+            // Check for Nullable<T> properties
+            if (argProp.PropertyType.IsGenericType && argProp.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
+            {
+                // If the type is Nullable<T> we change the value to the Nullable<T> equivalent
+                argProp.SetValue(argObject, argValue == DBNull.Value ? null : Convert.ChangeType(argValue,
+                    Nullable.GetUnderlyingType(argProp.PropertyType)), null);
+            }
+            else if (argProp.PropertyType.IsValueType)
+            {
+                // if type is value type, then it doesn't allow null, so we get the default value by using Activator
+                argProp.SetValue(argObject, argValue == DBNull.Value ? Activator.CreateInstance(argProp.PropertyType) : Convert.ChangeType(argValue,
+                    argProp.PropertyType), null);
+            }
+            else
+            {
+                // if type is not a value type and not a nullable type, we can assign null
+                argProp.SetValue(argObject, argValue == DBNull.Value ? null : Convert.ChangeType(argValue, argProp.PropertyType), null);
+            }
+        }
+
+        /// <summary>
         /// Returns a List of objects of the type specified, containing the data from 
         /// executing the SQL code provided.
         /// It maps each column name from the dataset to the same named property of the
@@ -756,8 +837,6 @@ namespace gpower2.gSqlUtils
                 Type genericListType = typeof(List<>).MakeGenericType(argObjectType);
                 // Instantiate the List<T>
                 IList objectList = (IList)Activator.CreateInstance(genericListType);
-                // Get the properties for the object
-                PropertyInfo[] objectProperties = argObjectType.GetProperties();
                 lock (_ThreadAnchor)
                 {                    
                     // Open the SQL connection in case it's closed
@@ -832,47 +911,22 @@ namespace gpower2.gSqlUtils
                                 Dictionary<PropertyInfo, Int32> mapDict = new Dictionary<PropertyInfo, Int32>();
                                 Boolean mapCreated = false;
 
+                                // Get the properties for the object
+                                PropertyInfo[] objectProperties = argObjectType.GetProperties();
+
                                 // Begin reading
                                 while (myReader.Read())
                                 {
                                     // Check if map is created
                                     if (!mapCreated)
                                     {
-                                        // for each property of the object, try to find a column of the same name
-                                        foreach (PropertyInfo myProp in objectProperties)
-                                        {
-                                            // Only for properties that can be written to
-                                            if (myProp.CanWrite)
-                                            {
-                                                // try to find a column with the same property name
-                                                // Remove '_' character from column name
-                                                // Make the comparison case insensitive
-                                                for (Int32 curColumn = 0; curColumn < myReader.FieldCount; curColumn++)
-                                                {
-                                                    // Check if column is already mapped
-                                                    if (mapDict.ContainsValue(curColumn))
-                                                    {
-                                                        // continue to next column
-                                                        continue;
-                                                    }
-                                                    // check column name with property name
-                                                    if (myReader.GetName(curColumn).Replace("_", "").Replace(" ", "").Trim().ToLower().Equals( // Column Name
-                                                        myProp.Name.Replace("_", "").ToLower()) // Property Name
-                                                        )
-                                                    {
-                                                        // Add the map entry
-                                                        mapDict.Add(myProp, curColumn);
-                                                        // Exit the loop
-                                                        break;
-                                                    }
-                                                }
-                                            }
-                                        }
+                                        FillMap(myReader, mapDict, objectProperties);
                                         mapCreated = true;
                                     }
 
                                     // Instantiate a new object for filling it from datarow
-                                    Object myObject = Activator.CreateInstance(argObjectType);
+                                    Object rootObject = Activator.CreateInstance(argObjectType);
+                                    Object curObject = rootObject;
 
                                     // If we have a Reference Type, use the properties Map to make the assignments
                                     // Make the assignment
@@ -880,28 +934,35 @@ namespace gpower2.gSqlUtils
                                     {
                                         Object cellValue = myReader.GetValue(mapDict[mapProp]);
 
-                                        // Check for Nullable<T> properties
-                                        if (mapProp.PropertyType.IsGenericType && mapProp.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                                        if (mapProp.DeclaringType != argObjectType)
                                         {
-                                            // If the type is Nullable<T> we change the value to the Nullable<T> equivalent
-                                            mapProp.SetValue(myObject, cellValue == DBNull.Value ? null : Convert.ChangeType(cellValue,
-                                                Nullable.GetUnderlyingType(mapProp.PropertyType)), null);
-                                        }
-                                        else if (mapProp.PropertyType.IsValueType)
-                                        {
-                                            // if type is value type, then it doesn't allow null, so we get the default value by using Activator
-                                            mapProp.SetValue(myObject, cellValue == DBNull.Value ? Activator.CreateInstance(mapProp.PropertyType) : Convert.ChangeType(cellValue,
-                                                mapProp.PropertyType), null);
+                                            // Try to find the root object's property with the declaring type of the property
+                                            PropertyInfo declareObjectProperty = objectProperties.FirstOrDefault(x => x.PropertyType == mapProp.DeclaringType);
+                                            if (declareObjectProperty != null)
+                                            {
+                                                // If property was found, instantiate it
+                                                Object declareObject = Activator.CreateInstance(mapProp.DeclaringType);
+                                                // Set the cell value to the property of the newly created object
+                                                SetPropertyValueToObject(declareObjectProperty, rootObject, declareObject);
+
+                                                curObject = declareObject;
+                                            }
+                                            else
+                                            {
+                                                // if we couldn't find the property, then ignore the cell value
+                                                continue;
+                                            }
                                         }
                                         else
                                         {
-                                            // if type is not a value type and not a nullable type, we can assign null
-                                            mapProp.SetValue(myObject, cellValue == DBNull.Value ? null : Convert.ChangeType(cellValue, mapProp.PropertyType), null);
+                                            curObject = rootObject;
                                         }
+
+                                        SetPropertyValueToObject(mapProp, curObject, cellValue);
                                     }
 
                                     // Add the object to the list
-                                    objectList.Add(myObject);
+                                    objectList.Add(rootObject);
                                 }
                             }
                         }
@@ -1088,10 +1149,6 @@ namespace gpower2.gSqlUtils
                 {
                     throw new Exception("Empty SQL query!");
                 }
-                // Instantiate a new object for filling it from datarow
-                T myObject = default(T);
-                // Get the properties for the object
-                PropertyInfo[] objectProperties = typeof(T).GetProperties();
                 lock (_ThreadAnchor)
                 {
                     // Open the SQL connection in case it's closed
@@ -1103,6 +1160,8 @@ namespace gpower2.gSqlUtils
                     // Wait for the connection to finish connecting
                     while (argSqlCon.State == ConnectionState.Connecting) { }
                 }
+                // Instantiate a new object for filling it from datarow
+                T myObject = default(T);
                 // Create the SQL command from the SQL query using object's connection
                 using (SqlCommand sqlCmd = new SqlCommand(argSqlCode, argSqlCon))
                 {
@@ -1156,59 +1215,50 @@ namespace gpower2.gSqlUtils
                                 else
                                 {
                                     // If we have a Reference Type, then create the properties Map                                  
-                                    // Create a list with the mapped indeces, in order to avoid checking these columns again
-                                    List<Int32> mappedColumnIndeces = new List<Int32>();
+                                    // Make a map for properties <-> columns
+                                    Dictionary<PropertyInfo, Int32> mapDict = new Dictionary<PropertyInfo, Int32>();
 
-                                    // For each property of the object, try to find a column of the same name
-                                    foreach (PropertyInfo myProp in objectProperties)
+                                    // Get the properties for the object
+                                    PropertyInfo[] objectProperties = typeof(T).GetProperties();
+
+                                    // Create the map fro properties <-> columns
+                                    FillMap(myReader, mapDict, objectProperties);
+
+                                    // Instantiate a new object for filling it from datarow
+                                    Object rootObject = myObject;
+                                    Object curObject = rootObject;
+
+                                    // If we have a Reference Type, use the properties Map to make the assignments
+                                    // Make the assignment
+                                    foreach (PropertyInfo mapProp in mapDict.Keys)
                                     {
-                                        // Only for properties that can be written to
-                                        if (myProp.CanWrite)
+                                        Object cellValue = myReader.GetValue(mapDict[mapProp]);
+
+                                        if (mapProp.DeclaringType != typeof(T))
                                         {
-                                            // try to find a column with the same property name
-                                            // Remove '_' character from column name
-                                            // Make the comparison case insensitive
-                                            for (Int32 curColumn = 0; curColumn < myReader.FieldCount; curColumn++)
+                                            // Try to find the root object's property with the declaring type of the property
+                                            PropertyInfo declareObjectProperty = objectProperties.FirstOrDefault(x => x.PropertyType == mapProp.DeclaringType);
+                                            if (declareObjectProperty != null)
                                             {
-                                                // Check if the column was already mapped
-                                                if (mappedColumnIndeces.Contains(curColumn))
-                                                {
-                                                    continue;
-                                                }
-                                                // check column name with property name
-                                                if (myReader.GetName(curColumn).Replace("_", "").Replace(" ", "").Trim().ToLower().Equals( // Column Name
-                                                    myProp.Name.Replace("_", "").ToLower()) // Property Name
-                                                    )
-                                                {
-                                                    // Add the column Index to the mapped indeces list
-                                                    mappedColumnIndeces.Add(curColumn);
+                                                // If property was found, instantiate it
+                                                Object declareObject = Activator.CreateInstance(mapProp.DeclaringType);
+                                                // Set the cell value to the property of the newly created object
+                                                SetPropertyValueToObject(declareObjectProperty, rootObject, declareObject);
 
-                                                    Object cellValue = myReader.GetValue(curColumn);
-
-                                                    // Check for Nullable<T> properties
-                                                    if (myProp.PropertyType.IsGenericType && myProp.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
-                                                    {
-                                                        // If the type is Nullable<T> we change the value to the Nullable<T> equivalent
-                                                        myProp.SetValue(myObject, cellValue == DBNull.Value ? null : Convert.ChangeType(cellValue,
-                                                            Nullable.GetUnderlyingType(myProp.PropertyType)), null);
-                                                    }
-                                                    else if (myProp.PropertyType.IsValueType)
-                                                    {
-                                                        // if type is value type, then it doesn't allow null, so we get the default value by using Activator
-                                                        myProp.SetValue(myObject, cellValue == DBNull.Value ? Activator.CreateInstance(myProp.PropertyType) : Convert.ChangeType(cellValue,
-                                                            myProp.PropertyType), null);
-                                                    }
-                                                    else
-                                                    {
-                                                        // if type is not a value type and not a nullable type, we can assign null
-                                                        myProp.SetValue(myObject, cellValue == DBNull.Value ? null : Convert.ChangeType(cellValue, myProp.PropertyType), null);
-                                                    }
-
-                                                    // Exit the loop
-                                                    break;
-                                                }
+                                                curObject = declareObject;
+                                            }
+                                            else
+                                            {
+                                                // if we couldn't find the property, then ignore the cell value
+                                                continue;
                                             }
                                         }
+                                        else
+                                        {
+                                            curObject = rootObject;
+                                        }
+
+                                        SetPropertyValueToObject(mapProp, curObject, cellValue);
                                     }
                                 }
                             }

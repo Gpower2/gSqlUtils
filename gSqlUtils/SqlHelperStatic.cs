@@ -941,6 +941,12 @@ namespace gpower2.gSqlUtils
                                         PropertyInfo mapProp = mapDict[columnIndex].Item1;
                                         Object cellValue = myReader.GetValue(columnIndex);
 
+                                        // Don't assign null value
+                                        if (cellValue == null || cellValue == DBNull.Value)
+                                        {
+                                            continue;
+                                        }
+
                                         if (mapProp.DeclaringType != argObjectType)
                                         {
                                             // Get Property Path
@@ -1267,6 +1273,12 @@ namespace gpower2.gSqlUtils
                                     {
                                         PropertyInfo mapProp = mapDict[columnIndex].Item1;
                                         Object cellValue = myReader.GetValue(columnIndex);
+
+                                        // Don't assign null value
+                                        if (cellValue == null || cellValue == DBNull.Value)
+                                        {
+                                            continue;
+                                        }
 
                                         if (mapProp.DeclaringType != typeof(T))
                                         {

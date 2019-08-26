@@ -940,10 +940,14 @@ namespace gpower2.gSqlUtils
                                             PropertyInfo declareObjectProperty = objectProperties.FirstOrDefault(x => x.PropertyType == mapProp.DeclaringType);
                                             if (declareObjectProperty != null)
                                             {
-                                                // If property was found, instantiate it
-                                                Object declareObject = Activator.CreateInstance(mapProp.DeclaringType);
-                                                // Set the cell value to the property of the newly created object
-                                                SetPropertyValueToObject(declareObjectProperty, rootObject, declareObject);
+                                                // If property was found, get it or instantiate it
+                                                Object declareObject = declareObjectProperty.GetValue(rootObject, null);
+                                                if (declareObject == null)
+                                                {
+                                                    declareObject = Activator.CreateInstance(mapProp.DeclaringType);
+                                                    // Set the value to the property of the newly created object
+                                                    SetPropertyValueToObject(declareObjectProperty, rootObject, declareObject);
+                                                }
 
                                                 curObject = declareObject;
                                             }
@@ -1240,10 +1244,14 @@ namespace gpower2.gSqlUtils
                                             PropertyInfo declareObjectProperty = objectProperties.FirstOrDefault(x => x.PropertyType == mapProp.DeclaringType);
                                             if (declareObjectProperty != null)
                                             {
-                                                // If property was found, instantiate it
-                                                Object declareObject = Activator.CreateInstance(mapProp.DeclaringType);
-                                                // Set the cell value to the property of the newly created object
-                                                SetPropertyValueToObject(declareObjectProperty, rootObject, declareObject);
+                                                // If property was found, get it or instantiate it
+                                                Object declareObject = declareObjectProperty.GetValue(rootObject, null);
+                                                if (declareObject == null)
+                                                {
+                                                    declareObject = Activator.CreateInstance(mapProp.DeclaringType);
+                                                    // Set the value to the property of the newly created object
+                                                    SetPropertyValueToObject(declareObjectProperty, rootObject, declareObject);
+                                                }
 
                                                 curObject = declareObject;
                                             }

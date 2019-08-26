@@ -1405,19 +1405,19 @@ namespace gpower2.gSqlUtils
 			return IsNullString(argSourceString, true, false, true);
 		}
 
-		/// <summary>
-		/// It checks if a String is null and then it returns NULL.
-		/// Else, according to user options, it either replaces the
-		/// escape characters ' and " or not, it either replaces the
-		/// wildcard characters % and _ or not, and it either single
-		/// quotes the String or not eg. text => 'text'
-		/// </summary>
-		/// <param name="argSourceString">The source String to check for null</param>
-		/// <param name="argEscapeString">The flag whether to replace the escape characters or not</param>
-		/// <param name="argEscapeWildcards">The flag whether to replace the wildcard characters or not</param>
-		/// <param name="argQuoteString">The flag whether to single quote the String or not</param>
-		/// <returns></returns>
-		public static String IsNullString(String argSourceString, Boolean argEscapeString, Boolean argEscapeWildcards, Boolean argQuoteString)
+        /// <summary>
+        /// It checks if a String is null and then it returns NULL.
+        /// Else, according to user options, it either replaces the
+        /// escape characters ' and " or not, it either replaces the
+        /// wildcard characters % and _ and [ or not, and it either single
+        /// quotes the String or not eg. text => 'text'
+        /// </summary>
+        /// <param name="argSourceString">The source String to check for null</param>
+        /// <param name="argEscapeString">The flag whether to replace the escape characters or not</param>
+        /// <param name="argEscapeWildcards">The flag whether to replace the wildcard characters or not</param>
+        /// <param name="argQuoteString">The flag whether to single quote the String or not</param>
+        /// <returns></returns>
+        public static String IsNullString(String argSourceString, Boolean argEscapeString, Boolean argEscapeWildcards, Boolean argQuoteString)
 		{
 			if (argSourceString == null)
 			{
@@ -1448,15 +1448,15 @@ namespace gpower2.gSqlUtils
 			return EscapeString(argSourceString, false);
 		}
 
-		/// <summary>
-		/// It escapes the String by replacing ' with ''.
-		/// It also escapes the wildcard charactes % and _ 
-		/// if the user specifies it.
-		/// </summary>
-		/// <param name="argSourceString">The source String to escape</param>
-		/// <param name="argEscapeWildcards">The flag to whether escape the wildcard characters or not</param>
-		/// <returns>The escaped String</returns>
-		public static String EscapeString(String argSourceString, Boolean argEscapeWildcards)
+        /// <summary>
+        /// It escapes the String by replacing ' with ''.
+        /// It also escapes the wildcard charactes % and _ and [
+        /// if the user specifies it.
+        /// </summary>
+        /// <param name="argSourceString">The source String to escape</param>
+        /// <param name="argEscapeWildcards">The flag to whether escape the wildcard characters or not</param>
+        /// <returns>The escaped String</returns>
+        public static String EscapeString(String argSourceString, Boolean argEscapeWildcards)
 		{
             if (argSourceString == null)
             {
@@ -1466,7 +1466,26 @@ namespace gpower2.gSqlUtils
             //argSourceString = argSourceString.Replace("\"", "\"\"");
 			if (argEscapeWildcards)
 			{
-				argSourceString = argSourceString.Replace("%", "[%]");
+                MatchCollection openPar = Regex.Matches(argSourceString, @"\[");
+                List<Match> allMatches = new List<Match>(openPar.Cast<Match>());
+                allMatches = allMatches.OrderBy(m => m.Index).ToList();
+
+                Int32 offset = 0;
+                foreach (Match m in allMatches)
+                {
+                    argSourceString = argSourceString.Remove(m.Index + offset, 1);
+                    if (m.Value == "[")
+                    {
+                        argSourceString = argSourceString.Insert(m.Index + offset, "[[]");
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                    offset += 2;
+                }
+
+                argSourceString = argSourceString.Replace("%", "[%]");
 				argSourceString = argSourceString.Replace("_", "[_]");
 			}
 			return argSourceString;

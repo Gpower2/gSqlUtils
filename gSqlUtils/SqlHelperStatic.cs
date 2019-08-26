@@ -957,7 +957,7 @@ namespace gpower2.gSqlUtils
                                             continue;
                                         }
 
-                                        if (mapProp.DeclaringType != argObjectType)
+                                        if (mapProp.DeclaringType != argObjectType && mapProp.DeclaringType != argObjectType.BaseType)
                                         {
                                             // Get Property Path
                                             string propertyPath = mapDict[columnIndex].Item2;
@@ -1290,7 +1290,7 @@ namespace gpower2.gSqlUtils
                                             continue;
                                         }
 
-                                        if (mapProp.DeclaringType != typeof(T))
+                                        if (mapProp.DeclaringType != typeof(T) && mapProp.DeclaringType != typeof(T).BaseType)
                                         {
                                             // Get Property Path
                                             string propertyPath = mapDict[columnIndex].Item2;

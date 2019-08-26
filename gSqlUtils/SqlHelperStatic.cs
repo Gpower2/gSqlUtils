@@ -728,7 +728,7 @@ namespace gpower2.gSqlUtils
         /// <param name="mapDict"></param>
         /// <param name="objectProperties"></param>
         /// <param name="argRootPropertyName"></param>
-        private static void FillMap(SqlDataReader myReader, Dictionary<PropertyInfo, Int32> mapDict, PropertyInfo[] objectProperties, String argRootPropertyName = "")
+        private static void FillMap(SqlDataReader myReader, Dictionary<Int32, Tuple<PropertyInfo, string>> mapDict, PropertyInfo[] objectProperties, String argRootPropertyName = "")
         {
             // for each property of the object, try to find a column of the same name
             foreach (PropertyInfo myProp in objectProperties)
@@ -759,7 +759,7 @@ namespace gpower2.gSqlUtils
                     for (Int32 curColumn = 0; curColumn < myReader.FieldCount; curColumn++)
                     {
                         // Check if column is already mapped
-                        if (mapDict.ContainsValue(curColumn))
+                        if (mapDict.Keys.Contains(curColumn))
                         {
                             // continue to next column
                             continue;
@@ -771,7 +771,7 @@ namespace gpower2.gSqlUtils
                             )
                         {
                             // Add the map entry
-                            mapDict.Add(myProp, curColumn);
+                            mapDict.Add(curColumn, new Tuple<PropertyInfo, string>(myProp, argRootPropertyName));
                             // Exit the loop
                             break;
                         }
@@ -914,7 +914,7 @@ namespace gpower2.gSqlUtils
                             {
                                 // If we have a Reference Type, then create the properties Map
                                 // Make a map for properties <-> columns
-                                Dictionary<PropertyInfo, Int32> mapDict = new Dictionary<PropertyInfo, Int32>();
+                                Dictionary<Int32, Tuple<PropertyInfo, string>> mapDict = new Dictionary<Int32, Tuple<PropertyInfo, string>>();
                                 Boolean mapCreated = false;
 
                                 // Get the properties for the object
@@ -936,31 +936,54 @@ namespace gpower2.gSqlUtils
 
                                     // If we have a Reference Type, use the properties Map to make the assignments
                                     // Make the assignment
-                                    foreach (PropertyInfo mapProp in mapDict.Keys)
+                                    foreach (Int32 columnIndex in mapDict.Keys)
                                     {
-                                        Object cellValue = myReader.GetValue(mapDict[mapProp]);
+                                        PropertyInfo mapProp = mapDict[columnIndex].Item1;
+                                        Object cellValue = myReader.GetValue(columnIndex);
 
                                         if (mapProp.DeclaringType != argObjectType)
                                         {
-                                            // Try to find the root object's property with the declaring type of the property
-                                            PropertyInfo declareObjectProperty = objectProperties.FirstOrDefault(x => x.PropertyType == mapProp.DeclaringType);
-                                            if (declareObjectProperty != null)
-                                            {
-                                                // If property was found, get it or instantiate it
-                                                Object declareObject = declareObjectProperty.GetValue(rootObject, null);
-                                                if (declareObject == null)
-                                                {
-                                                    declareObject = Activator.CreateInstance(mapProp.DeclaringType);
-                                                    // Set the value to the property of the newly created object
-                                                    SetPropertyValueToObject(declareObjectProperty, rootObject, declareObject);
-                                                }
+                                            // Get Property Path
+                                            string propertyPath = mapDict[columnIndex].Item2;
 
-                                                curObject = declareObject;
-                                            }
-                                            else
+                                            // Sanity check
+                                            if (String.IsNullOrWhiteSpace(propertyPath))
                                             {
-                                                // if we couldn't find the property, then ignore the cell value
+                                                // The path should not be empty when we don't have the same type in the property and the Declaring Type
+                                                // We should check the FillMap!
                                                 continue;
+                                            }
+
+                                            // Get the parent property array
+                                            string[] paths = propertyPath.Split(new string[] { "." }, StringSplitOptions.None);
+
+                                            // Set the current Parent Object, which is the root object
+                                            object currentParent = rootObject;
+
+                                            for (int i = 0; i < paths.Length; i++)
+                                            {
+                                                // Try to find the root object's property with the declaring type of the property
+                                                PropertyInfo declareObjectProperty = currentParent.GetType().GetProperties().FirstOrDefault(x => x.Name == paths[i]);
+                                                if (declareObjectProperty != null)
+                                                {
+                                                    // If property was found, get it or instantiate it
+                                                    Object declareObject = declareObjectProperty.GetValue(currentParent, null);
+                                                    if (declareObject == null)
+                                                    {
+                                                        declareObject = Activator.CreateInstance(declareObjectProperty.PropertyType);
+                                                        // Set the value to the property of the newly created object
+                                                        SetPropertyValueToObject(declareObjectProperty, currentParent, declareObject);
+                                                    }
+                                                    // Set the current object to the property's object
+                                                    curObject = declareObject;
+                                                    // Set the parent to the current object
+                                                    currentParent = declareObject;
+                                                }
+                                                else
+                                                {
+                                                    // if we couldn't find the property, then ignore the cell value
+                                                    continue;
+                                                }
                                             }
                                         }
                                         else
@@ -1226,7 +1249,7 @@ namespace gpower2.gSqlUtils
                                 {
                                     // If we have a Reference Type, then create the properties Map                                  
                                     // Make a map for properties <-> columns
-                                    Dictionary<PropertyInfo, Int32> mapDict = new Dictionary<PropertyInfo, Int32>();
+                                    Dictionary<Int32, Tuple<PropertyInfo, string>> mapDict = new Dictionary<Int32, Tuple<PropertyInfo, string>>();
 
                                     // Get the properties for the object
                                     PropertyInfo[] objectProperties = typeof(T).GetProperties();
@@ -1240,31 +1263,54 @@ namespace gpower2.gSqlUtils
 
                                     // If we have a Reference Type, use the properties Map to make the assignments
                                     // Make the assignment
-                                    foreach (PropertyInfo mapProp in mapDict.Keys)
+                                    foreach (Int32 columnIndex in mapDict.Keys)
                                     {
-                                        Object cellValue = myReader.GetValue(mapDict[mapProp]);
+                                        PropertyInfo mapProp = mapDict[columnIndex].Item1;
+                                        Object cellValue = myReader.GetValue(columnIndex);
 
                                         if (mapProp.DeclaringType != typeof(T))
                                         {
-                                            // Try to find the root object's property with the declaring type of the property
-                                            PropertyInfo declareObjectProperty = objectProperties.FirstOrDefault(x => x.PropertyType == mapProp.DeclaringType);
-                                            if (declareObjectProperty != null)
-                                            {
-                                                // If property was found, get it or instantiate it
-                                                Object declareObject = declareObjectProperty.GetValue(rootObject, null);
-                                                if (declareObject == null)
-                                                {
-                                                    declareObject = Activator.CreateInstance(mapProp.DeclaringType);
-                                                    // Set the value to the property of the newly created object
-                                                    SetPropertyValueToObject(declareObjectProperty, rootObject, declareObject);
-                                                }
+                                            // Get Property Path
+                                            string propertyPath = mapDict[columnIndex].Item2;
 
-                                                curObject = declareObject;
-                                            }
-                                            else
+                                            // Sanity check
+                                            if (String.IsNullOrWhiteSpace(propertyPath))
                                             {
-                                                // if we couldn't find the property, then ignore the cell value
+                                                // The path should not be empty when we don't have the same type in the property and the Declaring Type
+                                                // We should check the FillMap!
                                                 continue;
+                                            }
+
+                                            // Get the parent property array
+                                            string[] paths = propertyPath.Split(new string[] { "." }, StringSplitOptions.None);
+
+                                            // Set the current Parent Object, which is the root object
+                                            object currentParent = rootObject;
+
+                                            for (int i = 0; i < paths.Length; i++)
+                                            {
+                                                // Try to find the root object's property with the declaring type of the property
+                                                PropertyInfo declareObjectProperty = currentParent.GetType().GetProperties().FirstOrDefault(x => x.Name == paths[i]);
+                                                if (declareObjectProperty != null)
+                                                {
+                                                    // If property was found, get it or instantiate it
+                                                    Object declareObject = declareObjectProperty.GetValue(currentParent, null);
+                                                    if (declareObject == null)
+                                                    {
+                                                        declareObject = Activator.CreateInstance(declareObjectProperty.PropertyType);
+                                                        // Set the value to the property of the newly created object
+                                                        SetPropertyValueToObject(declareObjectProperty, currentParent, declareObject);
+                                                    }
+                                                    // Set the current object to the property's object
+                                                    curObject = declareObject;
+                                                    // Set the parent to the current object
+                                                    currentParent = declareObject;
+                                                }
+                                                else
+                                                {
+                                                    // if we couldn't find the property, then ignore the cell value
+                                                    continue;
+                                                }
                                             }
                                         }
                                         else

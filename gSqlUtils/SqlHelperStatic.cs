@@ -51,21 +51,21 @@ namespace gpower2.gSqlUtils
 		private static TimeSpan _LastOperationEllapsedTime;
 		private static Exception _LastOperationException;
 
-        private static string _ThreadAnchor = "ThreadAnchor";
+        private static readonly object _ThreadAnchor = new object();
 
-		#endregion
+        #endregion
 
-		#region "ExecuteSql"
+        #region "ExecuteSql"
 
-		/// <summary>
-		/// Executes a non scalar SQL statement.
-		/// It sets a default timeout of 120 seconds and doesn't use a transaction.
-		/// It returns the number of rows affected.
-		/// </summary>
-		/// <param name="argSqlCode">The SQL code to execute</param>
-		/// <param name="argSqlCon">The SQL connection to use</param>
-		/// <returns>The number of rows affected</returns>
-		public static Int32 ExecuteSql(String argSqlCode, SqlConnection argSqlCon)
+        /// <summary>
+        /// Executes a non scalar SQL statement.
+        /// It sets a default timeout of 120 seconds and doesn't use a transaction.
+        /// It returns the number of rows affected.
+        /// </summary>
+        /// <param name="argSqlCode">The SQL code to execute</param>
+        /// <param name="argSqlCon">The SQL connection to use</param>
+        /// <returns>The number of rows affected</returns>
+        public static Int32 ExecuteSql(String argSqlCode, SqlConnection argSqlCon)
 		{
 			return ExecuteSql(argSqlCode, argSqlCon, 120, null, null);
 		}

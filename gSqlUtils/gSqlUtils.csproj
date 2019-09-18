@@ -80,6 +80,10 @@
     <Compile Include="gSqlHelper.cs" />
     <Compile Include="Mapper\MapObject.cs" />
     <Compile Include="Mapper\MapProperty.cs" />
+    <Compile Include="QueryBuilder\gSqlOperator.cs" />
+    <Compile Include="QueryBuilder\gSqlPredicate.cs" />
+    <Compile Include="QueryBuilder\gSqlPredicateParticipation.cs" />
+    <Compile Include="QueryBuilder\gSqlSearchCondition.cs" />
     <Compile Include="SqlHelperStatic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

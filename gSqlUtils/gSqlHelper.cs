@@ -59,7 +59,7 @@ namespace gpower2.gSqlUtils
         /// <summary>
         /// A list that contains all the pending SQL Commands' hash codes
         /// </summary>
-        private List<Int32> _SqlCommands = new List<Int32>();
+        private List<int> _SqlCommands = new List<int>();
 
         #endregion
 
@@ -79,97 +79,97 @@ namespace gpower2.gSqlUtils
             _SqlConnection = argSqlConnection;
         }
 
-        public gSqlHelper(String argDataSource, String argInitialCatalog, String argUserId, String argPassword)
+        public gSqlHelper(string argDataSource, string argInitialCatalog, string argUserId, string argPassword)
         {
             _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argUserId, argPassword);
         }
 
-        public gSqlHelper(String argDataSource, String argInitialCatalog, String argUserId, String argPassword, Boolean argPersistSecurityInfo)
+        public gSqlHelper(string argDataSource, string argInitialCatalog, string argUserId, string argPassword, bool argPersistSecurityInfo)
         {
             _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argUserId, argPassword, argPersistSecurityInfo);
         }
 
-        public gSqlHelper(String argDataSource, String argInitialCatalog, String argUserId, String argPassword, Boolean argPersistSecurityInfo, 
-            Boolean argMultipleActiveResultSets)
+        public gSqlHelper(string argDataSource, string argInitialCatalog, string argUserId, string argPassword, bool argPersistSecurityInfo, 
+            bool argMultipleActiveResultSets)
         {
             _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argUserId, argPassword, argPersistSecurityInfo, argMultipleActiveResultSets);
         }
 
-        public gSqlHelper(String argDataSource, String argInitialCatalog, String argUserId, String argPassword, String argApplicationName)
+        public gSqlHelper(string argDataSource, string argInitialCatalog, string argUserId, string argPassword, string argApplicationName)
         {
             _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argUserId, argPassword, argApplicationName);
         }
 
-        public gSqlHelper(String argDataSource, String argInitialCatalog, String argUserId, String argPassword, String argApplicationName, 
-            Boolean argPersistSecurityInfo, Boolean argMultipleActiveResultSets)
+        public gSqlHelper(string argDataSource, string argInitialCatalog, string argUserId, string argPassword, string argApplicationName, 
+            bool argPersistSecurityInfo, bool argMultipleActiveResultSets)
         {
             _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argUserId, argPassword, argApplicationName, argPersistSecurityInfo, argMultipleActiveResultSets);
         }
 
-        public gSqlHelper(String argDataSource, String argInitialCatalog, String argUserId, String argPassword, Int32 argConnectTimeout)
+        public gSqlHelper(string argDataSource, string argInitialCatalog, string argUserId, string argPassword, int argConnectTimeout)
         {
             _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argUserId, argPassword, argConnectTimeout);
         }
 
-        public gSqlHelper(String argDataSource, String argInitialCatalog, String argUserId, String argPassword, Int32 argConnectTimeout, String argApplicationName)
+        public gSqlHelper(string argDataSource, string argInitialCatalog, string argUserId, string argPassword, int argConnectTimeout, string argApplicationName)
         {
             _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argUserId, argPassword, argConnectTimeout, argApplicationName);
         }
 
-        public gSqlHelper(String argDataSource, String argInitialCatalog, String argUserId, String argPassword, Int32 argConnectTimeout, Int32 argPacketSize)
+        public gSqlHelper(string argDataSource, string argInitialCatalog, string argUserId, string argPassword, int argConnectTimeout, int argPacketSize)
         {
             _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argUserId, argPassword, argConnectTimeout, argPacketSize);
         }
 
-        public gSqlHelper(String argDataSource, String argInitialCatalog, String argUserId, String argPassword, Int32 argConnectTimeout, Int32 argPacketSize, String argApplicationName)
+        public gSqlHelper(string argDataSource, string argInitialCatalog, string argUserId, string argPassword, int argConnectTimeout, int argPacketSize, string argApplicationName)
         {
             _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argUserId, argPassword, argConnectTimeout, argPacketSize, argApplicationName);
         }
 
-        public gSqlHelper(String argDataSource, String argInitialCatalog)
+        public gSqlHelper(string argDataSource, string argInitialCatalog)
         {
             _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog);
         }
 
-        public gSqlHelper(String argDataSource, String argInitialCatalog, String argApplicationName)
+        public gSqlHelper(string argDataSource, string argInitialCatalog, string argApplicationName)
         {
             _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argApplicationName);
         }
 
-        public gSqlHelper(String argDataSource, String argInitialCatalog, String argApplicationName, Boolean argMultipleActiveResultSets)
+        public gSqlHelper(string argDataSource, string argInitialCatalog, string argApplicationName, bool argMultipleActiveResultSets)
         {
             _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argApplicationName, argMultipleActiveResultSets);
         }
 
-        public gSqlHelper(String argDataSource, String argInitialCatalog, Int32 argConnectTimeout)
+        public gSqlHelper(string argDataSource, string argInitialCatalog, int argConnectTimeout)
         {
             _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout);
         }
 
-        public gSqlHelper(String argDataSource, String argInitialCatalog, Int32 argConnectTimeout, String argApplicationName)
+        public gSqlHelper(string argDataSource, string argInitialCatalog, int argConnectTimeout, string argApplicationName)
         {
             _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, argApplicationName);
         }
 
-        public gSqlHelper(String argDataSource, String argInitialCatalog, Int32 argConnectTimeout, Int32 argPacketSize)
+        public gSqlHelper(string argDataSource, string argInitialCatalog, int argConnectTimeout, int argPacketSize)
         {
             _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, argPacketSize);
         }
 
-        public gSqlHelper(String argDataSource, String argInitialCatalog, Int32 argConnectTimeout, Int32 argPacketSize, String argApplicationName)
+        public gSqlHelper(string argDataSource, string argInitialCatalog, int argConnectTimeout, int argPacketSize, string argApplicationName)
         {
             _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, argPacketSize, argApplicationName);
         }
 
-        public gSqlHelper(String argDataSource, String argInitialCatalog, Int32 argConnectTimeout,
-            Boolean argIntegratedSecurity, Int32 argPacketSize, String argUserId, String argPassword, String argApplicationName)
+        public gSqlHelper(string argDataSource, string argInitialCatalog, int argConnectTimeout,
+            bool argIntegratedSecurity, int argPacketSize, string argUserId, string argPassword, string argApplicationName)
         {
             _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, argIntegratedSecurity, argPacketSize, argUserId, argPassword, argApplicationName, false, false);
         }
 
-        public gSqlHelper(String argDataSource, String argInitialCatalog, Int32 argConnectTimeout,
-            Boolean argIntegratedSecurity, Int32 argPacketSize, String argUserId, String argPassword, String argApplicationName,
-            Boolean argMultipleActiveResultSets, Boolean argPersistSecurityInfo)
+        public gSqlHelper(string argDataSource, string argInitialCatalog, int argConnectTimeout,
+            bool argIntegratedSecurity, int argPacketSize, string argUserId, string argPassword, string argApplicationName,
+            bool argMultipleActiveResultSets, bool argPersistSecurityInfo)
         {
             _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argConnectTimeout, argIntegratedSecurity, argPacketSize, argUserId, argPassword, argApplicationName, argMultipleActiveResultSets, argPersistSecurityInfo);
         }
@@ -185,7 +185,7 @@ namespace gpower2.gSqlUtils
                 if (_SqlConnection != null && _SqlConnection.State != System.Data.ConnectionState.Closed && _SqlCommands.Count == 0)
                 {
                     _SqlConnection.Close();
-                    Debug.WriteLine(String.Format("{0}[CloseConnection] Closed connection...", GetNowString()));
+                    Debug.WriteLine(string.Format("{0}[CloseConnection] Closed connection...", GetNowString()));
                 }
             }
         }
@@ -201,10 +201,10 @@ namespace gpower2.gSqlUtils
                 if (_SqlConnection.State == System.Data.ConnectionState.Closed)
                 {
                     _SqlConnection.Open();
-                    Debug.WriteLine(String.Format("{0}[BeginTransaction] Opened connection...", GetNowString()));
+                    Debug.WriteLine(string.Format("{0}[BeginTransaction] Opened connection...", GetNowString()));
                 }
                 _SqlTransaction = _SqlConnection.BeginTransaction();
-                Debug.WriteLine(String.Format("{0} Beginned transaction...", GetNowString()));
+                Debug.WriteLine(string.Format("{0} Beginned transaction...", GetNowString()));
             }
         }
 
@@ -217,7 +217,7 @@ namespace gpower2.gSqlUtils
                     throw new Exception("There was no transaction to commit!");
                 }
                 _SqlTransaction.Commit();
-                Debug.WriteLine(String.Format("{0}[CommitTransaction] Transaction was committed...", GetNowString()));
+                Debug.WriteLine(string.Format("{0}[CommitTransaction] Transaction was committed...", GetNowString()));
                 _SqlTransaction = null;
                 if (_SqlConnection.State == ConnectionState.Open)
                 {
@@ -235,7 +235,7 @@ namespace gpower2.gSqlUtils
                     throw new Exception("There was no transaction to rollback!");
                 }
                 _SqlTransaction.Rollback();
-                Debug.WriteLine(String.Format("{0}[RollbackTransaction] Transaction was rollbacked...", GetNowString()));
+                Debug.WriteLine(string.Format("{0}[RollbackTransaction] Transaction was rollbacked...", GetNowString()));
                 _SqlTransaction = null;
                 if (_SqlConnection.State == ConnectionState.Open)
                 {
@@ -249,14 +249,14 @@ namespace gpower2.gSqlUtils
         #region "IsNull"
 
         /// <summary>
-        /// It checks if an Object is null or equal to DBNull.Value
-        /// and then it returns the user defined Object for that case, 
-        /// else it returns the source Object.
+        /// It checks if an object is null or equal to DBNull.Value
+        /// and then it returns the user defined object for that case, 
+        /// else it returns the source object.
         /// </summary>
-        /// <param name="argSourceObject">The Object to check</param>
-        /// <param name="argNullValue">The Object to return, if the source Object is null or equals to DBNull.Value</param>
+        /// <param name="argSourceObject">The object to check</param>
+        /// <param name="argNullValue">The object to return, if the source object is null or equals to DBNull.Value</param>
         /// <returns></returns>
-        public Object IsNull(Object argSourceObject, Object argNullValue)
+        public object IsNull(object argSourceObject, object argNullValue)
         {
             return SqlHelperStatic.IsNull(argSourceObject, argNullValue);
         }
@@ -266,30 +266,30 @@ namespace gpower2.gSqlUtils
         #region "IsNullString"
 
         /// <summary>
-        /// It checks if a String is null and then it returns NULL.
+        /// It checks if a string is null and then it returns NULL.
         /// Else, it replaces the escape characters ' and " and 
-        /// returns the String single quoted eg. text => 'text'
+        /// returns the string single quoted eg. text => 'text'
         /// </summary>
-        /// <param name="argSourceString">The source String to check for null</param>
+        /// <param name="argSourceString">The source string to check for null</param>
         /// <returns></returns>
-        public String IsNullString(String argSourceString)
+        public string IsNullString(string argSourceString)
         {
             return IsNullString(argSourceString, true, false, true);
         }
 
         /// <summary>
-        /// It checks if a String is null and then it returns NULL.
+        /// It checks if a string is null and then it returns NULL.
         /// Else, according to user options, it either replaces the
         /// escape characters ' and " or not, it either replaces the
         /// wildcard characters % and _ or not, and it either single
-        /// quotes the String or not eg. text => 'text'
+        /// quotes the string or not eg. text => 'text'
         /// </summary>
-        /// <param name="argSourceString">The source String to check for null</param>
+        /// <param name="argSourceString">The source string to check for null</param>
         /// <param name="argEscapeString">The flag whether to replace the escape characters or not</param>
         /// <param name="argEscapeWildcards">The flag whether to replace the wildcard characters or not</param>
-        /// <param name="argQuoteString">The flag whether to single quote the String or not</param>
+        /// <param name="argQuoteString">The flag whether to single quote the string or not</param>
         /// <returns></returns>
-        public String IsNullString(String argSourceString, Boolean argEscapeString, Boolean argEscapeWildcards, Boolean argQuoteString)
+        public string IsNullString(string argSourceString, bool argEscapeString, bool argEscapeWildcards, bool argQuoteString)
         {
             return SqlHelperStatic.IsNullString(argSourceString, argEscapeString, argEscapeWildcards, argQuoteString);
         }
@@ -299,24 +299,24 @@ namespace gpower2.gSqlUtils
         #region "EscapeString"
 
         /// <summary>
-        /// It escapes the String by replacing ' with ''.
+        /// It escapes the string by replacing ' with ''.
         /// </summary>
         /// <param name="argSourceString"></param>
         /// <returns></returns>
-        public String EscapeString(String argSourceString)
+        public string EscapeString(string argSourceString)
         {
             return EscapeString(argSourceString, false);
         }
 
         /// <summary>
-        /// It escapes the String by replacing ' with ''.
+        /// It escapes the string by replacing ' with ''.
         /// It also escapes the wildcard charactes % and _ 
         /// if the user specifies it.
         /// </summary>
-        /// <param name="argSourceString">The source String to escape</param>
+        /// <param name="argSourceString">The source string to escape</param>
         /// <param name="argEscapeWildcards">The flag to whether escape the wildcard characters or not</param>
-        /// <returns>The escaped String</returns>
-        public String EscapeString(String argSourceString, Boolean argEscapeWildcards)
+        /// <returns>The escaped string</returns>
+        public string EscapeString(string argSourceString, bool argEscapeWildcards)
         {
             return SqlHelperStatic.EscapeString(argSourceString, argEscapeWildcards);
         }
@@ -332,7 +332,7 @@ namespace gpower2.gSqlUtils
         /// </summary>
         /// <param name="argSqlCode">The SQL code to execute</param>
         /// <returns>The number of rows affected</returns>
-        public Int32 ExecuteSql(String argSqlCode)
+        public int ExecuteSql(string argSqlCode)
         {
             return ExecuteSql(argSqlCode, 120, false, null);
         }
@@ -345,7 +345,7 @@ namespace gpower2.gSqlUtils
         /// <param name="argSqlCode">The SQL code to execute</param>
         /// <param name="argTimeout">The timeout for the SQL command in seconds</param>
         /// <returns>The number of rows affected</returns>
-        public Int32 ExecuteSql(String argSqlCode, Int32 argTimeout)
+        public int ExecuteSql(string argSqlCode, int argTimeout)
         {
             return ExecuteSql(argSqlCode, argTimeout, false, null);
         }
@@ -358,7 +358,7 @@ namespace gpower2.gSqlUtils
         /// <param name="argSqlCode">The SQL code to execute</param>
         /// <param name="argUseTransaction">The SQL transaction to use</param>
         /// <returns>The number of rows affected</returns>
-        public Int32 ExecuteSql(String argSqlCode, Boolean argUseTransaction)
+        public int ExecuteSql(string argSqlCode, bool argUseTransaction)
         {
             return ExecuteSql(argSqlCode, 120, argUseTransaction, null);
         }
@@ -372,11 +372,11 @@ namespace gpower2.gSqlUtils
         /// <param name="argUseTransaction">The SQL transaction to use</param>
         /// <param name="argSqlParameters">The SQL Parameters for the SQL command</param>
         /// <returns>The number of rows affected</returns>
-        public Int32 ExecuteSql(String argSqlCode, Int32 argTimeout, Boolean argUseTransaction, List<SqlParameter> argSqlParameters)
+        public int ExecuteSql(string argSqlCode, int argTimeout, bool argUseTransaction, List<SqlParameter> argSqlParameters)
         {
             _LastOperationException = null;
             _LastOperationTimeSpan = new TimeSpan();
-            Int32 currentCommand;
+            int currentCommand;
             // Add a new entry in the SqlCommands Dictionary
             lock (this)
             {
@@ -385,7 +385,7 @@ namespace gpower2.gSqlUtils
             }
             try
             {
-                Int32 resultValue = SqlHelperStatic.ExecuteSql(argSqlCode, _SqlConnection, argTimeout, argUseTransaction ? _SqlTransaction : null, argSqlParameters);
+                int resultValue = SqlHelperStatic.ExecuteSql(argSqlCode, _SqlConnection, argTimeout, argUseTransaction ? _SqlTransaction : null, argSqlParameters);
                 _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
                 return resultValue;
             }
@@ -401,7 +401,7 @@ namespace gpower2.gSqlUtils
                 {
                     // Remove current entry from the _SqlCommands Dictionary
                     _SqlCommands.Remove(currentCommand);
-                    Debug.WriteLine(String.Format("[ExecuteSql] Remaining SqlCommands Count: {0}", _SqlCommands.Count));
+                    Debug.WriteLine(string.Format("[ExecuteSql] Remaining SqlCommands Count: {0}", _SqlCommands.Count));
                 }
                 // When we don't use transaction, the connection is simply open and there are no other pending commands, we close the connection
                 if (!argUseTransaction && _SqlConnection.State == ConnectionState.Open && _SqlCommands.Count == 0)
@@ -423,7 +423,7 @@ namespace gpower2.gSqlUtils
         /// </summary>
         /// <param name="argSqlCode">The SQL code to execute</param>
         /// <returns>The DataTable that contains the results</returns>
-        public DataTable GetDataTable(String argSqlCode)
+        public DataTable GetDataTable(string argSqlCode)
         {
             return GetDataTable(argSqlCode, 120, false, null);
         }
@@ -436,7 +436,7 @@ namespace gpower2.gSqlUtils
         /// <param name="argSqlCode">The SQL code to execute</param>
         /// <param name="argTimeout">The timeout for the SQL command in seconds</param>
         /// <returns>The DataTable that contains the results</returns>
-        public DataTable GetDataTable(String argSqlCode, Int32 argTimeout)
+        public DataTable GetDataTable(string argSqlCode, int argTimeout)
         {
             return GetDataTable(argSqlCode, argTimeout, false, null);
         }
@@ -449,7 +449,7 @@ namespace gpower2.gSqlUtils
         /// <param name="argSqlCode">The SQL code to execute</param>
         /// <param name="argUseTransaction">The SQL transaction to use</param>
         /// <returns>The DataTable that contains the results</returns>
-        public DataTable GetDataTable(String argSqlCode, Boolean argUseTransaction)
+        public DataTable GetDataTable(string argSqlCode, bool argUseTransaction)
         {
             return GetDataTable(argSqlCode, 120, argUseTransaction, null);
         }
@@ -463,12 +463,12 @@ namespace gpower2.gSqlUtils
         /// <param name="argUseTransaction">The SQL transaction to use</param>
         /// <param name="argSqlParameters">The SQL Parameters for the SQL command</param>
         /// <returns>The DataTable that contains the results</returns>
-        public DataTable GetDataTable(String argSqlCode, Int32 argTimeout, Boolean argUseTransaction, List<SqlParameter> argSqlParameters)
+        public DataTable GetDataTable(string argSqlCode, int argTimeout, bool argUseTransaction, List<SqlParameter> argSqlParameters)
         {
             _LastOperationException = null;
             _LastOperationTimeSpan = new TimeSpan();
             // Add a new entry in the SqlCommands Dictionary
-            Int32 currentCommand;
+            int currentCommand;
             lock (this)
             {
                 currentCommand = DateTime.Now.GetHashCode();
@@ -492,7 +492,7 @@ namespace gpower2.gSqlUtils
                 {
                     // Remove current entry from the _SqlCommands Dictionary
                     _SqlCommands.Remove(currentCommand);
-                    Debug.WriteLine(String.Format("[GetDataTable] Remaining SqlCommands Count: {0}", _SqlCommands.Count));
+                    Debug.WriteLine(string.Format("[GetDataTable] Remaining SqlCommands Count: {0}", _SqlCommands.Count));
                 }
                 // When we don't use transaction, the connection is simply open and there are no other pending commands, we close the connection
                 if (!argUseTransaction && _SqlConnection.State == ConnectionState.Open && _SqlCommands.Count == 0)
@@ -513,7 +513,7 @@ namespace gpower2.gSqlUtils
         /// </summary>
         /// <param name="argSqlCode">The SQL code to execute</param>
         /// <returns>The DataSet that contains the results</returns>
-        public DataSet GetDataSet(String argSqlCode)
+        public DataSet GetDataSet(string argSqlCode)
         {
             return GetDataSet(argSqlCode, 120, false, null);
         }
@@ -525,7 +525,7 @@ namespace gpower2.gSqlUtils
         /// <param name="argSqlCode">The SQL code to execute</param>
         /// <param name="argTimeout">The timeout for the SQL command in seconds</param>
         /// <returns>The DataSet that contains the results</returns>
-        public DataSet GetDataSet(String argSqlCode, Int32 argTimeout)
+        public DataSet GetDataSet(string argSqlCode, int argTimeout)
         {
             return GetDataSet(argSqlCode, argTimeout, false, null);
         }
@@ -537,7 +537,7 @@ namespace gpower2.gSqlUtils
         /// <param name="argSqlCode">The SQL code to execute</param>
         /// <param name="argUseTransaction">The SQL transaction to use</param>
         /// <returns>The DataSet that contains the results</returns>
-        public DataSet GetDataSet(String argSqlCode, Boolean argUseTransaction)
+        public DataSet GetDataSet(string argSqlCode, bool argUseTransaction)
         {
             return GetDataSet(argSqlCode, 120, argUseTransaction, null);
         }
@@ -550,12 +550,12 @@ namespace gpower2.gSqlUtils
         /// <param name="argUseTransaction">The SQL transaction to use</param>
         /// <param name="argSqlParameters">The SQL Parameters for the SQL command</param>
         /// <returns>The DataSet that contains the results</returns>
-        public DataSet GetDataSet(String argSqlCode, Int32 argTimeout, Boolean argUseTransaction, List<SqlParameter> argSqlParameters)
+        public DataSet GetDataSet(string argSqlCode, int argTimeout, bool argUseTransaction, List<SqlParameter> argSqlParameters)
         {
             _LastOperationException = null;
             _LastOperationTimeSpan = new TimeSpan();
             // Add a new entry in the SqlCommands Dictionary
-            Int32 currentCommand;
+            int currentCommand;
             lock (this)
             {
                 currentCommand = DateTime.Now.GetHashCode();
@@ -579,7 +579,7 @@ namespace gpower2.gSqlUtils
                 {
                     // Remove current entry from the _SqlCommands Dictionary
                     _SqlCommands.Remove(currentCommand);
-                    Debug.WriteLine(String.Format("[GetDataSet] Remaining SqlCommands Count: {0}", _SqlCommands.Count));
+                    Debug.WriteLine(string.Format("[GetDataSet] Remaining SqlCommands Count: {0}", _SqlCommands.Count));
                 }
                 // When we don't use transaction, the connection is simply open and there are no other pending commands, we close the connection
                 if (!argUseTransaction && _SqlConnection.State == ConnectionState.Open && _SqlCommands.Count == 0)
@@ -601,7 +601,7 @@ namespace gpower2.gSqlUtils
         /// </summary>
         /// <param name="argSqlCode">The SQL code to execute</param>
         /// <returns></returns>
-        public Object GetDataValue(String argSqlCode)
+        public object GetDataValue(string argSqlCode)
         {
             return GetDataValue(argSqlCode, 120, false, null);
         }
@@ -614,7 +614,7 @@ namespace gpower2.gSqlUtils
         /// <param name="argSqlCode">The SQL code to execute</param>
         /// <param name="argTimeout">The timeout for the SQL command in seconds</param>
         /// <returns></returns>
-        public Object GetDataValue(String argSqlCode, Int32 argTimeout)
+        public object GetDataValue(string argSqlCode, int argTimeout)
         {
             return GetDataValue(argSqlCode, argTimeout, false, null);
         }
@@ -627,7 +627,7 @@ namespace gpower2.gSqlUtils
         /// <param name="argSqlCode">The SQL code to execute</param>
         /// <param name="argUseTransaction">Whether to use SQL Transaction</param>
         /// <returns></returns>
-        public Object GetDataValue(String argSqlCode, Boolean argUseTransaction)
+        public object GetDataValue(string argSqlCode, bool argUseTransaction)
         {
             return GetDataValue(argSqlCode, 120, argUseTransaction, null);
         }
@@ -641,12 +641,12 @@ namespace gpower2.gSqlUtils
         /// <param name="argUseTransaction">Whether to use SQL Transaction</param>
         /// <param name="argSqlParameters">The SQL Parameters for the SQL command</param>
         /// <returns></returns>
-        public Object GetDataValue(String argSqlCode, Int32 argTimeout, Boolean argUseTransaction, List<SqlParameter> argSqlParameters)
+        public object GetDataValue(string argSqlCode, int argTimeout, bool argUseTransaction, List<SqlParameter> argSqlParameters)
         {
             _LastOperationException = null;
             _LastOperationTimeSpan = new TimeSpan();
             // Add a new entry in the SqlCommands Dictionary
-            Int32 currentCommand;
+            int currentCommand;
             lock (this)
             {
                 currentCommand = DateTime.Now.GetHashCode();
@@ -654,7 +654,7 @@ namespace gpower2.gSqlUtils
             }
             try
             {
-                Object resultValue = SqlHelperStatic.GetDataValue(argSqlCode, _SqlConnection, argTimeout, argUseTransaction ? _SqlTransaction : null, argSqlParameters);
+                object resultValue = SqlHelperStatic.GetDataValue(argSqlCode, _SqlConnection, argTimeout, argUseTransaction ? _SqlTransaction : null, argSqlParameters);
                 _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
                 return resultValue;
             }
@@ -670,7 +670,7 @@ namespace gpower2.gSqlUtils
                 {
                     // Remove current entry from the _SqlCommands Dictionary
                     _SqlCommands.Remove(currentCommand);
-                    Debug.WriteLine(String.Format("[GetDataValue] Remaining SqlCommands Count: {0}", _SqlCommands.Count));
+                    Debug.WriteLine(string.Format("[GetDataValue] Remaining SqlCommands Count: {0}", _SqlCommands.Count));
                 }
                 // When we don't use transaction, the connection is simply open and there are no other pending commands, we close the connection
                 if (!argUseTransaction && _SqlConnection.State == ConnectionState.Open && _SqlCommands.Count == 0)
@@ -692,7 +692,7 @@ namespace gpower2.gSqlUtils
         /// </summary>
         /// <param name="argSqlCode">The SQL code to execute</param>
         /// <returns>If the result is DBNull, then it returns the default value for the Type provided</returns>
-        public T GetDataValue<T>(String argSqlCode) where T : IComparable, IConvertible, IEquatable<T>
+        public T GetDataValue<T>(string argSqlCode) where T : IComparable, IConvertible, IEquatable<T>
         {
             return GetDataValue<T>(argSqlCode, 120, false, null);
         }
@@ -705,7 +705,7 @@ namespace gpower2.gSqlUtils
         /// <param name="argSqlCode">The SQL code to execute</param>
         /// <param name="argTimeout">The timeout for the SQL command in seconds</param>
         /// <returns>If the result is DBNull, then it returns the default value for the Type provided</returns>
-        public T GetDataValue<T>(String argSqlCode, Int32 argTimeout) where T : IComparable, IConvertible, IEquatable<T>
+        public T GetDataValue<T>(string argSqlCode, int argTimeout) where T : IComparable, IConvertible, IEquatable<T>
         {
             return GetDataValue<T>(argSqlCode, argTimeout, false, null);
         }
@@ -718,7 +718,7 @@ namespace gpower2.gSqlUtils
         /// <param name="argSqlCode">The SQL code to execute</param>
         /// <param name="argUseTransaction">Whether to use SQL Transaction</param>
         /// <returns>If the result is DBNull, then it returns the default value for the Type provided</returns>
-        public T GetDataValue<T>(String argSqlCode, Boolean argUseTransaction) where T : IComparable, IConvertible, IEquatable<T>
+        public T GetDataValue<T>(string argSqlCode, bool argUseTransaction) where T : IComparable, IConvertible, IEquatable<T>
         {
             return GetDataValue<T>(argSqlCode, 120, argUseTransaction, null);
         }
@@ -732,12 +732,12 @@ namespace gpower2.gSqlUtils
         /// <param name="argUseTransaction">Whether to use SQL Transaction</param>
         /// <param name="argSqlParameters">The SQL Parameters for the SQL command</param>
         /// <returns>If the result is DBNull, then it returns the default value for the Type provided</returns>
-        public T GetDataValue<T>(String argSqlCode, Int32 argTimeout, Boolean argUseTransaction, List<SqlParameter> argSqlParameters) where T : IComparable, IConvertible, IEquatable<T>
+        public T GetDataValue<T>(string argSqlCode, int argTimeout, bool argUseTransaction, List<SqlParameter> argSqlParameters) where T : IComparable, IConvertible, IEquatable<T>
         {
             _LastOperationException = null;
             _LastOperationTimeSpan = new TimeSpan();
             // Add a new entry in the SqlCommands Dictionary
-            Int32 currentCommand;
+            int currentCommand;
             lock (this)
             {
                 currentCommand = DateTime.Now.GetHashCode();
@@ -761,7 +761,7 @@ namespace gpower2.gSqlUtils
                 {
                     // Remove current entry from the _SqlCommands Dictionary
                     _SqlCommands.Remove(currentCommand);
-                    Debug.WriteLine(String.Format("[GetDataValue<>] Remaining SqlCommands Count: {0}", _SqlCommands.Count));
+                    Debug.WriteLine(string.Format("[GetDataValue<>] Remaining SqlCommands Count: {0}", _SqlCommands.Count));
                 }
                 // When we don't use transaction, the connection is simply open and there are no other pending commands, we close the connection
                 if (!argUseTransaction && _SqlConnection.State == ConnectionState.Open && _SqlCommands.Count == 0)
@@ -788,7 +788,7 @@ namespace gpower2.gSqlUtils
         /// <param name="argObjectType">The object Type to map the data to</param>
         /// <param name="argSqlCode">The SQL code to execute</param>
         /// <returns>The List of objects filled with data</returns>
-        public IList GetDataList(Type argObjectType, String argSqlCode)
+        public IList GetDataList(Type argObjectType, string argSqlCode)
         {
             return GetDataList(argObjectType, argSqlCode, 120, false, null);
         }
@@ -806,7 +806,7 @@ namespace gpower2.gSqlUtils
         /// <param name="argSqlCode">The SQL code to execute</param>
         /// <param name="argTimeout">The timeout for the SQL command in seconds</param>
         /// <returns>The List of objects filled with data</returns>
-        public IList GetDataList(Type argObjectType, String argSqlCode, Int32 argTimeout)
+        public IList GetDataList(Type argObjectType, string argSqlCode, int argTimeout)
         {
             return GetDataList(argObjectType, argSqlCode, argTimeout, false, null);
         }
@@ -824,7 +824,7 @@ namespace gpower2.gSqlUtils
         /// <param name="argSqlCode">The SQL code to execute</param>
         /// <param name="argUseTransaction">Whether to use transaction or not</param>
         /// <returns>The List of objects filled with data</returns>
-        public IList GetDataList(Type argObjectType, String argSqlCode, Boolean argUseTransaction)
+        public IList GetDataList(Type argObjectType, string argSqlCode, bool argUseTransaction)
         {
             return GetDataList(argObjectType, argSqlCode, 120, argUseTransaction, null);
         }
@@ -843,12 +843,12 @@ namespace gpower2.gSqlUtils
         /// <param name="argUseTransaction">Whether to use transaction or not</param>
         /// <param name="argSqlParameters">The SQL Parameters for the SQL command</param>
         /// <returns>The List of objects filled with data</returns>
-        public IList GetDataList(Type argObjectType, String argSqlCode, Int32 argTimeout, Boolean argUseTransaction, List<SqlParameter> argSqlParameters)
+        public IList GetDataList(Type argObjectType, string argSqlCode, int argTimeout, bool argUseTransaction, List<SqlParameter> argSqlParameters)
         {
             _LastOperationException = null;
             _LastOperationTimeSpan = new TimeSpan();
             // Add a new entry in the SqlCommands Dictionary
-            Int32 currentCommand;
+            int currentCommand;
             lock (this)
             {
                 currentCommand = DateTime.Now.GetHashCode();
@@ -872,7 +872,7 @@ namespace gpower2.gSqlUtils
                 {
                     // Remove current entry from the _SqlCommands Dictionary
                     _SqlCommands.Remove(currentCommand);
-                    Debug.WriteLine(String.Format("[GetDataList] Remaining SqlCommands Count: {0}", _SqlCommands.Count));
+                    Debug.WriteLine(string.Format("[GetDataList] Remaining SqlCommands Count: {0}", _SqlCommands.Count));
                 }
                 // When we don't use transaction, the connection is simply open and there are no other pending commands, we close the connection
                 if (!argUseTransaction && _SqlConnection.State == ConnectionState.Open && _SqlCommands.Count == 0)
@@ -899,7 +899,7 @@ namespace gpower2.gSqlUtils
         /// <param name="argObjectType">The object Type to map the data to</param>
         /// <param name="argSqlCode">The SQL code to execute</param>
         /// <returns>The List of objects filled with data</returns>
-        public IList<T> GetDataList<T>(String argSqlCode)
+        public IList<T> GetDataList<T>(string argSqlCode)
         {
             return GetDataList<T>(argSqlCode, 120, false, null);
         }
@@ -917,7 +917,7 @@ namespace gpower2.gSqlUtils
         /// <param name="argSqlCode">The SQL code to execute</param>
         /// <param name="argTimeout">The timeout for the SQL command in seconds</param>
         /// <returns>The List of objects filled with data</returns>
-        public IList<T> GetDataList<T>(String argSqlCode, Int32 argTimeout)
+        public IList<T> GetDataList<T>(string argSqlCode, int argTimeout)
         {
             return GetDataList<T>(argSqlCode, argTimeout, false, null);
         }
@@ -935,7 +935,7 @@ namespace gpower2.gSqlUtils
         /// <param name="argSqlCode">The SQL code to execute</param>
         /// <param name="argUseTransaction">Whether to use transaction or not</param>
         /// <returns>The List of objects filled with data</returns>
-        public IList<T> GetDataList<T>(String argSqlCode, Boolean argUseTransaction)
+        public IList<T> GetDataList<T>(string argSqlCode, bool argUseTransaction)
         {
             return GetDataList<T>(argSqlCode, 120, argUseTransaction, null);
         }
@@ -954,12 +954,12 @@ namespace gpower2.gSqlUtils
         /// <param name="argUseTransaction">Whether to use transaction or not</param>
         /// <param name="argSqlParameters">The SQL Parameters for the SQL command</param>
         /// <returns>The List of objects filled with data</returns>
-        public IList<T> GetDataList<T>(String argSqlCode, Int32 argTimeout, Boolean argUseTransaction, List<SqlParameter> argSqlParameters)
+        public IList<T> GetDataList<T>(string argSqlCode, int argTimeout, bool argUseTransaction, List<SqlParameter> argSqlParameters)
         {
             _LastOperationException = null;
             _LastOperationTimeSpan = new TimeSpan();
             // Add a new entry in the SqlCommands Dictionary
-            Int32 currentCommand;
+            int currentCommand;
             lock (this)
             {
                 currentCommand = DateTime.Now.GetHashCode();
@@ -983,7 +983,7 @@ namespace gpower2.gSqlUtils
                 {
                     // Remove current entry from the _SqlCommands Dictionary
                     _SqlCommands.Remove(currentCommand);
-                    Debug.WriteLine(String.Format("[GetDataList<>] Remaining SqlCommands Count: {0}", _SqlCommands.Count));
+                    Debug.WriteLine(string.Format("[GetDataList<>] Remaining SqlCommands Count: {0}", _SqlCommands.Count));
                 }
                 // When we don't use transaction, the connection is simply open and there are no other pending commands, we close the connection
                 if (!argUseTransaction && _SqlConnection.State == ConnectionState.Open && _SqlCommands.Count == 0)
@@ -1010,7 +1010,7 @@ namespace gpower2.gSqlUtils
         /// <param name="argObjectType">The object Type to map the data to</param>
         /// <param name="argSqlCode">The SQL code to execute</param>
         /// <returns>The List of objects filled with data</returns>
-        public T GetDataObject<T>(String argSqlCode)
+        public T GetDataObject<T>(string argSqlCode)
         {
             return GetDataObject<T>(argSqlCode, 120, false, null);
         }
@@ -1028,7 +1028,7 @@ namespace gpower2.gSqlUtils
         /// <param name="argSqlCode">The SQL code to execute</param>
         /// <param name="argTimeout">The timeout for the SQL command in seconds</param>
         /// <returns>The List of objects filled with data</returns>
-        public T GetDataObject<T>(String argSqlCode, Int32 argTimeout)
+        public T GetDataObject<T>(string argSqlCode, int argTimeout)
         {
             return GetDataObject<T>(argSqlCode, argTimeout, false, null);
         }
@@ -1046,7 +1046,7 @@ namespace gpower2.gSqlUtils
         /// <param name="argSqlCode">The SQL code to execute</param>
         /// <param name="argUseTransaction">Whether to use transaction or not</param>
         /// <returns>The List of objects filled with data</returns>
-        public T GetDataObject<T>(String argSqlCode, Boolean argUseTransaction)
+        public T GetDataObject<T>(string argSqlCode, bool argUseTransaction)
         {
             return GetDataObject<T>(argSqlCode, 120, argUseTransaction, null);
         }
@@ -1065,12 +1065,12 @@ namespace gpower2.gSqlUtils
         /// <param name="argUseTransaction">Whether to use transaction or not</param>
         /// <param name="argSqlParameters">The SQL Parameters for the SQL command</param>
         /// <returns>The List of objects filled with data</returns>
-        public T GetDataObject<T>(String argSqlCode, Int32 argTimeout, Boolean argUseTransaction, List<SqlParameter> argSqlParameters)
+        public T GetDataObject<T>(string argSqlCode, int argTimeout, bool argUseTransaction, List<SqlParameter> argSqlParameters)
         {
             _LastOperationException = null;
             _LastOperationTimeSpan = new TimeSpan();
             // Add a new entry in the SqlCommands Dictionary
-            Int32 currentCommand;
+            int currentCommand;
             lock (this)
             {
                 currentCommand = DateTime.Now.GetHashCode();
@@ -1094,7 +1094,7 @@ namespace gpower2.gSqlUtils
                 {
                     // Remove current entry from the _SqlCommands Dictionary
                     _SqlCommands.Remove(currentCommand);
-                    Debug.WriteLine(String.Format("[GetDataObject<>] Remaining SqlCommands Count: {0}", _SqlCommands.Count));
+                    Debug.WriteLine(string.Format("[GetDataObject<>] Remaining SqlCommands Count: {0}", _SqlCommands.Count));
                 }
                 // When we don't use transaction, the connection is simply open and there are no other pending commands, we close the connection
                 if (!argUseTransaction && _SqlConnection.State == ConnectionState.Open && _SqlCommands.Count == 0)
@@ -1109,32 +1109,32 @@ namespace gpower2.gSqlUtils
 
         #region "GetClipboardTest"
 
-        public String GetClipboardTextFromValueObject(Object argValue)
+        public string GetClipboardTextFromValueObject(object argValue)
         {
             return argValue.GetClipboardText();
         }
 
-        public String GetClipboardTextFromValueObject(Object argValue, CultureInfo argCultureInfo)
+        public string GetClipboardTextFromValueObject(object argValue, CultureInfo argCultureInfo)
         {
             return argValue.GetClipboardText(argCultureInfo);
         }
 
-        public String GetClipboardText(Object argList, CultureInfo argCultureInfo, Boolean argWithHeaders)
+        public string GetClipboardText(object argList, CultureInfo argCultureInfo, bool argWithHeaders)
         {
             return argList.GetClipboardText(argCultureInfo, argWithHeaders);
         }
 
-        public String GetClipboardText(Object argList, Boolean argWithHeaders) 
+        public string GetClipboardText(object argList, bool argWithHeaders) 
         {
             return argList.GetClipboardText(argWithHeaders);
         }
 
-        public String GetClipboardText(Object argList, Boolean argWithHeaders, String argCellSeparator) 
+        public string GetClipboardText(object argList, bool argWithHeaders, string argCellSeparator) 
         {
             return argList.GetClipboardText(argWithHeaders, argCellSeparator);
         }
 
-        public String GetClipboardText(Object argList, CultureInfo argCultureInfo, Boolean argWithHeaders, String argCellSeparator) 
+        public string GetClipboardText(object argList, CultureInfo argCultureInfo, bool argWithHeaders, string argCellSeparator) 
         {
             return argList.GetClipboardText(argCultureInfo, argWithHeaders, argCellSeparator);
         }
@@ -1144,10 +1144,10 @@ namespace gpower2.gSqlUtils
         #region "Debug Functions"
 
         /// <summary>
-        /// Returns the current time as a String with format "[dd/MM/yyyy][hh:mm:ss.fff]"
+        /// Returns the current time as a string with format "[dd/MM/yyyy][hh:mm:ss.fff]"
         /// </summary>
         /// <returns></returns>
-        public String GetNowString()
+        public string GetNowString()
         {
             return DateTime.Now.ToString("[dd/MM/yyyy][hh:mm:ss.fff]");
         }

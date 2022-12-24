@@ -45,7 +45,7 @@ namespace gSqlUtilsTestGUI
                 using (SqlConnection sqlCon = SqlHelperStatic.CreateSqlConnection(".", "TestDB"))
                 {
                     DataTable dt = SqlHelperStatic.GetDataTable(sqlCode, sqlCon);
-                    Clipboard.SetText(ClipboardHelper.GetClipboardText(dt, true));
+                    Clipboard.SetText(ClipboardExtensions.GetClipboardText(dt, true));
                     Debug.WriteLine("returned rows: " + dt.Rows.Count);
                 }
             }

@@ -1108,49 +1108,35 @@ namespace gpower2.gSqlUtils
         #endregion
 
         #region "GetClipboardTest"
+
         public String GetClipboardTextFromValueObject(Object argValue)
         {
-            return ClipboardHelper.GetClipboardTextFromValueObject(argValue);
+            return argValue.GetClipboardText();
         }
 
         public String GetClipboardTextFromValueObject(Object argValue, CultureInfo argCultureInfo)
         {
-            return ClipboardHelper.GetClipboardTextFromValueObject(argValue, argCultureInfo);
+            return argValue.GetClipboardText(argCultureInfo);
         }
 
         public String GetClipboardText(Object argList, CultureInfo argCultureInfo, Boolean argWithHeaders)
         {
-            return ClipboardHelper.GetClipboardText(argList, argCultureInfo, argWithHeaders);
+            return argList.GetClipboardText(argCultureInfo, argWithHeaders);
         }
 
         public String GetClipboardText(Object argList, Boolean argWithHeaders) 
         {
-            return ClipboardHelper.GetClipboardText(argList, argWithHeaders);
+            return argList.GetClipboardText(argWithHeaders);
         }
 
         public String GetClipboardText(Object argList, Boolean argWithHeaders, String argCellSeparator) 
         {
-            return ClipboardHelper.GetClipboardText(argList, argWithHeaders, argCellSeparator);
+            return argList.GetClipboardText(argWithHeaders, argCellSeparator);
         }
 
         public String GetClipboardText(Object argList, CultureInfo argCultureInfo, Boolean argWithHeaders, String argCellSeparator) 
         {
-            return ClipboardHelper.GetClipboardText(argList, argCultureInfo, argWithHeaders, argCellSeparator);
-        }
-
-        public String GetClipboardTextFromIList(IList argList, CultureInfo argCultureInfo, Boolean argWithHeaders, String argCellSeparator) 
-        {
-            return ClipboardHelper.GetClipboardTextFromIList(argList, argCultureInfo, argWithHeaders, argCellSeparator);
-        }
-
-        public String GetClipboardTextFromDataTable(DataTable argDataTable, CultureInfo argCultureInfo, Boolean argWithHeaders, String argCellSeparator) 
-        {
-            return ClipboardHelper.GetClipboardTextFromDataTable(argDataTable, argCultureInfo, argWithHeaders, argCellSeparator);
-        }
-
-        public String GetClipboardTextFromObject(Object argObject, CultureInfo argCultureInfo, String argCellSeparator) 
-        {
-            return ClipboardHelper.GetClipboardTextFromObject(argObject, argCultureInfo, argCellSeparator);
+            return argList.GetClipboardText(argCultureInfo, argWithHeaders, argCellSeparator);
         }
 
         #endregion
@@ -1167,6 +1153,5 @@ namespace gpower2.gSqlUtils
         }
 
         #endregion
-
     }
 }

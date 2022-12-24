@@ -2,7 +2,7 @@
   <PropertyGroup>
     <RootNamespace>gpower2.gSqlUtils</RootNamespace>
     <AssemblyName>gpower2.gSqlUtils</AssemblyName>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net40</TargetFrameworks>
     <AssemblyTitle>gSqlUtils</AssemblyTitle>
     <Company>Gpower2</Company>
     <Product>gSqlUtils</Product>
@@ -39,7 +39,7 @@
     <DebugType>pdbonly</DebugType>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' != 'net40'">
     <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
   </ItemGroup>
 </Project>

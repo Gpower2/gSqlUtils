@@ -1,206 +1,295 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
-using System.Globalization;
-using System.Reflection;
 using System.Data;
+using System.Globalization;
+using System.Linq;
+using System.Text;
 
 namespace gpower2.gSqlUtils
 {
-    public class ClipboardHelper
+    public static class ClipboardExtensions
     {
-        public static String GetClipboardTextFromValueObject(Object argValue)
+        public static string GetClipboardText(this object argValue)
         {
             return GetClipboardTextFromValueObject(argValue, CultureInfo.InstalledUICulture);
         }
 
-        public static String GetClipboardTextFromValueObject(Object argValue, CultureInfo argCultureInfo)
+        public static string GetClipboardText(this object argValue, CultureInfo argCultureInfo)
         {
-            if (argValue == null)
-            {
-                return String.Empty;
-            }
-            else
-            {
-                String rawString;
-                if (argValue.GetType() == typeof(String))
-                {
-                    rawString = (String)argValue;
-                }
-                else if (argValue.GetType() == typeof(Char))
-                {
-                    rawString = Convert.ToString((Char)argValue);
-                }
-                else if (argValue.GetType() == typeof(Int16)
-                    || argValue.GetType() == typeof(Int32)
-                    || argValue.GetType() == typeof(Int64)
-                    )
-                {
-                    rawString = Convert.ToInt64(argValue).ToString(argCultureInfo);
-                }
-                else if (argValue.GetType() == typeof(UInt16)
-                    || argValue.GetType() == typeof(UInt32)
-                    || argValue.GetType() == typeof(UInt64)
-                    )
-                {
-                    rawString = Convert.ToUInt64(argValue).ToString(argCultureInfo);
-                }
-                else if (argValue.GetType() == typeof(Single)
-                    || argValue.GetType() == typeof(Double)
-                    )
-                {
-                    rawString = Convert.ToDouble(argValue).ToString(argCultureInfo);
-                }
-                else if (argValue.GetType() == typeof(Decimal)
-                    )
-                {
-                    rawString = ((Decimal)argValue).ToString(argCultureInfo);
-                }
-                else if (argValue.GetType() == typeof(DateTime))
-                {
-                    rawString = ((DateTime)argValue).ToString(argCultureInfo.DateTimeFormat.ShortDatePattern);
-                }
-                else if (argValue.GetType() == typeof(Boolean))
-                {
-                    rawString = ((Boolean)argValue).ToString(argCultureInfo);
-                }
-                else if (argValue.GetType() == typeof(Byte))
-                {
-                    rawString = ((Byte)argValue).ToString(argCultureInfo);
-                }
-                else if (argValue is Enum)
-                {
-                    rawString = Enum.GetName(argValue.GetType(), argValue);
-                }
-                else if (argValue is IEnumerable)
-                {
-                    rawString = String.Format("{{ {0} }}", GetClipboardText(argValue, argCultureInfo, false, ","));
-                }
-                else
-                {
-                    rawString = String.Format("{{ {0} }}", GetClipboardTextFromObject(argValue, argCultureInfo, ","));
-                }
-                return rawString
-                    .Replace("\t", String.Empty)
-                    .Replace("\r", String.Empty)
-                    .Replace("\n", String.Empty)
-                    .Replace(";", String.Empty);
-            }
+            return GetClipboardTextFromValueObject(argValue, argCultureInfo);
         }
 
-        public static String GetClipboardText(Object argList, CultureInfo argCultureInfo, Boolean argWithHeaders)
+        public static string GetClipboardText(this object argList, CultureInfo argCultureInfo, bool argWithHeaders)
         {
             return GetClipboardText(argList, argCultureInfo, argWithHeaders, "\t");
         }
 
-        public static String GetClipboardText(Object argList, Boolean argWithHeaders)
+        public static string GetClipboardText(this object argList, bool argWithHeaders)
         {
             return GetClipboardText(argList, CultureInfo.InstalledUICulture, argWithHeaders, "\t");
         }
 
-        public static String GetClipboardText(Object argList, Boolean argWithHeaders, String argCellSeparator)
+        public static string GetClipboardText(this object argList, bool argWithHeaders, string argCellSeparator)
         {
             return GetClipboardText(argList, CultureInfo.InstalledUICulture, argWithHeaders, argCellSeparator);
         }
 
-        public static String GetClipboardText(Object argList, CultureInfo argCultureInfo, Boolean argWithHeaders, String argCellSeparator)
+        public static string GetClipboardText(this object argList, CultureInfo argCultureInfo, bool argWithHeaders, string argCellSeparator)
         {
             // Check the object's type
-            if (argList is IList)
+            if (argList is IEnumerable list)
             {
-                return GetClipboardTextFromIList((IList)argList, argCultureInfo, argWithHeaders, argCellSeparator);
+                return GetClipboardTextFromIEnumerable(list, argCultureInfo, argWithHeaders, argCellSeparator);
             }
-            else if (argList is DataTable)
+            else if (argList.GetType()
+                 .GetInterfaces()
+                 .Any(t => t.IsGenericType
+                        && t.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
             {
-                return GetClipboardTextFromDataTable((DataTable)argList, argCultureInfo, argWithHeaders, argCellSeparator);
+                return GetClipboardTextFromIEnumerable(argList as IEnumerable<object>, argCultureInfo, argWithHeaders, argCellSeparator);
+            }
+            else if (argList is DataTable dt)
+            {
+                return GetClipboardTextFromDataTable(dt, argCultureInfo, argWithHeaders, argCellSeparator);
             }
             else if (argList.GetType().IsValueType)
             {
-                return GetClipboardTextFromValueObject(argList);
+                return GetClipboardText(argList);
             }
             else
             {
-                return String.Empty;
+                return GetClipboardTextFromObject(argList, argCultureInfo, argCellSeparator, argWithHeaders);
             }
         }
 
-        public static String GetClipboardTextFromIList(IList argList, CultureInfo argCultureInfo, Boolean argWithHeaders, String argCellSeparator)
+        private static string GetClipboardTextFromValueObject(object argValue, CultureInfo argCultureInfo, 
+            string argIntFormat = null, string argDecimalFormat = null, string argDateFormat = null)
         {
-            // Create the StringBuilder
-            StringBuilder finalBuilder = new StringBuilder();
-            if (argWithHeaders)
+            if (argValue == null)
             {
-                foreach (PropertyInfo prop in argList.GetType().GetGenericArguments()[0].GetProperties())
-                {
-                    finalBuilder.AppendFormat("{0}{1}", GetClipboardTextFromValueObject(prop.Name, argCultureInfo).Replace(argCellSeparator, String.Empty), argCellSeparator);
-                }
-                if (finalBuilder.Length > argCellSeparator.Length - 1)
-                {
-                    finalBuilder.Length -= argCellSeparator.Length; //remove cell separator character
-                }
-                finalBuilder.Append("\r\n"); // add \r\n
+                return string.Empty;
             }
-            foreach (Object item in argList)
-            {
-                finalBuilder.AppendFormat("{0}\r\n", GetClipboardTextFromObject(item, argCultureInfo, argCellSeparator)); // add \r\n
-            }
-            if (finalBuilder.Length > 1)
-            {
-                finalBuilder.Length -= 2; //remove \r\n character
-            }
-            return finalBuilder.ToString();
-        }
 
-        public static String GetClipboardTextFromDataTable(DataTable argDataTable, CultureInfo argCultureInfo, Boolean argWithHeaders, String argCellSeparator)
-        {
-            // Create the StringBuilder
-            StringBuilder finalBuilder = new StringBuilder();
-            if (argWithHeaders)
+            string rawString;
+            if (argValue.GetType() == typeof(string))
             {
-                foreach (DataColumn column in argDataTable.Columns)
-                {
-                    finalBuilder.AppendFormat("{0}{1}", GetClipboardTextFromValueObject(column.ColumnName, argCultureInfo).Replace(argCellSeparator, String.Empty), argCellSeparator);
-                }
-                if (finalBuilder.Length > argCellSeparator.Length - 1)
-                {
-                    finalBuilder.Length -= argCellSeparator.Length; //remove cell separator character
-                }
-                finalBuilder.Append("\r\n"); // add \r\n
+                rawString = (string)argValue;
             }
-            foreach (DataRow drItem in argDataTable.Rows)
+            else if (argValue.GetType() == typeof(char))
             {
-                finalBuilder.AppendFormat("{0}\r\n", GetClipboardTextFromObject(drItem, argCultureInfo, argCellSeparator)); // add \r\n
+                rawString = ((char)argValue).ToString();
             }
-            if (finalBuilder.Length > 1)
+            else if (argValue.GetType() == typeof(short)
+                || argValue.GetType() == typeof(int)
+                || argValue.GetType() == typeof(long)
+                )
             {
-                finalBuilder.Length -= 2; //remove \r\n character
-            }
-            return finalBuilder.ToString();
-        }
-
-        public static String GetClipboardTextFromObject(Object argObject, CultureInfo argCultureInfo, String argCellSeparator)
-        {
-            StringBuilder finalBuilder = new StringBuilder();
-            if (argObject is DataRow)
-            {
-                foreach (Object obj in ((DataRow)argObject).ItemArray)
+                if (string.IsNullOrWhiteSpace(argIntFormat))
                 {
-                    finalBuilder.AppendFormat("{0}{1}", GetClipboardTextFromValueObject((obj == DBNull.Value) ? null : obj, argCultureInfo).Replace(argCellSeparator, String.Empty), argCellSeparator);
+                    rawString = Convert.ToInt64(argValue).ToString(argCultureInfo);
                 }
+                else
+                {
+                    rawString = Convert.ToInt64(argValue).ToString(argIntFormat, argCultureInfo);
+                }
+            }
+            else if (argValue.GetType() == typeof(ushort)
+                || argValue.GetType() == typeof(uint)
+                || argValue.GetType() == typeof(ulong)
+                )
+            {
+                if (string.IsNullOrWhiteSpace(argIntFormat))
+                {
+                    rawString = Convert.ToUInt64(argValue).ToString(argCultureInfo);
+                }
+                else
+                {
+                    rawString = Convert.ToInt64(argValue).ToString(argIntFormat, argCultureInfo);
+                }
+            }
+            else if (argValue.GetType() == typeof(float))
+            {
+                if (string.IsNullOrWhiteSpace(argDecimalFormat))
+                {
+                    rawString = ((float)argValue).ToString(argCultureInfo);
+                }
+                else
+                {
+                    rawString = ((float)argValue).ToString(argDecimalFormat, argCultureInfo);
+                }
+            }
+            else if ( argValue.GetType() == typeof(double))
+            {
+                if (string.IsNullOrWhiteSpace(argDecimalFormat))
+                {
+                    rawString = ((double)argValue).ToString(argCultureInfo);
+                }
+                else
+                {
+                    rawString = ((double)argValue).ToString(argDecimalFormat, argCultureInfo);
+                }
+            }
+            else if (argValue.GetType() == typeof(decimal))
+            {
+                if (string.IsNullOrWhiteSpace(argDecimalFormat))
+                {
+                    rawString = ((decimal)argValue).ToString(argCultureInfo);
+                }
+                else
+                {
+                    rawString = ((decimal)argValue).ToString(argDecimalFormat, argCultureInfo);
+                }
+            }
+            else if (argValue.GetType() == typeof(DateTime))
+            {
+                if (string.IsNullOrWhiteSpace(argDateFormat))
+                {
+                    rawString = ((DateTime)argValue).ToString(argCultureInfo.DateTimeFormat.ShortDatePattern);
+                }
+                else
+                {
+                    rawString = ((DateTime)argValue).ToString(argDateFormat, argCultureInfo);
+                }
+            }
+            else if (argValue.GetType() == typeof(bool))
+            {
+                rawString = ((bool)argValue).ToString(argCultureInfo);
+            }
+            else if (argValue.GetType() == typeof(byte))
+            {
+                rawString = ((byte)argValue).ToString(argCultureInfo);
+            }
+            else if (argValue is Enum)
+            {
+                rawString = Enum.GetName(argValue.GetType(), argValue);
+            }
+            else if (argValue is IEnumerable)
+            {
+                rawString = string.Format("{{ {0} }}", GetClipboardText(argValue, argCultureInfo, false, ","));
+            }
+            else if (argValue.GetType()
+                 .GetInterfaces()
+                 .Any(t => t.IsGenericType
+                        && t.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
+            {
+                rawString = string.Format("{{ {0} }}", GetClipboardText(argValue as IEnumerable<object>, argCultureInfo, false, ","));
             }
             else
             {
-                foreach (PropertyInfo prop in argObject.GetType().GetProperties())
-                {
-                    finalBuilder.AppendFormat("{0}{1}", GetClipboardTextFromValueObject(prop.GetValue(argObject, null), argCultureInfo).Replace(argCellSeparator, String.Empty), argCellSeparator);
-                }
+                rawString = string.Format("{{ {0} }}", GetClipboardTextFromObject(argValue, argCultureInfo, ","));
             }
-            if (finalBuilder.Length > argCellSeparator.Length - 1)
+
+            return rawString
+                .Replace("\t", string.Empty)
+                .Replace("\r", string.Empty)
+                .Replace("\n", string.Empty)
+                .Replace(";", string.Empty);
+        }
+
+        private static string GetClipboardTextFromIEnumerable(IEnumerable argList, CultureInfo argCultureInfo, bool argWithHeaders, string argCellSeparator)
+        {
+            StringBuilder finalBuilder = new StringBuilder();
+
+            if (argWithHeaders)
             {
-                finalBuilder.Length -= argCellSeparator.Length; //remove \t character
+                finalBuilder.AppendLine(
+                    string.Join(
+                        argCellSeparator,
+                        argList.GetType().GetGenericArguments()[0].GetProperties()
+                            .Select(prop =>
+                                GetClipboardTextFromValueObject(prop.Name, argCultureInfo)
+                                .Replace(argCellSeparator, string.Empty)
+                            )
+                    )
+                );
             }
+
+            finalBuilder.Append(
+                string.Join(
+                    Environment.NewLine,
+                    argList.OfType<object>().Select(item =>
+                        GetClipboardTextFromObject(item, argCultureInfo, argCellSeparator)
+                    )
+                )
+            );
+
             return finalBuilder.ToString();
+        }
+
+        private static string GetClipboardTextFromDataTable(DataTable argDataTable, CultureInfo argCultureInfo, bool argWithHeaders, string argCellSeparator)
+        {
+            StringBuilder finalBuilder = new StringBuilder();
+
+            if (argWithHeaders)
+            {
+                finalBuilder.AppendLine(
+                    string.Join(
+                        argCellSeparator,
+                        argDataTable.Columns.OfType<DataColumn>()
+                            .Select(column =>
+                                GetClipboardTextFromValueObject(column.ColumnName, argCultureInfo)
+                                .Replace(argCellSeparator, string.Empty)
+                            )
+                    )
+                );
+            }
+
+            finalBuilder.Append(
+                string.Join(
+                    Environment.NewLine,
+                    argDataTable.Rows.OfType<DataRow>()
+                        .Select(drItem =>
+                            GetClipboardTextFromObject(drItem, argCultureInfo, argCellSeparator)
+                        )
+                )
+            );
+
+            return finalBuilder.ToString();
+        }
+
+        private static string GetClipboardTextFromObject(object argObject, CultureInfo argCultureInfo, string argCellSeparator, bool argWithHeaders = false)
+        {
+            if (argObject is DataRow dr)
+            {
+                return string.Join(
+                    argCellSeparator,
+                    dr.ItemArray.Select(obj =>
+                        GetClipboardTextFromValueObject((obj == DBNull.Value) ? null : obj, argCultureInfo)
+                            .Replace(argCellSeparator, string.Empty)
+                    )
+                );
+            }
+            else
+            {
+                StringBuilder finalBuilder = new StringBuilder();
+
+                if (argWithHeaders)
+                {
+                    finalBuilder.AppendLine(
+                        string.Join(
+                            argCellSeparator,
+                            argObject.GetType().GetProperties()
+                                .Select(prop =>
+                                    GetClipboardTextFromValueObject(prop.Name, argCultureInfo)
+                                    .Replace(argCellSeparator, string.Empty)
+                                )
+                        )
+                    );
+                }
+
+                finalBuilder.Append(
+                    string.Join(
+                        argCellSeparator,
+                        argObject.GetType().GetProperties().Select(prop =>
+                            GetClipboardTextFromValueObject(prop.GetValue(argObject, null), argCultureInfo)
+                                .Replace(argCellSeparator, string.Empty)
+                        )
+                    )
+                );
+
+                return finalBuilder.ToString();
+            }
         }
     }
 }

@@ -27,8 +27,8 @@ namespace gSqlUtilsTestGUI
 
                 // Call the execute sql function                
                 //List<Int32?> testList = (List<Int32?>)_helper.GetDataList(typeof(Int32?), sqlCode);
-                IList<Int32?> testList = null;
-                IList<Int32> testList2 = null;
+                IEnumerable<Int32?> testList = null;
+                IEnumerable<Int32> testList2 = null;
 
                 Task.Factory.StartNew(() => { Debug.WriteLine("testList"); testList = _helper.GetDataList<Int32?>(sqlCode); });
                 //testList = _helper.GetDataList<Int32?>(sqlCode);

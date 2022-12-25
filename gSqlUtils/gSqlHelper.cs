@@ -788,7 +788,7 @@ namespace gpower2.gSqlUtils
         /// <param name="argObjectType">The object Type to map the data to</param>
         /// <param name="argSqlCode">The SQL code to execute</param>
         /// <returns>The List of objects filled with data</returns>
-        public IList GetDataList(Type argObjectType, string argSqlCode)
+        public IEnumerable GetDataList(Type argObjectType, string argSqlCode)
         {
             return GetDataList(argObjectType, argSqlCode, 120, false, null);
         }
@@ -806,7 +806,7 @@ namespace gpower2.gSqlUtils
         /// <param name="argSqlCode">The SQL code to execute</param>
         /// <param name="argTimeout">The timeout for the SQL command in seconds</param>
         /// <returns>The List of objects filled with data</returns>
-        public IList GetDataList(Type argObjectType, string argSqlCode, int argTimeout)
+        public IEnumerable GetDataList(Type argObjectType, string argSqlCode, int argTimeout)
         {
             return GetDataList(argObjectType, argSqlCode, argTimeout, false, null);
         }
@@ -824,7 +824,7 @@ namespace gpower2.gSqlUtils
         /// <param name="argSqlCode">The SQL code to execute</param>
         /// <param name="argUseTransaction">Whether to use transaction or not</param>
         /// <returns>The List of objects filled with data</returns>
-        public IList GetDataList(Type argObjectType, string argSqlCode, bool argUseTransaction)
+        public IEnumerable GetDataList(Type argObjectType, string argSqlCode, bool argUseTransaction)
         {
             return GetDataList(argObjectType, argSqlCode, 120, argUseTransaction, null);
         }
@@ -843,7 +843,7 @@ namespace gpower2.gSqlUtils
         /// <param name="argUseTransaction">Whether to use transaction or not</param>
         /// <param name="argSqlParameters">The SQL Parameters for the SQL command</param>
         /// <returns>The List of objects filled with data</returns>
-        public IList GetDataList(Type argObjectType, string argSqlCode, int argTimeout, bool argUseTransaction, List<SqlParameter> argSqlParameters)
+        public IEnumerable GetDataList(Type argObjectType, string argSqlCode, int argTimeout, bool argUseTransaction, List<SqlParameter> argSqlParameters)
         {
             _LastOperationException = null;
             _LastOperationTimeSpan = new TimeSpan();
@@ -856,7 +856,7 @@ namespace gpower2.gSqlUtils
             }
             try
             {
-                IList results = SqlHelperStatic.GetDataList(argObjectType, argSqlCode, _SqlConnection, argTimeout, argUseTransaction ? _SqlTransaction : null, argSqlParameters);
+                IEnumerable results = SqlHelperStatic.GetDataList(argObjectType, argSqlCode, _SqlConnection, argTimeout, argUseTransaction ? _SqlTransaction : null, argSqlParameters);
                 _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
                 return results;
             }
@@ -899,7 +899,7 @@ namespace gpower2.gSqlUtils
         /// <param name="argObjectType">The object Type to map the data to</param>
         /// <param name="argSqlCode">The SQL code to execute</param>
         /// <returns>The List of objects filled with data</returns>
-        public IList<T> GetDataList<T>(string argSqlCode)
+        public IEnumerable<T> GetDataList<T>(string argSqlCode)
         {
             return GetDataList<T>(argSqlCode, 120, false, null);
         }
@@ -917,7 +917,7 @@ namespace gpower2.gSqlUtils
         /// <param name="argSqlCode">The SQL code to execute</param>
         /// <param name="argTimeout">The timeout for the SQL command in seconds</param>
         /// <returns>The List of objects filled with data</returns>
-        public IList<T> GetDataList<T>(string argSqlCode, int argTimeout)
+        public IEnumerable<T> GetDataList<T>(string argSqlCode, int argTimeout)
         {
             return GetDataList<T>(argSqlCode, argTimeout, false, null);
         }
@@ -935,7 +935,7 @@ namespace gpower2.gSqlUtils
         /// <param name="argSqlCode">The SQL code to execute</param>
         /// <param name="argUseTransaction">Whether to use transaction or not</param>
         /// <returns>The List of objects filled with data</returns>
-        public IList<T> GetDataList<T>(string argSqlCode, bool argUseTransaction)
+        public IEnumerable<T> GetDataList<T>(string argSqlCode, bool argUseTransaction)
         {
             return GetDataList<T>(argSqlCode, 120, argUseTransaction, null);
         }
@@ -954,7 +954,7 @@ namespace gpower2.gSqlUtils
         /// <param name="argUseTransaction">Whether to use transaction or not</param>
         /// <param name="argSqlParameters">The SQL Parameters for the SQL command</param>
         /// <returns>The List of objects filled with data</returns>
-        public IList<T> GetDataList<T>(string argSqlCode, int argTimeout, bool argUseTransaction, List<SqlParameter> argSqlParameters)
+        public IEnumerable<T> GetDataList<T>(string argSqlCode, int argTimeout, bool argUseTransaction, List<SqlParameter> argSqlParameters)
         {
             _LastOperationException = null;
             _LastOperationTimeSpan = new TimeSpan();
@@ -967,7 +967,7 @@ namespace gpower2.gSqlUtils
             }
             try
             {
-                IList<T> results = SqlHelperStatic.GetDataList<T>(argSqlCode, _SqlConnection, argTimeout, argUseTransaction ? _SqlTransaction : null, argSqlParameters);
+                IEnumerable<T> results = SqlHelperStatic.GetDataList<T>(argSqlCode, _SqlConnection, argTimeout, argUseTransaction ? _SqlTransaction : null, argSqlParameters);
                 _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
                 return results;
             }

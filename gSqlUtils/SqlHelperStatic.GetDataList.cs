@@ -89,7 +89,7 @@ namespace gpower2.gSqlUtils
                         && !myProp.PropertyType.IsArray
                         && !(myProp.PropertyType.IsGenericType && myProp.PropertyType.GetGenericTypeDefinition() != typeof(Nullable<>)))
                     {
-                        // Check if we have a property of the saqme declaring type
+                        // Check if we have a property of the same declaring type
                         // In that case, we only support one depth level
                         if (myProp.PropertyType == myProp.DeclaringType && NumberOfOccurences(argRootPropertyName, ".") > 1)
                         {

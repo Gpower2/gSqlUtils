@@ -248,10 +248,12 @@ namespace gpower2.gSqlUtils
         /// <param name="argApplicationName">The name of the application associated with the connection string (Default: ".Net SqlClient Data Provider")</param>
         /// <param name="argMultipleActiveResultSets">The flag that indicates if an application can maintain multiple active result sets (MARS) (Default: false).</param>
         /// <param name="argPersistSecurityInfo">The flag that indicates if security-sensitive information, such as the password, is not returned as part of the connection if the connection is open or has ever been in an open state (Default: false)</param>
+        /// <param name="argMaxPoolSize">The maximum number of connections in the SQL connection pool (Default: 100)</param>
+        /// <param name="argClearPool">A flag that indicates if the connection pool will be cleared for the specific connection</param>
         /// <returns></returns>
         public static SqlConnection CreateSqlConnection(string argDataSource, string argInitialCatalog, int argConnectTimeout,
             bool argIntegratedSecurity, int argPacketSize, string argUserId, string argPassword, string argApplicationName,
-            bool argMultipleActiveResultSets, bool argPersistSecurityInfo, bool argClearPool = false)
+            bool argMultipleActiveResultSets, bool argPersistSecurityInfo, int argMaxPoolSize = 100, bool argClearPool = false)
         {
             Stopwatch sw = new Stopwatch();
             _LastOperationException = null;
@@ -291,7 +293,7 @@ namespace gpower2.gSqlUtils
 
                 // Default Value: 100
                 // This property corresponds to the "Max Pool Size" key within the connection string.
-                myBuilder.MaxPoolSize = 300;
+                myBuilder.MaxPoolSize = argMaxPoolSize;
 
                 // Default Value: false
                 // This property corresponds to the "MultipleActiveResultSets" key within the connection string.
@@ -313,7 +315,7 @@ namespace gpower2.gSqlUtils
                     myBuilder.PersistSecurityInfo = argPersistSecurityInfo;
                 }
 
-                Debug.WriteLine(string.Format("{0}[CreateSqlConnection] Starting to connect to SQL server:", GetNowString()));
+                Debug.WriteLine(string.Format("{0}[CreateSqlConnection] Starting to connect to SQL server: {1}", GetNowString(), argDataSource));
                 Debug.WriteLine(myBuilder.ConnectionString);
 
                 // Return a new connection with the connection string of the builder
@@ -322,18 +324,19 @@ namespace gpower2.gSqlUtils
                 lock (_ThreadAnchor)
                 {
                     myCon = new SqlConnection(myBuilder.ConnectionString);
+
+                    if (argClearPool)
+                    {
+                        // Clears the Connection pool associated with this connection
+                        SqlConnection.ClearPool(myCon);
+                        Debug.WriteLine(string.Format("{0}[CreateSqlConnection] Finished clearing Connection pool", GetNowString()));
+                    }
                 }
                 sw.Stop();
 
                 _LastOperationEllapsedTime = sw.Elapsed;
 
                 Debug.WriteLine(string.Format("{0}[CreateSqlConnection] Finished connecting to SQL server (duration: {1})", GetNowString(), sw.Elapsed));
-
-                if (argClearPool)
-                {
-                    // Clears the Connection pool associated with this connection
-                    SqlConnection.ClearPool(myCon);
-                }
 
                 return myCon;
             }

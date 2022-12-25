@@ -42,4 +42,7 @@
   <ItemGroup Condition="'$(TargetFramework)' != 'net40'">
     <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
   </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net40'">
+    <PackageReference Include="Microsoft.Bcl.Async" Version="1.0.168" />
+  </ItemGroup>
 </Project>

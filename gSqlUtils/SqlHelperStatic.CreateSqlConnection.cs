@@ -251,7 +251,7 @@ namespace gpower2.gSqlUtils
         /// <returns></returns>
         public static SqlConnection CreateSqlConnection(string argDataSource, string argInitialCatalog, int argConnectTimeout,
             bool argIntegratedSecurity, int argPacketSize, string argUserId, string argPassword, string argApplicationName,
-            bool argMultipleActiveResultSets, bool argPersistSecurityInfo)
+            bool argMultipleActiveResultSets, bool argPersistSecurityInfo, bool argClearPool = false)
         {
             Stopwatch sw = new Stopwatch();
             _LastOperationException = null;
@@ -329,8 +329,11 @@ namespace gpower2.gSqlUtils
 
                 Debug.WriteLine(string.Format("{0}[CreateSqlConnection] Finished connecting to SQL server (duration: {1})", GetNowString(), sw.Elapsed));
 
-                // Clears the Connection pool associated with this connection
-                SqlConnection.ClearPool(myCon);
+                if (argClearPool)
+                {
+                    // Clears the Connection pool associated with this connection
+                    SqlConnection.ClearPool(myCon);
+                }
 
                 return myCon;
             }

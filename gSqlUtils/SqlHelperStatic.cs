@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace gpower2.gSqlUtils
 {
@@ -50,6 +51,8 @@ namespace gpower2.gSqlUtils
 		private static Exception _LastOperationException;
 
         private static readonly object _ThreadAnchor = new object();
+
+		private static readonly SemaphoreSlim _connectionSemaphore = new SemaphoreSlim(1, 1);
 
         #endregion
 

@@ -3,24 +3,25 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace gpower2.gSqlUtils
 {
 	public static partial class SqlHelperStatic
 	{
-		#region "ExecuteSql"
+        #region "ExecuteSqlAsync"
 
-		/// <summary>
-		/// Executes a non scalar SQL statement.
-		/// It sets a default timeout of 120 seconds and doesn't use a transaction.
-		/// It returns the number of rows affected.
-		/// </summary>
-		/// <param name="argSqlCode">The SQL code to execute</param>
-		/// <param name="argSqlCon">The SQL connection to use</param>
-		/// <returns>The number of rows affected</returns>
-		public static int ExecuteSql(string argSqlCode, SqlConnection argSqlCon)
+        /// <summary>
+        /// Executes a non scalar SQL statement.
+        /// It sets a default timeout of 120 seconds and doesn't use a transaction.
+        /// It returns the number of rows affected.
+        /// </summary>
+        /// <param name="argSqlCode">The SQL code to execute</param>
+        /// <param name="argSqlCon">The SQL connection to use</param>
+        /// <returns>The number of rows affected</returns>
+        public static Task<int> ExecuteSqlAsync(string argSqlCode, SqlConnection argSqlCon)
 		{
-			return ExecuteSql(argSqlCode, argSqlCon, 120, null, null);
+			return ExecuteSqlAsync(argSqlCode, argSqlCon, 120, null, null);
 		}
 
 		/// <summary>
@@ -32,9 +33,9 @@ namespace gpower2.gSqlUtils
 		/// <param name="argSqlCon">The SQL connection to use</param>
 		/// <param name="argTimeout">The timeout for the SQL command in seconds</param>
 		/// <returns>The number of rows affected</returns>
-		public static int ExecuteSql(string argSqlCode, SqlConnection argSqlCon, int argTimeout)
+		public static Task<int> ExecuteSqlAsync(string argSqlCode, SqlConnection argSqlCon, int argTimeout)
 		{
-			return ExecuteSql(argSqlCode, argSqlCon, argTimeout, null, null);
+			return ExecuteSqlAsync(argSqlCode, argSqlCon, argTimeout, null, null);
 		}
 
 		/// <summary>
@@ -46,9 +47,9 @@ namespace gpower2.gSqlUtils
 		/// <param name="argSqlCon">The SQL connection to use</param>
 		/// <param name="argSqlTransaction">The SQL transaction to use</param>
 		/// <returns>The number of rows affected</returns>
-		public static int ExecuteSql(string argSqlCode, SqlConnection argSqlCon, SqlTransaction argSqlTransaction)
+		public static Task<int> ExecuteSqlAsync(string argSqlCode, SqlConnection argSqlCon, SqlTransaction argSqlTransaction)
 		{
-			return ExecuteSql(argSqlCode, argSqlCon, 120, argSqlTransaction, null);
+			return ExecuteSqlAsync(argSqlCode, argSqlCon, 120, argSqlTransaction, null);
 		}
 
 		/// <summary>
@@ -61,7 +62,7 @@ namespace gpower2.gSqlUtils
 		/// <param name="argSqlTransaction">The SQL transaction to use</param>
 		/// <param name="argSqlParameters">The SQL Parameters for the SQL command</param>
 		/// <returns>The number of rows affected</returns>
-		public static int ExecuteSql(string argSqlCode, SqlConnection argSqlCon, int argTimeout, SqlTransaction argSqlTransaction, List<SqlParameter> argSqlParameters)
+		public static async Task<int> ExecuteSqlAsync(string argSqlCode, SqlConnection argSqlCon, int argTimeout, SqlTransaction argSqlTransaction, List<SqlParameter> argSqlParameters)
 		{
 			Stopwatch myStopWatch = new Stopwatch();
 			int rowsAffected = 0;
@@ -76,16 +77,22 @@ namespace gpower2.gSqlUtils
 				{
 					throw new Exception("Empty SQL code!");
 				}
-				lock (_ThreadAnchor)
-				{
-					if (argSqlCon.State == System.Data.ConnectionState.Closed)
+				#if NET40
+                _connectionSemaphore.Wait();
+				#else
+                await _connectionSemaphore.WaitAsync();
+				#endif
+                {
+                    if (argSqlCon.State == System.Data.ConnectionState.Closed)
 					{
-						argSqlCon.Open();
-						Debug.WriteLine(string.Format("{0}[ExecuteSql] Opened connection...", GetNowString()));
+						await argSqlCon.OpenAsync();
+						Debug.WriteLine(string.Format("{0}[ExecuteSqlAsync] Opened connection...", GetNowString()));
 					}
 					// Wait for the connection to finish connecting
 					while (argSqlCon.State == ConnectionState.Connecting) { }
 				}
+                _connectionSemaphore.Release();
+                
 				using (SqlCommand sqlCmd = new SqlCommand(argSqlCode, argSqlCon))
 				{
 					if (argSqlTransaction != null)
@@ -101,13 +108,13 @@ namespace gpower2.gSqlUtils
 						}
 					}
 					sqlCmd.CommandTimeout = argTimeout;
-					Debug.WriteLine(string.Format("{0}[ExecuteSql] Starting to execute SQL code:", GetNowString()));
+					Debug.WriteLine(string.Format("{0}[ExecuteSqlAsync] Starting to execute SQL code:", GetNowString()));
 					Debug.WriteLine(GetSQLCommandString(sqlCmd));
 					myStopWatch.Start();
-					rowsAffected = sqlCmd.ExecuteNonQuery();
+					rowsAffected = await sqlCmd.ExecuteNonQueryAsync();
 					myStopWatch.Stop();
 					_LastOperationEllapsedTime = myStopWatch.Elapsed;
-					Debug.WriteLine(string.Format("{0}[ExecuteSql] Finished executing SQL code (duration: {1})", GetNowString(), myStopWatch.Elapsed));
+					Debug.WriteLine(string.Format("{0}[ExecuteSqlAsync] Finished executing SQL code (duration: {1})", GetNowString(), myStopWatch.Elapsed));
 					return rowsAffected;
 				}
 			}
@@ -116,7 +123,7 @@ namespace gpower2.gSqlUtils
 				myStopWatch.Stop();
 				_LastOperationEllapsedTime = myStopWatch.Elapsed;
 				_LastOperationException = ex;
-				Debug.WriteLine(string.Format("{0}[ExecuteSql] Error executing SQL code! (duration: {1})", GetNowString(), myStopWatch.Elapsed));
+				Debug.WriteLine(string.Format("{0}[ExecuteSqlAsync] Error executing SQL code! (duration: {1})", GetNowString(), myStopWatch.Elapsed));
 				Debug.WriteLine(ex);
 				throw;
 			}

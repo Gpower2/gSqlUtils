@@ -184,7 +184,7 @@ namespace gpower2.gSqlUtils
                                     // Get the properties for the object
                                     PropertyInfo[] objectProperties = typeof(T).GetProperties();
 
-                                    // Create the map fro properties <-> columns
+                                    // Create the map for properties <-> columns
                                     FillMap(myReader, mapDict, objectProperties);
 
                                     // Instantiate a new object for filling it from datarow

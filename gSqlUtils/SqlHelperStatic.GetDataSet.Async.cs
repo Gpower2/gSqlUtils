@@ -74,10 +74,11 @@ namespace gpower2.gSqlUtils
                     throw new Exception("Empty SQL code!");
                 }
                 #if NET40
-                _connectionSemaphore.Wait();
+                await Task.Factory.StartNew(() => _connectionSemaphore.Wait());
                 #else
                 await _connectionSemaphore.WaitAsync();
                 #endif
+                try
                 {
                     if (argSqlCon.State == System.Data.ConnectionState.Closed)
                     {
@@ -87,7 +88,10 @@ namespace gpower2.gSqlUtils
                     // Wait for the connection to finish connecting
                     while (argSqlCon.State == ConnectionState.Connecting) { }
                 }
-                _connectionSemaphore.Release();
+                finally
+                {
+                    _connectionSemaphore.Release();
+                }
 
                 myDataset = new DataSet();
                 using (SqlDataAdapter myAdapter = new SqlDataAdapter(argSqlCode, argSqlCon))

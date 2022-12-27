@@ -107,10 +107,11 @@ namespace gpower2.gSqlUtils
                 IList objectList = (IList)Activator.CreateInstance(genericListType);
 
                 #if NET40
-                _connectionSemaphore.Wait();
+                await Task.Factory.StartNew(() => _connectionSemaphore.Wait());
                 #else
                 await _connectionSemaphore.WaitAsync();
                 #endif
+                try
                 {
                     // Open the SQL connection in case it's closed
                     if (argSqlCon.State == System.Data.ConnectionState.Closed)
@@ -121,7 +122,10 @@ namespace gpower2.gSqlUtils
                     // Wait for the connection to finish connecting
                     while (argSqlCon.State == ConnectionState.Connecting) { }
                 }
-                _connectionSemaphore.Release();
+                finally
+                {
+                    _connectionSemaphore.Release();
+                }
 
                 // Create the SQL command from the SQL query using object's connection
                 using (SqlCommand sqlCmd = new SqlCommand(argSqlCode, argSqlCon))

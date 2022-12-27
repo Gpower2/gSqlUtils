@@ -97,10 +97,11 @@ namespace gpower2.gSqlUtils
                     throw new Exception("Empty SQL query!");
                 }
                 #if NET40
-                _connectionSemaphore.Wait();
+                await Task.Factory.StartNew(() => _connectionSemaphore.Wait());
                 #else
                 await _connectionSemaphore.WaitAsync();
                 #endif
+                try
                 {
                     // Open the SQL connection in case it's closed
                     if (argSqlCon.State == System.Data.ConnectionState.Closed)
@@ -111,7 +112,10 @@ namespace gpower2.gSqlUtils
                     // Wait for the connection to finish connecting
                     while (argSqlCon.State == ConnectionState.Connecting) { }
                 }
-                _connectionSemaphore.Release();
+                finally
+                {
+                    _connectionSemaphore.Release();
+                }
 
                 // Instantiate a new object for filling it from datarow
                 T myObject = default(T);

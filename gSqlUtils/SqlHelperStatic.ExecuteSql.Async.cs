@@ -78,12 +78,13 @@ namespace gpower2.gSqlUtils
 					throw new Exception("Empty SQL code!");
 				}
 				#if NET40
-                _connectionSemaphore.Wait();
+                await Task.Factory.StartNew(() => _connectionSemaphore.Wait());
 				#else
                 await _connectionSemaphore.WaitAsync();
 				#endif
-                {
-                    if (argSqlCon.State == System.Data.ConnectionState.Closed)
+				try
+				{
+					if (argSqlCon.State == System.Data.ConnectionState.Closed)
 					{
 						await argSqlCon.OpenAsync();
 						Debug.WriteLine(string.Format("{0}[ExecuteSqlAsync] Opened connection...", GetNowString()));
@@ -91,8 +92,11 @@ namespace gpower2.gSqlUtils
 					// Wait for the connection to finish connecting
 					while (argSqlCon.State == ConnectionState.Connecting) { }
 				}
-                _connectionSemaphore.Release();
-                
+				finally
+				{
+					_connectionSemaphore.Release();
+				}
+
 				using (SqlCommand sqlCmd = new SqlCommand(argSqlCode, argSqlCon))
 				{
 					if (argSqlTransaction != null)

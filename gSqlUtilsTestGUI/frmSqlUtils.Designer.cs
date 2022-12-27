@@ -30,6 +30,7 @@
         {
             this.btnTest1 = new System.Windows.Forms.Button();
             this.grdResults = new System.Windows.Forms.DataGridView();
+            this.btnTestAsync = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.grdResults)).BeginInit();
             this.SuspendLayout();
             // 
@@ -60,11 +61,22 @@
             this.grdResults.Size = new System.Drawing.Size(296, 124);
             this.grdResults.TabIndex = 1;
             // 
+            // btnTestAsync
+            // 
+            this.btnTestAsync.Location = new System.Drawing.Point(171, 45);
+            this.btnTestAsync.Name = "btnTestAsync";
+            this.btnTestAsync.Size = new System.Drawing.Size(85, 30);
+            this.btnTestAsync.TabIndex = 2;
+            this.btnTestAsync.Text = "Test Async";
+            this.btnTestAsync.UseVisualStyleBackColor = true;
+            this.btnTestAsync.Click += new System.EventHandler(this.btnTestAsync_Click);
+            // 
             // frmSqlUtils
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(518, 292);
+            this.Controls.Add(this.btnTestAsync);
             this.Controls.Add(this.grdResults);
             this.Controls.Add(this.btnTest1);
             this.Name = "frmSqlUtils";
@@ -78,6 +90,7 @@
 
         private System.Windows.Forms.Button btnTest1;
         private System.Windows.Forms.DataGridView grdResults;
+        private System.Windows.Forms.Button btnTestAsync;
     }
 }
 

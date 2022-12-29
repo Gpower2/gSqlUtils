@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using gpower2.gSqlUtils.Extensions;
 
 namespace gpower2.gSqlUtils
 {
@@ -19,11 +20,7 @@ namespace gpower2.gSqlUtils
 
         public async Task BeginTransactionAsync()
         {
-            #if NET40
-            await Task.Factory.StartNew(() => _semaphoreSlim.Wait());
-            #else
-            await _semaphoreSlim.WaitAsync();
-            #endif
+            await _semaphoreSlim.LockAsync();
             try
             {
                 if (_SqlConnection.State == System.Data.ConnectionState.Closed)
@@ -42,11 +39,7 @@ namespace gpower2.gSqlUtils
 
         public async Task CommitTransactionAsync()
         {
-            #if NET40
-            await Task.Factory.StartNew(() => _semaphoreSlim.Wait());
-            #else
-            await _semaphoreSlim.WaitAsync();
-            #endif
+            await _semaphoreSlim.LockAsync();
             try
             {
                 if (_SqlTransaction == null)
@@ -69,11 +62,7 @@ namespace gpower2.gSqlUtils
 
         public async Task RollbackTransactionAsync()
         {
-            #if NET40
-            await Task.Factory.StartNew(() => _semaphoreSlim.Wait());
-            #else
-            await _semaphoreSlim.WaitAsync();
-            #endif
+            await _semaphoreSlim.LockAsync();
             try
             {
                 if (_SqlTransaction == null)
@@ -100,11 +89,7 @@ namespace gpower2.gSqlUtils
 
         public async Task CloseConnectionAsync()
         {
-            #if NET40
-            await Task.Factory.StartNew(() => _semaphoreSlim.Wait());
-            #else
-            await _semaphoreSlim.WaitAsync();
-            #endif
+            await _semaphoreSlim.LockAsync();
             try
             {
                 if (_SqlConnection != null && _SqlConnection.State != System.Data.ConnectionState.Closed && _SqlCommands.Count == 0)
@@ -176,11 +161,7 @@ namespace gpower2.gSqlUtils
             _LastOperationTimeSpan = new TimeSpan();
             int currentCommand;
             // Add a new entry in the SqlCommands Dictionary
-            #if NET40
-            await Task.Factory.StartNew(() => _semaphoreSlim.Wait());
-            #else
-            await _semaphoreSlim.WaitAsync();
-            #endif
+            await _semaphoreSlim.LockAsync();
             try
             {
                 currentCommand = DateTime.Now.GetHashCode();
@@ -206,11 +187,7 @@ namespace gpower2.gSqlUtils
                 _LastOperationException = SqlHelperStatic.LastOperationException;
                 _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
 
-                #if NET40
-                await Task.Factory.StartNew(() => _semaphoreSlim.Wait());
-                #else
-                await _semaphoreSlim.WaitAsync();
-                #endif
+                await _semaphoreSlim.LockAsync();
                 try
                 {
                     // Remove current entry from the _SqlCommands Dictionary
@@ -288,11 +265,7 @@ namespace gpower2.gSqlUtils
             _LastOperationTimeSpan = new TimeSpan();
             // Add a new entry in the SqlCommands Dictionary
             int currentCommand;
-            #if NET40
-            await Task.Factory.StartNew(() => _semaphoreSlim.Wait());
-            #else
-            await _semaphoreSlim.WaitAsync();
-            #endif
+            await _semaphoreSlim.LockAsync();
             try
             {
                 currentCommand = DateTime.Now.GetHashCode();
@@ -318,11 +291,7 @@ namespace gpower2.gSqlUtils
                 _LastOperationException = SqlHelperStatic.LastOperationException;
                 _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
 
-                #if NET40
-                await Task.Factory.StartNew(() => _semaphoreSlim.Wait());
-                #else
-                await _semaphoreSlim.WaitAsync();
-                #endif
+                await _semaphoreSlim.LockAsync();
                 try
                 {
                     // Remove current entry from the _SqlCommands Dictionary
@@ -396,11 +365,7 @@ namespace gpower2.gSqlUtils
             _LastOperationTimeSpan = new TimeSpan();
             // Add a new entry in the SqlCommands Dictionary
             int currentCommand;
-            #if NET40
-            await Task.Factory.StartNew(() => _semaphoreSlim.Wait());
-            #else
-            await _semaphoreSlim.WaitAsync();
-            #endif
+            await _semaphoreSlim.LockAsync();
             try
             {
                 currentCommand = DateTime.Now.GetHashCode();
@@ -425,11 +390,7 @@ namespace gpower2.gSqlUtils
             {
                 _LastOperationException = SqlHelperStatic.LastOperationException;
                 _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
-                #if NET40
-                await Task.Factory.StartNew(() => _semaphoreSlim.Wait());
-                #else
-                await _semaphoreSlim.WaitAsync();
-                #endif
+                await _semaphoreSlim.LockAsync();
                 try
                 {
                     // Remove current entry from the _SqlCommands Dictionary
@@ -507,11 +468,7 @@ namespace gpower2.gSqlUtils
             _LastOperationTimeSpan = new TimeSpan();
             // Add a new entry in the SqlCommands Dictionary
             int currentCommand;
-            #if NET40
-            await Task.Factory.StartNew(() => _semaphoreSlim.Wait());
-            #else
-            await _semaphoreSlim.WaitAsync();
-            #endif
+            await _semaphoreSlim.LockAsync();
             try
             {
                 currentCommand = DateTime.Now.GetHashCode();
@@ -536,11 +493,7 @@ namespace gpower2.gSqlUtils
             {
                 _LastOperationException = SqlHelperStatic.LastOperationException;
                 _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
-                #if NET40
-                await Task.Factory.StartNew(() => _semaphoreSlim.Wait());
-                #else
-                await _semaphoreSlim.WaitAsync();
-                #endif
+                await _semaphoreSlim.LockAsync();
                 try
                 {
                     // Remove current entry from the _SqlCommands Dictionary
@@ -618,11 +571,7 @@ namespace gpower2.gSqlUtils
             _LastOperationTimeSpan = new TimeSpan();
             // Add a new entry in the SqlCommands Dictionary
             int currentCommand;
-            #if NET40
-            await Task.Factory.StartNew(() => _semaphoreSlim.Wait());
-            #else
-            await _semaphoreSlim.WaitAsync();
-            #endif
+            await _semaphoreSlim.LockAsync();
             try
             {
                 currentCommand = DateTime.Now.GetHashCode();
@@ -647,11 +596,7 @@ namespace gpower2.gSqlUtils
             {
                 _LastOperationException = SqlHelperStatic.LastOperationException;
                 _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
-                #if NET40
-                await Task.Factory.StartNew(() => _semaphoreSlim.Wait());
-                #else
-                await _semaphoreSlim.WaitAsync();
-                #endif
+                await _semaphoreSlim.LockAsync();
                 try
                 {
                     // Remove current entry from the _SqlCommands Dictionary
@@ -749,11 +694,7 @@ namespace gpower2.gSqlUtils
             _LastOperationTimeSpan = new TimeSpan();
             // Add a new entry in the SqlCommands Dictionary
             int currentCommand;
-            #if NET40
-            await Task.Factory.StartNew(() => _semaphoreSlim.Wait());
-            #else
-            await _semaphoreSlim.WaitAsync();
-            #endif
+            await _semaphoreSlim.LockAsync();
             try
             {
                 currentCommand = DateTime.Now.GetHashCode();
@@ -778,11 +719,7 @@ namespace gpower2.gSqlUtils
             {
                 _LastOperationException = SqlHelperStatic.LastOperationException;
                 _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
-                #if NET40
-                await Task.Factory.StartNew(() => _semaphoreSlim.Wait());
-                #else
-                await _semaphoreSlim.WaitAsync();
-                #endif
+                await _semaphoreSlim.LockAsync();
                 try
                 {
                     // Remove current entry from the _SqlCommands Dictionary
@@ -876,11 +813,7 @@ namespace gpower2.gSqlUtils
             _LastOperationTimeSpan = new TimeSpan();
             // Add a new entry in the SqlCommands Dictionary
             int currentCommand;
-            #if NET40
-            await Task.Factory.StartNew(() => _semaphoreSlim.Wait());
-            #else
-            await _semaphoreSlim.WaitAsync();
-            #endif
+            await _semaphoreSlim.LockAsync();
             try
             {
                 currentCommand = DateTime.Now.GetHashCode();
@@ -905,11 +838,7 @@ namespace gpower2.gSqlUtils
             {
                 _LastOperationException = SqlHelperStatic.LastOperationException;
                 _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
-                #if NET40
-                await Task.Factory.StartNew(() => _semaphoreSlim.Wait());
-                #else
-                await _semaphoreSlim.WaitAsync();
-                #endif
+                await _semaphoreSlim.LockAsync();
                 try
                 {
                     // Remove current entry from the _SqlCommands Dictionary
@@ -1007,11 +936,7 @@ namespace gpower2.gSqlUtils
             _LastOperationTimeSpan = new TimeSpan();
             // Add a new entry in the SqlCommands Dictionary
             int currentCommand;
-            #if NET40
-            await Task.Factory.StartNew(() => _semaphoreSlim.Wait());
-            #else
-            await _semaphoreSlim.WaitAsync();
-            #endif
+            await _semaphoreSlim.LockAsync();
             try
             {
                 currentCommand = DateTime.Now.GetHashCode();
@@ -1036,11 +961,7 @@ namespace gpower2.gSqlUtils
             {
                 _LastOperationException = SqlHelperStatic.LastOperationException;
                 _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
-                #if NET40
-                await Task.Factory.StartNew(() => _semaphoreSlim.Wait());
-                #else
-                await _semaphoreSlim.WaitAsync();
-                #endif
+                await _semaphoreSlim.LockAsync();
                 try
                 {
                     // Remove current entry from the _SqlCommands Dictionary

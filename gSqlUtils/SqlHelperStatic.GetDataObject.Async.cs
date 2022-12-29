@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using gpower2.gSqlUtils.Extensions;
 
 namespace gpower2.gSqlUtils
 {
@@ -96,11 +97,7 @@ namespace gpower2.gSqlUtils
                 {
                     throw new Exception("Empty SQL query!");
                 }
-                #if NET40
-                await Task.Factory.StartNew(() => _connectionSemaphore.Wait());
-                #else
-                await _connectionSemaphore.WaitAsync();
-                #endif
+                await _connectionSemaphore.LockAsync();
                 try
                 {
                     // Open the SQL connection in case it's closed

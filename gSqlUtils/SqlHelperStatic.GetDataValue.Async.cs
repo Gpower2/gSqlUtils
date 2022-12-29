@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using gpower2.gSqlUtils.Extensions;
 
 namespace gpower2.gSqlUtils
 {
@@ -76,11 +77,7 @@ namespace gpower2.gSqlUtils
                 {
                     throw new Exception("Empty SQL code!");
                 }
-                #if NET40
-                await Task.Factory.StartNew(() => _connectionSemaphore.Wait());
-                #else
-                await _connectionSemaphore.WaitAsync();
-                #endif
+                await _connectionSemaphore.LockAsync();
                 try
                 {
                     if (argSqlCon.State == System.Data.ConnectionState.Closed)
@@ -207,11 +204,7 @@ namespace gpower2.gSqlUtils
                 {
                     throw new Exception("Empty SQL code!");
                 }
-                #if NET40
-                await Task.Factory.StartNew(() => _connectionSemaphore.Wait());
-                #else
-                await _connectionSemaphore.WaitAsync();
-                #endif
+                await _connectionSemaphore.LockAsync();
                 try
                 {
                     if (argSqlCon.State == System.Data.ConnectionState.Closed)

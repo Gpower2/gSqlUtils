@@ -145,11 +145,11 @@ namespace gpower2.gSqlUtils
                         {
                             // Read the first row
                             if (
-                                #if NET40
+#if NET40
                                 myReader.Read()
-                                #else
+#else
                                 await myReader.ReadAsync()
-                                #endif
+#endif
                                 )
                             {
                                 // Instantiate the object

@@ -91,7 +91,7 @@ namespace gpower2.gSqlUtils
             _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argUserId, argPassword, argPersistSecurityInfo);
         }
 
-        public gSqlHelper(string argDataSource, string argInitialCatalog, string argUserId, string argPassword, bool argPersistSecurityInfo, 
+        public gSqlHelper(string argDataSource, string argInitialCatalog, string argUserId, string argPassword, bool argPersistSecurityInfo,
             bool argMultipleActiveResultSets)
         {
             _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argUserId, argPassword, argPersistSecurityInfo, argMultipleActiveResultSets);
@@ -102,7 +102,7 @@ namespace gpower2.gSqlUtils
             _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argUserId, argPassword, argApplicationName);
         }
 
-        public gSqlHelper(string argDataSource, string argInitialCatalog, string argUserId, string argPassword, string argApplicationName, 
+        public gSqlHelper(string argDataSource, string argInitialCatalog, string argUserId, string argPassword, string argApplicationName,
             bool argPersistSecurityInfo, bool argMultipleActiveResultSets)
         {
             _SqlConnection = SqlHelperStatic.CreateSqlConnection(argDataSource, argInitialCatalog, argUserId, argPassword, argApplicationName, argPersistSecurityInfo, argMultipleActiveResultSets);
@@ -1242,17 +1242,17 @@ namespace gpower2.gSqlUtils
             return argList.GetClipboardText(argCultureInfo, argWithHeaders);
         }
 
-        public string GetClipboardText(object argList, bool argWithHeaders) 
+        public string GetClipboardText(object argList, bool argWithHeaders)
         {
             return argList.GetClipboardText(argWithHeaders);
         }
 
-        public string GetClipboardText(object argList, bool argWithHeaders, string argCellSeparator) 
+        public string GetClipboardText(object argList, bool argWithHeaders, string argCellSeparator)
         {
             return argList.GetClipboardText(argWithHeaders, argCellSeparator);
         }
 
-        public string GetClipboardText(object argList, CultureInfo argCultureInfo, bool argWithHeaders, string argCellSeparator) 
+        public string GetClipboardText(object argList, CultureInfo argCultureInfo, bool argWithHeaders, string argCellSeparator)
         {
             return argList.GetClipboardText(argCultureInfo, argWithHeaders, argCellSeparator);
         }

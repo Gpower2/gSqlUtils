@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace gpower2.gSqlUtils.QueryBuilder
 {
@@ -16,8 +15,10 @@ namespace gpower2.gSqlUtils.QueryBuilder
     public class gSqlPredicateParticipationTranslator
     {
         private static gSqlPredicateParticipationTranslator _Instance = null;
-        public static String Translate(gSqlPredicateParticipation participation){
-            if(_Instance == null){
+        public static String Translate(gSqlPredicateParticipation participation)
+        {
+            if (_Instance == null)
+            {
                 _Instance = new gSqlPredicateParticipationTranslator();
             }
             return _Instance._Dictionary[participation];

@@ -112,11 +112,11 @@ namespace gpower2.gSqlUtils
                     Debug.WriteLine(GetSQLCommandString(myCommand));
                     myStopWatch.Start();
 
-                    #if NET40
+#if NET40
                     object resultObject = myCommand.ExecuteScalar();
-                    #else
+#else
                     object resultObject = await myCommand.ExecuteScalarAsync();
-                    #endif
+#endif
 
                     myStopWatch.Stop();
                     _LastOperationEllapsedTime = myStopWatch.Elapsed;
@@ -239,11 +239,11 @@ namespace gpower2.gSqlUtils
                     Debug.WriteLine(GetSQLCommandString(myCommand));
                     myStopWatch.Start();
                     // Excecute the SQL command
-                    #if NET40
+#if NET40
                     object res = myCommand.ExecuteScalar();
-                    #else
+#else
                     object res = await myCommand.ExecuteScalarAsync();
-                    #endif
+#endif
 
                     myStopWatch.Stop();
                     _LastOperationEllapsedTime = myStopWatch.Elapsed;

@@ -63,7 +63,7 @@ namespace gpower2.gSqlUtils
             }
         }
 
-        private static string GetClipboardTextFromValueObject(object argValue, CultureInfo argCultureInfo, 
+        private static string GetClipboardTextFromValueObject(object argValue, CultureInfo argCultureInfo,
             string argIntFormat = null, string argDecimalFormat = null, string argDateFormat = null)
         {
             if (argValue == null)
@@ -119,7 +119,7 @@ namespace gpower2.gSqlUtils
                     rawString = ((float)argValue).ToString(argDecimalFormat, argCultureInfo);
                 }
             }
-            else if ( argValue.GetType() == typeof(double))
+            else if (argValue.GetType() == typeof(double))
             {
                 if (string.IsNullOrWhiteSpace(argDecimalFormat))
                 {

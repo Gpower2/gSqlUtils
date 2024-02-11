@@ -25,11 +25,11 @@ namespace gpower2.gSqlUtils.Extensions
 
         public static Task LockAsync(this SemaphoreSlim semaphoreSlim, TimeSpan timeout, CancellationToken cancellationToken)
         {
-            #if NET40
+#if NET40
             return Task.Factory.StartNew(() => semaphoreSlim.Wait(timeout, cancellationToken), cancellationToken);
-            #else
+#else
             return semaphoreSlim.WaitAsync(timeout, cancellationToken);
-            #endif
+#endif
         }
     }
 }

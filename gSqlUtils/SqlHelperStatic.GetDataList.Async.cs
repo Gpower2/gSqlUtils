@@ -157,11 +157,11 @@ namespace gpower2.gSqlUtils
                                 // If we have a Value Type, we don't need to create a properties map
                                 // Begin reading
                                 while (
-                                    #if NET40
+#if NET40
                                     myReader.Read()
-                                    #else
+#else
                                     await myReader.ReadAsync()
-                                    #endif
+#endif
                                     )
                                 {
                                     // Instantiate a new object for filling it from datarow
@@ -208,11 +208,11 @@ namespace gpower2.gSqlUtils
 
                                 // Begin reading
                                 while (
-                                    #if NET40
+#if NET40
                                     myReader.Read()
-                                    #else
+#else
                                     await myReader.ReadAsync()
-                                    #endif
+#endif
                                     )
                                 {
                                     // Check if map is created
@@ -316,9 +316,9 @@ namespace gpower2.gSqlUtils
             }
         }
 
-#endregion
+        #endregion
 
-#region "GetDataList<>"
+        #region "GetDataList<>"
 
         /// <summary>
         /// Returns a List of objects of the type specified, containing the data from 
@@ -393,6 +393,6 @@ namespace gpower2.gSqlUtils
             return (IEnumerable<T>)await GetDataListAsync(typeof(T), argSqlCode, argSqlCon, argTimeout, argSqlTransaction, argSqlParameters);
         }
 
-#endregion
+        #endregion
     }
 }

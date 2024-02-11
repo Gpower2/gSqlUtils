@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using gpower2.gSqlUtils.Extensions;
 
@@ -18,14 +19,19 @@ namespace gpower2.gSqlUtils
     {
         #region "TransactionAsyncHelpers"
 
-        public async Task BeginTransactionAsync()
+        public Task BeginTransactionAsync()
         {
-            await _semaphoreSlim.LockAsync();
+            return BeginTransactionAsync(CancellationToken.None);
+        }
+
+        public async Task BeginTransactionAsync(CancellationToken cancellationToken)
+        {
+            await _semaphoreSlim.LockAsync(cancellationToken);
             try
             {
                 if (_SqlConnection.State == System.Data.ConnectionState.Closed)
                 {
-                    await _SqlConnection.OpenAsync();
+                    await _SqlConnection.OpenAsync(cancellationToken);
                     Debug.WriteLine(string.Format("{0}[BeginTransactionAsync] Opened connection...", GetNowString()));
                 }
                 _SqlTransaction = _SqlConnection.BeginTransaction();
@@ -37,9 +43,14 @@ namespace gpower2.gSqlUtils
             }
         }
 
-        public async Task CommitTransactionAsync()
+        public Task CommitTransactionAsync()
         {
-            await _semaphoreSlim.LockAsync();
+            return CommitTransactionAsync(CancellationToken.None);
+        }
+
+        public async Task CommitTransactionAsync(CancellationToken cancellationToken)
+        {
+            await _semaphoreSlim.LockAsync(cancellationToken);
             try
             {
                 if (_SqlTransaction == null)
@@ -49,20 +60,27 @@ namespace gpower2.gSqlUtils
                 _SqlTransaction.Commit();
                 Debug.WriteLine(string.Format("{0}[CommitTransaction] Transaction was committed...", GetNowString()));
                 _SqlTransaction = null;
-                if (_SqlConnection.State == ConnectionState.Open)
-                {
-                    CloseConnection();
-                }
             }
             finally
             {
                 _semaphoreSlim.Release();
             }
+            // This is outside the try .. finally block to avoid deadlocks, since CloseConnectionAsync()
+            // internally locks again the _semaphoreSlim
+            if (_SqlConnection.State == ConnectionState.Open)
+            {
+                await CloseConnectionAsync(cancellationToken);
+            }
         }
 
-        public async Task RollbackTransactionAsync()
+        public Task RollbackTransactionAsync()
         {
-            await _semaphoreSlim.LockAsync();
+            return RollbackTransactionAsync(CancellationToken.None);
+        }
+
+        public async Task RollbackTransactionAsync(CancellationToken cancellationToken)
+        {
+            await _semaphoreSlim.LockAsync(cancellationToken);
             try
             {
                 if (_SqlTransaction == null)
@@ -72,14 +90,16 @@ namespace gpower2.gSqlUtils
                 _SqlTransaction.Rollback();
                 Debug.WriteLine(string.Format("{0}[RollbackTransaction] Transaction was rollbacked...", GetNowString()));
                 _SqlTransaction = null;
-                if (_SqlConnection.State == ConnectionState.Open)
-                {
-                    CloseConnection();
-                }
             }
             finally
             {
                 _semaphoreSlim.Release();
+            }
+            // This is outside the try .. finally block to avoid deadlocks, since CloseConnectionAsync()
+            // internally locks again the _semaphoreSlim
+            if (_SqlConnection.State == ConnectionState.Open)
+            {
+                await CloseConnectionAsync(cancellationToken);
             }
         }
 
@@ -87,9 +107,14 @@ namespace gpower2.gSqlUtils
 
         #region "CloseConnectionAsync"
 
-        public async Task CloseConnectionAsync()
+        public Task CloseConnectionAsync()
         {
-            await _semaphoreSlim.LockAsync();
+            return CloseConnectionAsync(CancellationToken.None);
+        }
+
+        public async Task CloseConnectionAsync(CancellationToken cancellationToken)
+        {
+            await _semaphoreSlim.LockAsync(cancellationToken);
             try
             {
                 if (_SqlConnection != null && _SqlConnection.State != System.Data.ConnectionState.Closed && _SqlCommands.Count == 0)

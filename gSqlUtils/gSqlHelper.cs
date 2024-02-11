@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
@@ -62,7 +61,7 @@ namespace gpower2.gSqlUtils
         /// <summary>
         /// A list that contains all the pending SQL Commands' hash codes
         /// </summary>
-        private List<int> _SqlCommands = new List<int>();
+        private readonly List<int> _SqlCommands = new List<int>();
 
         #endregion
 
@@ -183,13 +182,18 @@ namespace gpower2.gSqlUtils
 
         public void CloseConnection()
         {
-            lock (this)
+            _semaphoreSlim.Wait();
+            try
             {
                 if (_SqlConnection != null && _SqlConnection.State != System.Data.ConnectionState.Closed && _SqlCommands.Count == 0)
                 {
                     _SqlConnection.Close();
                     Debug.WriteLine(string.Format("{0}[CloseConnection] Closed connection...", GetNowString()));
                 }
+            }
+            finally
+            {
+                _semaphoreSlim.Release();
             }
         }
 
@@ -199,7 +203,8 @@ namespace gpower2.gSqlUtils
 
         public void BeginTransaction()
         {
-            lock (this)
+            _semaphoreSlim.Wait();
+            try
             {
                 if (_SqlConnection.State == System.Data.ConnectionState.Closed)
                 {
@@ -209,11 +214,16 @@ namespace gpower2.gSqlUtils
                 _SqlTransaction = _SqlConnection.BeginTransaction();
                 Debug.WriteLine(string.Format("{0} Beginned transaction...", GetNowString()));
             }
+            finally
+            {
+                _semaphoreSlim.Release();
+            }
         }
 
         public void CommitTransaction()
         {
-            lock (this)
+            _semaphoreSlim.Wait();
+            try
             {
                 if (_SqlTransaction == null)
                 {
@@ -227,11 +237,16 @@ namespace gpower2.gSqlUtils
                     CloseConnection();
                 }
             }
+            finally
+            {
+                _semaphoreSlim.Release();
+            }
         }
 
         public void RollbackTransaction()
         {
-            lock (this)
+            _semaphoreSlim.Wait();
+            try
             {
                 if (_SqlTransaction == null)
                 {
@@ -244,6 +259,10 @@ namespace gpower2.gSqlUtils
                 {
                     CloseConnection();
                 }
+            }
+            finally
+            {
+                _semaphoreSlim.Release();
             }
         }
 
@@ -381,11 +400,17 @@ namespace gpower2.gSqlUtils
             _LastOperationTimeSpan = new TimeSpan();
             int currentCommand;
             // Add a new entry in the SqlCommands Dictionary
-            lock (this)
+            _semaphoreSlim.Wait();
+            try
             {
                 currentCommand = DateTime.Now.GetHashCode();
                 _SqlCommands.Add(currentCommand);
             }
+            finally
+            {
+                _semaphoreSlim.Release();
+            }
+
             try
             {
                 int resultValue = SqlHelperStatic.ExecuteSql(argSqlCode, _SqlConnection, argTimeout, argUseTransaction ? _SqlTransaction : null, argSqlParameters);
@@ -400,12 +425,18 @@ namespace gpower2.gSqlUtils
             {
                 _LastOperationException = SqlHelperStatic.LastOperationException;
                 _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
-                lock (this)
+                _semaphoreSlim.Wait();
+                try
                 {
                     // Remove current entry from the _SqlCommands Dictionary
                     _SqlCommands.Remove(currentCommand);
                     Debug.WriteLine(string.Format("[ExecuteSql] Remaining SqlCommands Count: {0}", _SqlCommands.Count));
                 }
+                finally
+                {
+                    _semaphoreSlim.Release();
+                }
+
                 // When we don't use transaction, the connection is simply open and there are no other pending commands, we close the connection
                 if (!argUseTransaction && _SqlConnection.State == ConnectionState.Open && _SqlCommands.Count == 0)
                 {
@@ -472,11 +503,17 @@ namespace gpower2.gSqlUtils
             _LastOperationTimeSpan = new TimeSpan();
             // Add a new entry in the SqlCommands Dictionary
             int currentCommand;
-            lock (this)
+            _semaphoreSlim.Wait();
+            try
             {
                 currentCommand = DateTime.Now.GetHashCode();
                 _SqlCommands.Add(currentCommand);
             }
+            finally
+            {
+                _semaphoreSlim.Release();
+            }
+
             try
             {
                 DataTable resultValue = SqlHelperStatic.GetDataTable(argSqlCode, _SqlConnection, argTimeout, argUseTransaction ? _SqlTransaction : null, argSqlParameters);
@@ -491,12 +528,18 @@ namespace gpower2.gSqlUtils
             {
                 _LastOperationException = SqlHelperStatic.LastOperationException;
                 _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
-                lock (this)
+                _semaphoreSlim.Wait();
+                try
                 {
                     // Remove current entry from the _SqlCommands Dictionary
                     _SqlCommands.Remove(currentCommand);
                     Debug.WriteLine(string.Format("[GetDataTable] Remaining SqlCommands Count: {0}", _SqlCommands.Count));
                 }
+                finally
+                {
+                    _semaphoreSlim.Release();
+                }
+
                 // When we don't use transaction, the connection is simply open and there are no other pending commands, we close the connection
                 if (!argUseTransaction && _SqlConnection.State == ConnectionState.Open && _SqlCommands.Count == 0)
                 {
@@ -559,11 +602,17 @@ namespace gpower2.gSqlUtils
             _LastOperationTimeSpan = new TimeSpan();
             // Add a new entry in the SqlCommands Dictionary
             int currentCommand;
-            lock (this)
+            _semaphoreSlim.Wait();
+            try
             {
                 currentCommand = DateTime.Now.GetHashCode();
                 _SqlCommands.Add(currentCommand);
             }
+            finally
+            {
+                _semaphoreSlim.Release();
+            }
+
             try
             {
                 DataSet resultValue = SqlHelperStatic.GetDataSet(argSqlCode, _SqlConnection, argTimeout, argUseTransaction ? _SqlTransaction : null, argSqlParameters);
@@ -578,12 +627,18 @@ namespace gpower2.gSqlUtils
             {
                 _LastOperationException = SqlHelperStatic.LastOperationException;
                 _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
-                lock (this)
+                _semaphoreSlim.Wait();
+                try
                 {
                     // Remove current entry from the _SqlCommands Dictionary
                     _SqlCommands.Remove(currentCommand);
                     Debug.WriteLine(string.Format("[GetDataSet] Remaining SqlCommands Count: {0}", _SqlCommands.Count));
                 }
+                finally
+                {
+                    _semaphoreSlim.Release();
+                }
+
                 // When we don't use transaction, the connection is simply open and there are no other pending commands, we close the connection
                 if (!argUseTransaction && _SqlConnection.State == ConnectionState.Open && _SqlCommands.Count == 0)
                 {
@@ -650,11 +705,17 @@ namespace gpower2.gSqlUtils
             _LastOperationTimeSpan = new TimeSpan();
             // Add a new entry in the SqlCommands Dictionary
             int currentCommand;
-            lock (this)
+            _semaphoreSlim.Wait();
+            try
             {
                 currentCommand = DateTime.Now.GetHashCode();
                 _SqlCommands.Add(currentCommand);
             }
+            finally
+            {
+                _semaphoreSlim.Release();
+            }
+
             try
             {
                 object resultValue = SqlHelperStatic.GetDataValue(argSqlCode, _SqlConnection, argTimeout, argUseTransaction ? _SqlTransaction : null, argSqlParameters);
@@ -669,12 +730,18 @@ namespace gpower2.gSqlUtils
             {
                 _LastOperationException = SqlHelperStatic.LastOperationException;
                 _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
-                lock (this)
+                _semaphoreSlim.Wait();
+                try
                 {
                     // Remove current entry from the _SqlCommands Dictionary
                     _SqlCommands.Remove(currentCommand);
                     Debug.WriteLine(string.Format("[GetDataValue] Remaining SqlCommands Count: {0}", _SqlCommands.Count));
                 }
+                finally
+                {
+                    _semaphoreSlim.Release();
+                }
+
                 // When we don't use transaction, the connection is simply open and there are no other pending commands, we close the connection
                 if (!argUseTransaction && _SqlConnection.State == ConnectionState.Open && _SqlCommands.Count == 0)
                 {
@@ -741,11 +808,17 @@ namespace gpower2.gSqlUtils
             _LastOperationTimeSpan = new TimeSpan();
             // Add a new entry in the SqlCommands Dictionary
             int currentCommand;
-            lock (this)
+            _semaphoreSlim.Wait();
+            try
             {
                 currentCommand = DateTime.Now.GetHashCode();
                 _SqlCommands.Add(currentCommand);
             }
+            finally
+            {
+                _semaphoreSlim.Release();
+            }
+
             try
             {
                 T resultValue = SqlHelperStatic.GetDataValue<T>(argSqlCode, _SqlConnection, argTimeout, argUseTransaction ? _SqlTransaction : null, argSqlParameters);
@@ -760,12 +833,18 @@ namespace gpower2.gSqlUtils
             {
                 _LastOperationException = SqlHelperStatic.LastOperationException;
                 _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
-                lock (this)
+                _semaphoreSlim.Wait();
+                try
                 {
                     // Remove current entry from the _SqlCommands Dictionary
                     _SqlCommands.Remove(currentCommand);
                     Debug.WriteLine(string.Format("[GetDataValue<>] Remaining SqlCommands Count: {0}", _SqlCommands.Count));
                 }
+                finally
+                {
+                    _semaphoreSlim.Release();
+                }
+
                 // When we don't use transaction, the connection is simply open and there are no other pending commands, we close the connection
                 if (!argUseTransaction && _SqlConnection.State == ConnectionState.Open && _SqlCommands.Count == 0)
                 {
@@ -852,11 +931,17 @@ namespace gpower2.gSqlUtils
             _LastOperationTimeSpan = new TimeSpan();
             // Add a new entry in the SqlCommands Dictionary
             int currentCommand;
-            lock (this)
+            _semaphoreSlim.Wait();
+            try
             {
                 currentCommand = DateTime.Now.GetHashCode();
                 _SqlCommands.Add(currentCommand);
             }
+            finally
+            {
+                _semaphoreSlim.Release();
+            }
+
             try
             {
                 IEnumerable results = SqlHelperStatic.GetDataList(argObjectType, argSqlCode, _SqlConnection, argTimeout, argUseTransaction ? _SqlTransaction : null, argSqlParameters);
@@ -871,12 +956,18 @@ namespace gpower2.gSqlUtils
             {
                 _LastOperationException = SqlHelperStatic.LastOperationException;
                 _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
-                lock (this)
+                _semaphoreSlim.Wait();
+                try
                 {
                     // Remove current entry from the _SqlCommands Dictionary
                     _SqlCommands.Remove(currentCommand);
                     Debug.WriteLine(string.Format("[GetDataList] Remaining SqlCommands Count: {0}", _SqlCommands.Count));
                 }
+                finally
+                {
+                    _semaphoreSlim.Release();
+                }
+
                 // When we don't use transaction, the connection is simply open and there are no other pending commands, we close the connection
                 if (!argUseTransaction && _SqlConnection.State == ConnectionState.Open && _SqlCommands.Count == 0)
                 {
@@ -963,11 +1054,17 @@ namespace gpower2.gSqlUtils
             _LastOperationTimeSpan = new TimeSpan();
             // Add a new entry in the SqlCommands Dictionary
             int currentCommand;
-            lock (this)
+            _semaphoreSlim.Wait();
+            try
             {
                 currentCommand = DateTime.Now.GetHashCode();
                 _SqlCommands.Add(currentCommand);
             }
+            finally
+            {
+                _semaphoreSlim.Release();
+            }
+
             try
             {
                 IEnumerable<T> results = SqlHelperStatic.GetDataList<T>(argSqlCode, _SqlConnection, argTimeout, argUseTransaction ? _SqlTransaction : null, argSqlParameters);
@@ -982,12 +1079,18 @@ namespace gpower2.gSqlUtils
             {
                 _LastOperationException = SqlHelperStatic.LastOperationException;
                 _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
-                lock (this)
+                _semaphoreSlim.Wait();
+                try
                 {
                     // Remove current entry from the _SqlCommands Dictionary
                     _SqlCommands.Remove(currentCommand);
                     Debug.WriteLine(string.Format("[GetDataList<>] Remaining SqlCommands Count: {0}", _SqlCommands.Count));
                 }
+                finally
+                {
+                    _semaphoreSlim.Release();
+                }
+
                 // When we don't use transaction, the connection is simply open and there are no other pending commands, we close the connection
                 if (!argUseTransaction && _SqlConnection.State == ConnectionState.Open && _SqlCommands.Count == 0)
                 {
@@ -1074,11 +1177,17 @@ namespace gpower2.gSqlUtils
             _LastOperationTimeSpan = new TimeSpan();
             // Add a new entry in the SqlCommands Dictionary
             int currentCommand;
-            lock (this)
+            _semaphoreSlim.Wait();
+            try
             {
                 currentCommand = DateTime.Now.GetHashCode();
                 _SqlCommands.Add(currentCommand);
             }
+            finally
+            {
+                _semaphoreSlim.Release();
+            }
+
             try
             {
                 T results = SqlHelperStatic.GetDataObject<T>(argSqlCode, _SqlConnection, argTimeout, argUseTransaction ? _SqlTransaction : null, argSqlParameters);
@@ -1093,12 +1202,18 @@ namespace gpower2.gSqlUtils
             {
                 _LastOperationException = SqlHelperStatic.LastOperationException;
                 _LastOperationTimeSpan = SqlHelperStatic.LastOperationEllapsedTime;
-                lock (this)
+                _semaphoreSlim.Wait();
+                try
                 {
                     // Remove current entry from the _SqlCommands Dictionary
                     _SqlCommands.Remove(currentCommand);
                     Debug.WriteLine(string.Format("[GetDataObject<>] Remaining SqlCommands Count: {0}", _SqlCommands.Count));
                 }
+                finally
+                {
+                    _semaphoreSlim.Release();
+                }
+
                 // When we don't use transaction, the connection is simply open and there are no other pending commands, we close the connection
                 if (!argUseTransaction && _SqlConnection.State == ConnectionState.Open && _SqlCommands.Count == 0)
                 {
